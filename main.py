@@ -27,7 +27,6 @@ BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 UPLOADS_DIR = BASE_DIR / "uploads"
 
-# Creăm folderul uploads dacă nu există
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -52,11 +51,12 @@ app.mount(
 
 
 # ============================================================
-# PAGINA PRINCIPALĂ
+# PAGINA PRINCIPALA
 # ============================================================
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
@@ -73,35 +73,31 @@ async def index(request: Request):
 @app.post("/upload")
 async def upload_pdf(file: UploadFile = File(...)):
 
-    # --------------------------------------------------------
-    # Verificăm extensia
-    # --------------------------------------------------------
-
     if not file.filename:
         raise HTTPException(
             status_code=400,
             detail="Nu a fost selectat niciun fișier."
         )
 
+    # Eliminăm eventualele directoare din numele fișierului
     original_name = Path(file.filename).name
 
+    # Acceptăm numai PDF
     if not original_name.lower().endswith(".pdf"):
         raise HTTPException(
             status_code=400,
             detail="Este permis doar formatul PDF."
         )
 
-
-    # --------------------------------------------------------
-    # Salvăm PDF-ul
-    # --------------------------------------------------------
-
     destination = UPLOADS_DIR / original_name
 
     try:
 
         with destination.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+            shutil.copyfileobj(
+                file.file,
+                buffer
+            )
 
     except Exception as e:
 
@@ -113,11 +109,6 @@ async def upload_pdf(file: UploadFile = File(...)):
     finally:
 
         await file.close()
-
-
-    # --------------------------------------------------------
-    # Răspuns
-    # --------------------------------------------------------
 
     return {
         "status": "success",
@@ -132,6 +123,7 @@ async def upload_pdf(file: UploadFile = File(...)):
 
 @app.get("/health")
 async def health():
+
     return {
         "status": "ok",
         "application": "xml_tagger"
