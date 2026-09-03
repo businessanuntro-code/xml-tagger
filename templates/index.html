@@ -7,26 +7,7 @@
 
     <title>XML Tagger</title>
 
-    <!-- ======================================================
-         PDF.JS
-         ====================================================== -->
-
-    <script type="module">
-        import * as pdfjsLib from
-            "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.min.mjs";
-
-        window.pdfjsLib = pdfjsLib;
-
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-            "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.worker.min.mjs";
-    </script>
-
-
     <style>
-
-        /* =====================================================
-           GENERAL
-           ===================================================== */
 
         * {
             box-sizing: border-box;
@@ -34,427 +15,364 @@
 
         body {
             margin: 0;
-            padding: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #f3f4f6;
+            background: #f2f2f2;
             color: #222;
         }
 
-
         /* =====================================================
            HEADER
-           ===================================================== */
+        ===================================================== */
 
         header {
             background: #1f2937;
             color: white;
-            padding: 18px 25px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         header h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 21px;
         }
-
-        header p {
-            margin: 6px 0 0;
-            color: #d1d5db;
-            font-size: 14px;
-        }
-
 
         /* =====================================================
            MAIN
-           ===================================================== */
+        ===================================================== */
 
-        .container {
-            width: 100%;
-            max-width: 1800px;
-            margin: 0 auto;
-            padding: 20px;
+        .main {
+            padding: 15px;
         }
-
 
         /* =====================================================
            UPLOAD
-           ===================================================== */
+        ===================================================== */
 
         .upload-box {
             background: white;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 15px;
         }
 
         .upload-box form {
             display: flex;
-            gap: 10px;
             align-items: center;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
-        input[type="file"] {
-            padding: 8px;
+        .upload-box input[type="file"] {
+            max-width: 400px;
         }
 
         button {
-            border: 0;
-            border-radius: 5px;
-            padding: 9px 13px;
+            border: 1px solid #aaa;
+            background: #fff;
+            border-radius: 4px;
+            padding: 7px 11px;
             cursor: pointer;
             font-size: 14px;
         }
 
         button:hover {
-            opacity: 0.9;
+            background: #f0f0f0;
         }
 
-        .btn-primary {
+        button.primary {
             background: #2563eb;
             color: white;
+            border-color: #2563eb;
         }
 
-        .btn-secondary {
-            background: #6b7280;
-            color: white;
+        button.primary:hover {
+            background: #1d4ed8;
         }
 
-        .btn-danger {
+        button.danger {
             background: #dc2626;
             color: white;
+            border-color: #dc2626;
         }
 
-        .btn-success {
-            background: #059669;
-            color: white;
+        button.danger:hover {
+            background: #b91c1c;
         }
-
-        .btn-dark {
-            background: #374151;
-            color: white;
-        }
-
 
         /* =====================================================
            STATUS
-           ===================================================== */
+        ===================================================== */
 
         #status {
             margin-top: 10px;
             font-size: 14px;
+            color: #444;
         }
 
-
         /* =====================================================
-           WORKSPACE
-           ===================================================== */
+           PDF / CONTROLS
+        ===================================================== */
 
         .workspace {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 430px;
-            gap: 20px;
+            grid-template-columns: minmax(0, 1fr) 370px;
+            gap: 15px;
             align-items: start;
         }
 
+        .pdf-panel,
+        .control-panel,
+        .xml-panel {
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+        }
 
         /* =====================================================
-           PANELS
-           ===================================================== */
+           PDF PANEL
+        ===================================================== */
 
-        .panel {
-            background: white;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
+        .pdf-panel {
             overflow: hidden;
         }
 
-        .panel-header {
-            padding: 12px 15px;
-            background: #f9fafb;
-            border-bottom: 1px solid #d1d5db;
-            font-weight: bold;
-        }
-
-        .panel-body {
-            padding: 15px;
-        }
-
-
-        /* =====================================================
-           PDF CONTROLS
-           ===================================================== */
-
-        .pdf-controls {
+        .pdf-toolbar {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 10px;
-            padding: 12px;
-            background: #f9fafb;
-            border-bottom: 1px solid #d1d5db;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            background: #f7f7f7;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 20;
         }
 
-        #pageInfo {
+        .pdf-toolbar span {
             min-width: 100px;
             text-align: center;
-            font-weight: bold;
+            font-size: 14px;
         }
 
-
-        /* =====================================================
-           PDF AREA
-           ===================================================== */
-
-        #pdfContainer {
-            background: #525659;
-            padding: 30px;
+        #pdf-container {
+            background: #777;
             min-height: 700px;
+            max-height: 80vh;
             overflow: auto;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            padding: 25px;
         }
-
 
         /* =====================================================
            PDF PAGE
-           ===================================================== */
+        ===================================================== */
 
         .pdf-page {
             position: relative;
+            margin: 0 auto 25px auto;
             background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.35);
-            margin: 0 auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.25);
         }
 
         .pdf-page canvas {
+            position: absolute;
+            left: 0;
+            top: 0;
             display: block;
         }
 
-
-        /* =====================================================
-           PDF.JS NATIVE TEXT LAYER
-           ===================================================== */
-
         /*
-         * IMPORTANT:
+         * PDF.js TextLayer.
          *
-         * Acesta este TextLayer-ul nativ PDF.js.
-         *
-         * NU construim noi manual span-urile.
-         * PDF.js le generează și gestionează.
+         * Foarte important:
+         * Nu desenăm noi textul.
+         * Lăsăm PDF.js să creeze TextLayer-ul nativ.
          */
 
         .textLayer {
             position: absolute;
-            inset: 0;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
 
             overflow: hidden;
 
             line-height: 1;
+            text-size-adjust: none;
+            forced-color-adjust: none;
 
-            /*
-             * Permite selecția normală a textului.
-             */
-            user-select: text;
-            -webkit-user-select: text;
+            transform-origin: 0 0;
 
-            /*
-             * Textul trebuie să poată primi evenimentele
-             * mouse ale browserului.
-             */
-            pointer-events: auto;
+            z-index: 5;
         }
 
-        /*
-         * Stilurile de mai jos sunt necesare pentru ca
-         * TextLayer-ul PDF.js să se comporte corect.
-         */
-
-        .textLayer :is(span, br) {
+        .textLayer span,
+        .textLayer br {
             position: absolute;
-
             white-space: pre;
-
             cursor: text;
-
             transform-origin: 0% 0%;
         }
 
-        .textLayer span {
-            color: transparent;
-        }
-
         /*
-         * Când utilizatorul selectează textul, browserul
-         * trebuie să poată afișa selecția.
+         * Nu modificăm selectarea nativă.
+         * Browserul + PDF.js gestionează selecția.
          */
 
-        ::selection {
-            background: rgba(37, 99, 235, 0.35);
+        .textLayer ::selection {
+            background: rgba(0, 120, 255, 0.35);
         }
-
 
         /* =====================================================
-           RIGHT PANEL
-           ===================================================== */
+           CONTROL PANEL
+        ===================================================== */
 
-        .right-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .control-panel {
+            padding: 14px;
+            position: sticky;
+            top: 10px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
+        .control-panel h2 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .section {
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
 
         /* =====================================================
            SELECTED TEXT
-           ===================================================== */
-
-        .selection-box {
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            background: #f9fafb;
-            padding: 10px;
-        }
-
-        .selection-box-title {
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 7px;
-        }
+        ===================================================== */
 
         #selectedText {
             width: 100%;
             min-height: 90px;
             resize: vertical;
-
-            border: 1px solid #d1d5db;
-            border-radius: 5px;
-
+            border: 1px solid #bbb;
+            border-radius: 4px;
             padding: 8px;
-
             font-family: Arial, Helvetica, sans-serif;
             font-size: 14px;
-
-            background: white;
         }
 
+        .selection-info {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #666;
+        }
 
         /* =====================================================
            TAG BUTTONS
-           ===================================================== */
+        ===================================================== */
 
         .tag-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 7px;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
         }
 
         .tag-button {
-            background: #e5e7eb;
-            color: #111827;
-            border: 1px solid #d1d5db;
-
-            text-align: left;
-
             font-size: 13px;
-            padding: 8px;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .tag-button:hover {
-            background: #dbeafe;
-            border-color: #93c5fd;
+            background: #eaf2ff;
+            border-color: #7aa7ff;
         }
-
 
         /* =====================================================
            TAGGED ITEMS
-           ===================================================== */
+        ===================================================== */
 
         #taggedItems {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 7px;
         }
 
         .tagged-item {
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            padding: 10px;
-            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            background: #fafafa;
         }
 
-        .tagged-item-header {
+        .tagged-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 6px;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 5px;
         }
 
         .tag-name {
             font-weight: bold;
-            color: #2563eb;
-        }
-
-        .page-number {
-            color: #6b7280;
-            font-size: 12px;
+            color: #1d4ed8;
+            font-size: 13px;
         }
 
         .tagged-text {
             font-size: 13px;
-            line-height: 1.4;
-
             white-space: pre-wrap;
-
+            word-break: break-word;
             max-height: 100px;
-            overflow: auto;
-
-            background: #f9fafb;
-            border-radius: 4px;
-            padding: 7px;
+            overflow-y: auto;
         }
 
-        .item-actions {
+        .tagged-actions {
             display: flex;
-            gap: 5px;
-            margin-top: 8px;
+            gap: 4px;
+            margin-top: 7px;
         }
 
-        .item-actions button {
-            padding: 5px 8px;
+        .tagged-actions button {
+            padding: 4px 7px;
             font-size: 12px;
         }
 
-
         /* =====================================================
            XML
-           ===================================================== */
+        ===================================================== */
 
-        .xml-section {
-            margin-top: 20px;
+        .xml-panel {
+            margin-top: 15px;
+            padding: 14px;
+        }
+
+        .xml-panel h2 {
+            margin-top: 0;
+            font-size: 18px;
         }
 
         #xmlPreview {
             width: 100%;
-            min-height: 450px;
-
+            min-height: 350px;
             resize: vertical;
-
-            padding: 12px;
-
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-
-            background: #111827;
-            color: #e5e7eb;
-
             font-family: Consolas, Monaco, monospace;
             font-size: 13px;
-
-            line-height: 1.5;
+            line-height: 1.45;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            padding: 10px;
+            background: #fafafa;
         }
 
         .xml-actions {
@@ -464,57 +382,50 @@
             flex-wrap: wrap;
         }
 
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty {
+            color: #777;
+            font-size: 13px;
+            padding: 8px 0;
+        }
 
         /* =====================================================
            RESPONSIVE
-           ===================================================== */
+        ===================================================== */
 
-        @media (max-width: 1100px) {
+        @media (max-width: 1000px) {
 
             .workspace {
                 grid-template-columns: 1fr;
             }
 
-            .right-panel {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 700px) {
-
-            #pdfContainer {
-                padding: 10px;
+            .control-panel {
+                position: static;
+                max-height: none;
             }
 
-            .tag-grid {
-                grid-template-columns: 1fr;
+            #pdf-container {
+                max-height: 70vh;
             }
         }
 
     </style>
 </head>
 
-
 <body>
 
-
 <header>
-
     <h1>XML Tagger</h1>
-
-    <p>
-        Selectează textul din PDF și atribuie tag-ul XML corespunzător.
-    </p>
-
 </header>
 
+<div class="main">
 
-<div class="container">
-
-
-    <!-- ======================================================
+    <!-- =====================================================
          UPLOAD
-         ====================================================== -->
+    ===================================================== -->
 
     <div class="upload-box">
 
@@ -530,56 +441,50 @@
 
             <button
                 type="submit"
-                class="btn-primary"
+                class="primary"
             >
                 Încarcă PDF
             </button>
 
         </form>
 
-        <div id="status"></div>
+        <div id="status">
+            Niciun PDF încărcat.
+        </div>
 
     </div>
 
 
-    <!-- ======================================================
+    <!-- =====================================================
          WORKSPACE
-         ====================================================== -->
+    ===================================================== -->
 
     <div class="workspace">
 
-
-        <!-- ==================================================
+        <!-- =================================================
              PDF
-             ================================================== -->
+        ================================================= -->
 
-        <div class="panel">
+        <div class="pdf-panel">
 
-            <div class="panel-header">
-                PDF
-            </div>
-
-
-            <div class="pdf-controls">
+            <div class="pdf-toolbar">
 
                 <button
-                    id="prevPage"
-                    class="btn-secondary"
                     type="button"
+                    id="prevPage"
+                    disabled
                 >
                     ◀ Pagina anterioară
                 </button>
 
-
-                <div id="pageInfo">
-                    Pagina -
-                </div>
-
+                <span id="pageInfo">
+                    Pagina 0 / 0
+                </span>
 
                 <button
-                    id="nextPage"
-                    class="btn-secondary"
                     type="button"
+                    id="nextPage"
+                    disabled
                 >
                     Pagina următoare ▶
                 </button>
@@ -587,287 +492,241 @@
             </div>
 
 
-            <div id="pdfContainer">
+            <div id="pdf-container">
 
-                <div
-                    style="
-                        color:white;
-                        padding:40px;
-                        text-align:center;
-                    "
-                    id="pdfMessage"
-                >
-                    Încarcă un PDF pentru a începe.
-                </div>
+                <!-- PDF.js va introduce pagina aici -->
 
             </div>
 
         </div>
 
 
-        <!-- ==================================================
-             RIGHT PANEL
-             ================================================== -->
+        <!-- =================================================
+             CONTROLS
+        ================================================= -->
 
-        <div class="right-panel">
+        <div class="control-panel">
+
+            <h2>Tagging</h2>
 
 
-            <!-- ==============================================
+            <!-- =============================================
                  SELECTION
-                 ============================================== -->
+            ============================================== -->
 
-            <div class="panel">
+            <div class="section">
 
-                <div class="panel-header">
+                <div class="section-title">
                     Text selectat
                 </div>
 
-                <div class="panel-body">
+                <textarea
+                    id="selectedText"
+                    readonly
+                    placeholder="Selectează textul direct din PDF..."
+                ></textarea>
 
-                    <div class="selection-box">
+                <div
+                    class="selection-info"
+                    id="selectionInfo"
+                >
+                    Nicio selecție.
+                </div>
 
-                        <div class="selection-box-title">
-                            Selecția curentă
-                        </div>
+                <div style="margin-top: 7px;">
 
-                        <textarea
-                            id="selectedText"
-                            readonly
-                            placeholder="Selectează textul din PDF..."
-                        ></textarea>
-
-
-                        <div style="margin-top:8px;">
-
-                            <button
-                                id="clearSelection"
-                                class="btn-secondary"
-                                type="button"
-                            >
-                                Șterge selecția
-                            </button>
-
-                        </div>
-
-                    </div>
+                    <button
+                        type="button"
+                        id="clearSelection"
+                    >
+                        Șterge selecția
+                    </button>
 
                 </div>
 
             </div>
 
 
-            <!-- ==============================================
+            <!-- =============================================
                  TAGS
-                 ============================================== -->
+            ============================================== -->
 
-            <div class="panel">
+            <div class="section">
 
-                <div class="panel-header">
-                    Tag-uri XML
+                <div class="section-title">
+                    Selectează tag
                 </div>
 
-                <div class="panel-body">
+                <div class="tag-grid">
 
-                    <div class="tag-grid">
+                    <button type="button" class="tag-button" data-tag="TITLU">
+                        TITLU
+                    </button>
 
+                    <button type="button" class="tag-button" data-tag="English_Title">
+                        English_Title
+                    </button>
 
-                        <button class="tag-button" data-tag="TITLU">
-                            TITLU
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Autor">
+                        Autor
+                    </button>
 
-                        <button class="tag-button" data-tag="English_Title">
-                            English_Title
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Functii">
+                        Functii
+                    </button>
 
-                        <button class="tag-button" data-tag="Autor">
-                            Autor
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Corespondent">
+                        Corespondent
+                    </button>
 
-                        <button class="tag-button" data-tag="Functii">
-                            Functii
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Abstract">
+                        Abstract
+                    </button>
 
-                        <button class="tag-button" data-tag="Corespondent">
-                            Corespondent
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Keywords_ENG">
+                        Keywords_ENG
+                    </button>
 
-                        <button class="tag-button" data-tag="Abstract">
-                            Abstract
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Rezumat">
+                        Rezumat
+                    </button>
 
-                        <button class="tag-button" data-tag="Keywords_ENG">
-                            Keywords_ENG
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Keywords_ROM">
+                        Keywords_ROM
+                    </button>
 
-                        <button class="tag-button" data-tag="Rezumat">
-                            Rezumat
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Intertitlu">
+                        Intertitlu
+                    </button>
 
-                        <button class="tag-button" data-tag="Keywords_ROM">
-                            Keywords_ROM
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Sub_Intertitlu">
+                        Sub_Intertitlu
+                    </button>
 
-                        <button class="tag-button" data-tag="Intertitlu">
-                            Intertitlu
-                        </button>
+                    <button type="button" class="tag-button" data-tag="TEXT_indent">
+                        TEXT_indent
+                    </button>
 
-                        <button class="tag-button" data-tag="Sub_Intertitlu">
-                            Sub_Intertitlu
-                        </button>
+                    <button type="button" class="tag-button" data-tag="L">
+                        L
+                    </button>
 
-                        <button class="tag-button" data-tag="TEXT_indent">
-                            TEXT_indent
-                        </button>
+                    <button type="button" class="tag-button" data-tag="LI">
+                        LI
+                    </button>
 
-                        <button class="tag-button" data-tag="L">
-                            L
-                        </button>
+                    <button type="button" class="tag-button" data-tag="LBody">
+                        LBody
+                    </button>
 
-                        <button class="tag-button" data-tag="LI">
-                            LI
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Titlu_Tabel">
+                        Titlu_Tabel
+                    </button>
 
-                        <button class="tag-button" data-tag="LBody">
-                            LBody
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Sub_Tabel">
+                        Sub_Tabel
+                    </button>
 
-                        <button class="tag-button" data-tag="Titlu_Tabel">
-                            Titlu_Tabel
-                        </button>
+                    <button type="button" class="tag-button" data-tag="Tabel_text">
+                        Tabel_text
+                    </button>
 
-                        <button class="tag-button" data-tag="Sub_Tabel">
-                            Sub_Tabel
-                        </button>
-
-                        <button class="tag-button" data-tag="Tabel_text">
-                            Tabel_text
-                        </button>
-
-                        <button class="tag-button" data-tag="Bibliografie">
-                            Bibliografie
-                        </button>
-
-
-                    </div>
+                    <button type="button" class="tag-button" data-tag="Bibliografie">
+                        Bibliografie
+                    </button>
 
                 </div>
 
             </div>
 
 
-            <!-- ==============================================
+            <!-- =============================================
                  TAGGED ITEMS
-                 ============================================== -->
+            ============================================== -->
 
-            <div class="panel">
+            <div class="section">
 
-                <div class="panel-header">
+                <div class="section-title">
                     Elemente taguite
                 </div>
 
-                <div class="panel-body">
+                <div id="taggedItems">
 
-                    <div id="taggedItems">
-
-                        <div
-                            style="
-                                color:#6b7280;
-                                font-size:13px;
-                            "
-                        >
-                            Nu există încă elemente taguite.
-                        </div>
-
+                    <div class="empty">
+                        Nu există încă elemente taguite.
                     </div>
 
                 </div>
 
             </div>
 
-
         </div>
 
     </div>
 
 
-    <!-- ======================================================
-         XML
-         ====================================================== -->
+    <!-- =====================================================
+         XML PREVIEW
+    ===================================================== -->
 
-    <div class="panel xml-section">
+    <div class="xml-panel">
 
-        <div class="panel-header">
-            XML rezultat
-        </div>
+        <h2>Preview XML</h2>
 
-        <div class="panel-body">
+        <textarea
+            id="xmlPreview"
+            readonly
+        ></textarea>
 
-            <textarea
-                id="xmlPreview"
-                readonly
-            ></textarea>
+        <div class="xml-actions">
 
+            <button
+                type="button"
+                id="copyXml"
+            >
+                Copiază XML
+            </button>
 
-            <div class="xml-actions">
+            <button
+                type="button"
+                id="downloadXml"
+                class="primary"
+            >
+                Exportă XML
+            </button>
 
-                <button
-                    id="copyXml"
-                    class="btn-primary"
-                    type="button"
-                >
-                    Copiază XML
-                </button>
-
-
-                <button
-                    id="downloadXml"
-                    class="btn-success"
-                    type="button"
-                >
-                    Exportă XML
-                </button>
-
-
-                <button
-                    id="clearAll"
-                    class="btn-danger"
-                    type="button"
-                >
-                    Șterge toate tag-urile
-                </button>
-
-            </div>
+            <button
+                type="button"
+                id="clearAll"
+                class="danger"
+            >
+                Șterge toate tagurile
+            </button>
 
         </div>
 
     </div>
-
 
 </div>
 
 
+<!-- =========================================================
+     PDF.JS
+========================================================= -->
+
 <script type="module">
 
-    /* ========================================================
-       GLOBAL STATE
-       ======================================================== */
-
-    let pdfDocument = null;
-
-    let currentPage = 1;
-
-    let totalPages = 0;
-
-    let currentPdfUrl = null;
-
-    let taggedItems = [];
-
-    let itemCounter = 0;
+    import * as pdfjsLib from
+        "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.min.mjs";
 
 
-    /* ========================================================
-       ELEMENTS
-       ======================================================== */
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.worker.min.mjs";
+
+
+    // ========================================================
+    // ELEMENTE DOM
+    // ========================================================
 
     const uploadForm =
         document.getElementById("uploadForm");
@@ -879,16 +738,7 @@
         document.getElementById("status");
 
     const pdfContainer =
-        document.getElementById("pdfContainer");
-
-    const pdfMessage =
-        document.getElementById("pdfMessage");
-
-    const selectedText =
-        document.getElementById("selectedText");
-
-    const clearSelectionButton =
-        document.getElementById("clearSelection");
+        document.getElementById("pdf-container");
 
     const prevPage =
         document.getElementById("prevPage");
@@ -899,7 +749,16 @@
     const pageInfo =
         document.getElementById("pageInfo");
 
-    const taggedItemsContainer =
+    const selectedText =
+        document.getElementById("selectedText");
+
+    const selectionInfo =
+        document.getElementById("selectionInfo");
+
+    const clearSelection =
+        document.getElementById("clearSelection");
+
+    const taggedItems =
         document.getElementById("taggedItems");
 
     const xmlPreview =
@@ -915,201 +774,262 @@
         document.getElementById("clearAll");
 
 
-    /* ========================================================
-       WAIT FOR PDF.JS
-       ======================================================== */
+    // ========================================================
+    // STARE
+    // ========================================================
 
-    async function waitForPdfJs() {
+    let pdfDocument = null;
 
-        while (!window.pdfjsLib) {
+    let currentPage = 1;
 
-            await new Promise(resolve => {
-                setTimeout(resolve, 50);
-            });
+    let totalPages = 0;
 
-        }
+    let currentFilename = "";
 
-        return window.pdfjsLib;
+    /*
+     * TextItems pentru pagina curentă.
+     *
+     * Fiecare obiect conține:
+     *
+     * {
+     *     item,
+     *     span,
+     *     index
+     * }
+     *
+     * item = TextItem PDF.js
+     * span = elementul creat de PDF.js TextLayer
+     */
+
+    let currentTextItems = [];
+
+
+    /*
+     * Toate elementele taguite.
+     *
+     * Nu salvăm doar textul.
+     * Salvăm și informații despre pagina și poziția
+     * selecției.
+     */
+
+    let taggedData = [];
+
+
+    // ========================================================
+    // ESCAPE XML
+    // ========================================================
+
+    function escapeXml(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&apos;");
     }
 
 
-    /* ========================================================
-       UPLOAD PDF
-       ======================================================== */
+    // ========================================================
+    // NORMALIZARE TEXT
+    // ========================================================
 
-    uploadForm.addEventListener("submit", async function(event) {
+    function normalizeText(text) {
 
-        event.preventDefault();
-
-
-        const file =
-            pdfFile.files[0];
-
-
-        if (!file) {
-
-            status.textContent =
-                "Selectează un fișier PDF.";
-
-            return;
+        if (!text) {
+            return "";
         }
 
+        return text
+            .replace(/\u00A0/g, " ")
+            .replace(/\r\n/g, "\n")
+            .replace(/\r/g, "\n")
+            .replace(/[ \t]+\n/g, "\n")
+            .replace(/\n[ \t]+/g, "\n")
+            .replace(/[ \t]{2,}/g, " ")
+            .trim();
 
-        if (
-            file.type !== "application/pdf" &&
-            !file.name.toLowerCase().endsWith(".pdf")
-        ) {
-
-            status.textContent =
-                "Este permis doar formatul PDF.";
-
-            return;
-        }
-
-
-        const formData =
-            new FormData();
-
-        formData.append("file", file);
+    }
 
 
-        status.textContent =
-            "Se încarcă PDF-ul...";
+    // ========================================================
+    // UPLOAD
+    // ========================================================
 
+    uploadForm.addEventListener(
+        "submit",
+        async function(event) {
 
-        try {
+            event.preventDefault();
 
-            const response =
-                await fetch("/upload", {
-                    method: "POST",
-                    body: formData
-                });
+            const file = pdfFile.files[0];
 
+            if (!file) {
 
-            const data =
-                await response.json();
+                status.textContent =
+                    "Selectează un fișier PDF.";
 
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data.detail ||
-                    "Eroare la încărcarea PDF-ului."
-                );
+                return;
             }
 
 
+            if (
+                file.type !== "application/pdf" &&
+                !file.name.toLowerCase().endsWith(".pdf")
+            ) {
+
+                status.textContent =
+                    "Este permis doar formatul PDF.";
+
+                return;
+            }
+
+
+            const formData =
+                new FormData();
+
+            formData.append(
+                "file",
+                file
+            );
+
+
             status.textContent =
-                "PDF încărcat cu succes.";
+                "Se încarcă PDF-ul...";
 
 
-            await loadPdf(data.url);
+            try {
+
+                const response =
+                    await fetch(
+                        "/upload",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
 
 
-        } catch (error) {
+                if (!response.ok) {
 
-            console.error(error);
+                    let message =
+                        "Eroare la upload.";
 
-            status.textContent =
-                "Eroare: " + error.message;
+                    try {
+
+                        const errorData =
+                            await response.json();
+
+                        if (errorData.detail) {
+                            message =
+                                errorData.detail;
+                        }
+
+                    } catch (e) {
+                        // ignorăm eroarea JSON
+                    }
+
+                    throw new Error(message);
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                currentFilename =
+                    data.filename;
+
+
+                status.textContent =
+                    "PDF încărcat. Se pregătește afișarea...";
+
+
+                await loadPdf(
+                    data.url
+                );
+
+
+                status.textContent =
+                    "PDF încărcat cu succes.";
+
+            } catch (error) {
+
+                console.error(error);
+
+                status.textContent =
+                    "Eroare: " + error.message;
+
+            }
 
         }
+    );
 
-    });
 
-
-    /* ========================================================
-       LOAD PDF
-       ======================================================== */
+    // ========================================================
+    // LOAD PDF
+    // ========================================================
 
     async function loadPdf(url) {
 
-        const pdfjsLib =
-            await waitForPdfJs();
+        pdfContainer.innerHTML = "";
+
+        currentTextItems = [];
+
+        currentPage = 1;
 
 
-        currentPdfUrl =
-            url;
+        const loadingTask =
+            pdfjsLib.getDocument({
+                url: url,
+
+                /*
+                 * Nu permitem scripting din PDF.
+                 */
+                enableScripting: false
+            });
 
 
-        try {
-
-            pdfDocument =
-                await pdfjsLib.getDocument({
-                    url: url,
-
-                    /*
-                     * Foarte important:
-                     * nu permitem scripting din PDF.
-                     */
-                    enableScripting: false
-
-                }).promise;
+        pdfDocument =
+            await loadingTask.promise;
 
 
-            totalPages =
-                pdfDocument.numPages;
+        totalPages =
+            pdfDocument.numPages;
 
 
-            currentPage =
-                1;
+        updatePageControls();
 
-
-            pdfMessage?.remove();
-
-
-            await renderCurrentPage();
-
-
-        } catch (error) {
-
-            console.error(error);
-
-            status.textContent =
-                "PDF-ul nu a putut fi deschis.";
-
-        }
+        await renderPage(
+            currentPage
+        );
 
     }
 
 
-    /* ========================================================
-       RENDER CURRENT PAGE
-       ======================================================== */
+    // ========================================================
+    // RENDER PAGE
+    // ========================================================
 
-    async function renderCurrentPage() {
+    async function renderPage(pageNumber) {
 
         if (!pdfDocument) {
             return;
         }
 
 
-        /*
-         * Ștergem pagina precedentă.
-         */
-
-        pdfContainer.innerHTML = "";
-
-
-        pageInfo.textContent =
-            `Pagina ${currentPage} / ${totalPages}`;
-
-
         const page =
-            await pdfDocument.getPage(currentPage);
+            await pdfDocument.getPage(
+                pageNumber
+            );
 
 
-        /*
-         * Zoom.
-         */
-
-        const scale =
-            1.5;
+        const desiredScale = 1.5;
 
 
         const viewport =
             page.getViewport({
-                scale: scale
+                scale: desiredScale
             });
 
 
@@ -1137,12 +1057,15 @@
         const canvas =
             document.createElement("canvas");
 
+        const context =
+            canvas.getContext("2d");
+
+
         canvas.width =
             Math.floor(viewport.width);
 
         canvas.height =
             Math.floor(viewport.height);
-
 
         canvas.style.width =
             `${viewport.width}px`;
@@ -1151,11 +1074,9 @@
             `${viewport.height}px`;
 
 
-        const canvasContext =
-            canvas.getContext("2d");
-
-
-        pageDiv.appendChild(canvas);
+        pageDiv.appendChild(
+            canvas
+        );
 
 
         /*
@@ -1186,47 +1107,34 @@
 
 
         /*
-         * Render canvas.
+         * Randarea canvas.
          */
 
         await page.render({
-
-            canvasContext:
-                canvasContext,
-
-            viewport:
-                viewport
-
+            canvasContext: context,
+            viewport: viewport
         }).promise;
 
 
         /*
-         * ====================================================
-         * PDF.JS NATIVE TEXT LAYER
-         * ====================================================
-         *
-         * NU construim manual span-urile.
-         *
-         * PDF.js primește textContent și construiește
-         * propriul TextLayer.
+         * Text content PDF.js.
          */
 
         const textContent =
-            await page.getTextContent();
+            await page.getTextContent({
+                includeMarkedContent: false
+            });
 
+
+        /*
+         * Construim TextLayer-ul nativ PDF.js.
+         */
 
         const textLayer =
             new pdfjsLib.TextLayer({
-
-                textContentSource:
-                    textContent,
-
-                container:
-                    textLayerDiv,
-
-                viewport:
-                    viewport
-
+                textContentSource: textContent,
+                container: textLayerDiv,
+                viewport: viewport
             });
 
 
@@ -1234,227 +1142,943 @@
 
 
         /*
-         * PDF.js poate actualiza poziționarea după render.
+         * După render avem DOM-ul creat de PDF.js.
+         *
+         * Îl asociem cu TextItem-urile.
          */
 
-        textLayerDiv.style.setProperty(
-            "--scale-factor",
-            viewport.scale
+        currentTextItems =
+            buildTextItemMap(
+                textContent,
+                textLayerDiv
+            );
+
+
+        /*
+         * Salvăm metadatele pe fiecare span.
+         */
+
+        currentTextItems.forEach(
+            function(entry) {
+
+                if (!entry.span) {
+                    return;
+                }
+
+                entry.span.dataset.textItemIndex =
+                    String(entry.index);
+
+            }
         );
 
 
+        updatePageControls();
+
+    }
+
+
+    // ========================================================
+    // BUILD TEXT ITEM MAP
+    // ========================================================
+
+    function buildTextItemMap(
+        textContent,
+        textLayerDiv
+    ) {
+
+        const items =
+            textContent.items || [];
+
+
+        const spans =
+            Array.from(
+                textLayerDiv.querySelectorAll("span")
+            );
+
+
+        const result = [];
+
+
         /*
-         * Scroll sus.
+         * În majoritatea PDF-urilor PDF.js creează
+         * câte un span pentru fiecare TextItem.
+         *
+         * Nu presupunem însă că DOM-ul trebuie folosit
+         * singur pentru reconstrucție.
          */
 
-        pdfContainer.scrollTop =
-            0;
+        let spanIndex = 0;
+
+
+        for (
+            let i = 0;
+            i < items.length;
+            i++
+        ) {
+
+            const item =
+                items[i];
+
+
+            let span = null;
+
+
+            /*
+             * Căutăm următorul span care corespunde
+             * textului item-ului.
+             */
+
+            while (
+                spanIndex < spans.length
+            ) {
+
+                const candidate =
+                    spans[spanIndex++];
+
+
+                /*
+                 * PDF.js poate crea elemente auxiliare
+                 * în anumite situații.
+                 *
+                 * Verificăm textul înainte de asociere.
+                 */
+
+                const candidateText =
+                    candidate.textContent || "";
+
+
+                if (
+                    candidateText === item.str ||
+                    item.str === ""
+                ) {
+
+                    span = candidate;
+
+                    break;
+                }
+
+
+                /*
+                 * Dacă textul nu corespunde,
+                 * încercăm totuși următorul element.
+                 */
+
+                if (
+                    candidateText.includes(item.str) ||
+                    item.str.includes(candidateText)
+                ) {
+
+                    span = candidate;
+
+                    break;
+                }
+
+            }
+
+
+            result.push({
+                item: item,
+                span: span,
+                index: i
+            });
+
+        }
 
 
         /*
-         * Curățăm orice selecție veche.
+         * Dacă asocierea de mai sus nu a fost suficientă,
+         * încercăm o asociere suplimentară pe baza ordinii
+         * textelor.
          */
+
+        if (
+            result.some(
+                entry =>
+                    entry.span === null
+            )
+        ) {
+
+            const availableSpans =
+                spans.filter(
+                    span =>
+                        !result.some(
+                            entry =>
+                                entry.span === span
+                        )
+                );
+
+
+            for (
+                const entry of result
+            ) {
+
+                if (entry.span) {
+                    continue;
+                }
+
+
+                const target =
+                    entry.item.str || "";
+
+
+                const found =
+                    availableSpans.findIndex(
+                        span =>
+                            (span.textContent || "") === target
+                    );
+
+
+                if (found >= 0) {
+
+                    entry.span =
+                        availableSpans[found];
+
+                    availableSpans.splice(
+                        found,
+                        1
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        return result;
+
+    }
+
+
+    // ========================================================
+    // PAGINATION
+    // ========================================================
+
+    prevPage.addEventListener(
+        "click",
+        async function() {
+
+            if (
+                !pdfDocument ||
+                currentPage <= 1
+            ) {
+                return;
+            }
+
+
+            currentPage--;
+
+            await showCurrentPage();
+
+        }
+    );
+
+
+    nextPage.addEventListener(
+        "click",
+        async function() {
+
+            if (
+                !pdfDocument ||
+                currentPage >= totalPages
+            ) {
+                return;
+            }
+
+
+            currentPage++;
+
+            await showCurrentPage();
+
+        }
+    );
+
+
+    async function showCurrentPage() {
+
+        pdfContainer.innerHTML = "";
+
+        currentTextItems = [];
+
+        await renderPage(
+            currentPage
+        );
 
         clearCurrentSelection();
 
     }
 
 
-    /* ========================================================
-       PAGE NAVIGATION
-       ======================================================== */
+    function updatePageControls() {
 
-    prevPage.addEventListener("click", async function() {
-
-        if (!pdfDocument) {
-            return;
-        }
+        pageInfo.textContent =
+            `Pagina ${currentPage} / ${totalPages}`;
 
 
-        if (currentPage <= 1) {
-            return;
-        }
+        prevPage.disabled =
+            !pdfDocument ||
+            currentPage <= 1;
 
 
-        currentPage--;
+        nextPage.disabled =
+            !pdfDocument ||
+            currentPage >= totalPages;
+
+    }
 
 
-        await renderCurrentPage();
+    // ========================================================
+    // IDENTIFICARE TEXT NODE
+    // ========================================================
 
-    });
-
-
-    nextPage.addEventListener("click", async function() {
-
-        if (!pdfDocument) {
-            return;
-        }
-
-
-        if (currentPage >= totalPages) {
-            return;
-        }
-
-
-        currentPage++;
-
-
-        await renderCurrentPage();
-
-    });
-
-
-    /* ========================================================
-       GET NATIVE BROWSER SELECTION
-       ======================================================== */
-
-    document.addEventListener("mouseup", function() {
-
-        /*
-         * Lăsăm browserul să termine selecția.
-         */
-
-        setTimeout(() => {
-
-            const selection =
-                window.getSelection();
-
-
-            if (!selection) {
-                return;
-            }
-
-
-            if (selection.rangeCount === 0) {
-                return;
-            }
-
-
-            const text =
-                selection.toString();
-
-
-            if (!text.trim()) {
-                return;
-            }
-
-
-            const range =
-                selection.getRangeAt(0);
-
-
-            /*
-             * Verificăm dacă selecția aparține
-             * TextLayer-ului PDF.js.
-             */
-
-            const startElement =
-                getElementFromNode(
-                    range.startContainer
-                );
-
-            const endElement =
-                getElementFromNode(
-                    range.endContainer
-                );
-
-
-            const startTextLayer =
-                startElement?.closest(
-                    ".textLayer"
-                );
-
-            const endTextLayer =
-                endElement?.closest(
-                    ".textLayer"
-                );
-
-
-            /*
-             * Nu acceptăm selecții din afara PDF-ului.
-             */
-
-            if (
-                !startTextLayer ||
-                !endTextLayer ||
-                startTextLayer !== endTextLayer
-            ) {
-
-                return;
-            }
-
-
-            /*
-             * Textul este obținut direct din selecția
-             * nativă a browserului.
-             */
-
-            selectedText.value =
-                normalizeSelectedText(text);
-
-        }, 0);
-
-    });
-
-
-    /* ========================================================
-       NODE → ELEMENT
-       ======================================================== */
-
-    function getElementFromNode(node) {
+    function getTextNodeInfo(node) {
 
         if (!node) {
             return null;
         }
 
 
-        if (node.nodeType === Node.ELEMENT_NODE) {
-            return node;
+        let element = null;
+
+
+        if (
+            node.nodeType === Node.TEXT_NODE
+        ) {
+
+            element =
+                node.parentElement;
+
+        } else if (
+            node.nodeType === Node.ELEMENT_NODE
+        ) {
+
+            element =
+                node;
+
         }
 
 
-        return node.parentElement;
+        if (!element) {
+            return null;
+        }
+
+
+        const span =
+            element.closest(
+                ".textLayer span"
+            );
+
+
+        if (!span) {
+            return null;
+        }
+
+
+        const index =
+            Number(
+                span.dataset.textItemIndex
+            );
+
+
+        if (
+            Number.isNaN(index) ||
+            !currentTextItems[index]
+        ) {
+
+            return null;
+
+        }
+
+
+        return {
+            node: node,
+            span: span,
+            index: index,
+            entry: currentTextItems[index]
+        };
 
     }
 
 
-    /* ========================================================
-       NORMALIZE SELECTION
-       ======================================================== */
+    // ========================================================
+    // OFFSET ÎN TEXT NODE
+    // ========================================================
 
-    function normalizeSelectedText(text) {
+    function getCharacterOffset(
+        node,
+        offset
+    ) {
 
-        return text
+        if (!node) {
+            return 0;
+        }
 
-            /*
-             * NBSP → space
-             */
-            .replace(/\u00a0/g, " ")
 
-            /*
-             * Spații multiple pe aceeași linie.
-             */
-            .replace(/[ \t]{2,}/g, " ")
+        /*
+         * Dacă Range-ul indică direct un TextNode,
+         * offset-ul este deja caracterul.
+         */
 
-            /*
-             * Eliminăm spațiile de la începutul
-             * și sfârșitul fiecărei linii.
-             */
-            .replace(/[ \t]+\n/g, "\n")
-            .replace(/\n[ \t]+/g, "\n")
+        if (
+            node.nodeType === Node.TEXT_NODE
+        ) {
 
-            .trim();
+            return Math.max(
+                0,
+                Math.min(
+                    offset,
+                    node.textContent.length
+                )
+            );
+
+        }
+
+
+        /*
+         * Dacă browserul indică elementul,
+         * calculăm offset-ul aproximativ prin textul
+         * copiilor.
+         */
+
+        if (
+            node.nodeType === Node.ELEMENT_NODE
+        ) {
+
+            const walker =
+                document.createTreeWalker(
+                    node,
+                    NodeFilter.SHOW_TEXT
+                );
+
+
+            let total = 0;
+
+            let current;
+
+
+            while (
+                current =
+                    walker.nextNode()
+            ) {
+
+                total +=
+                    current.textContent.length;
+
+
+                if (
+                    current === node
+                ) {
+                    break;
+                }
+
+            }
+
+
+            return Math.max(
+                0,
+                Math.min(
+                    offset,
+                    node.textContent.length
+                )
+            );
+
+        }
+
+
+        return 0;
 
     }
 
 
-    /* ========================================================
-       CLEAR CURRENT SELECTION
-       ======================================================== */
+    // ========================================================
+    // DETECTARE SPAȚIU
+    // ========================================================
+
+    function needsSpaceBetween(
+        previousItem,
+        currentItem
+    ) {
+
+        if (
+            !previousItem ||
+            !currentItem
+        ) {
+
+            return false;
+        }
+
+
+        const a =
+            previousItem.item;
+
+
+        const b =
+            currentItem.item;
+
+
+        /*
+         * Dacă PDF.js spune explicit că există
+         * sfârșit de linie, nu folosim spațiu simplu.
+         */
+
+        if (a.hasEOL) {
+            return false;
+        }
+
+
+        const previousText =
+            a.str || "";
+
+
+        const currentText =
+            b.str || "";
+
+
+        if (
+            !previousText ||
+            !currentText
+        ) {
+
+            return false;
+        }
+
+
+        /*
+         * Dacă textul are deja spațiu.
+         */
+
+        if (
+            /\s$/.test(previousText) ||
+            /^\s/.test(currentText)
+        ) {
+
+            return false;
+        }
+
+
+        /*
+         * Calculăm aproximativ distanța geometrică
+         * dintre item-uri.
+         *
+         * transform:
+         * [a,b,c,d,e,f]
+         *
+         * e/f = poziția.
+         */
+
+        const prevTransform =
+            a.transform || [];
+
+
+        const currentTransform =
+            b.transform || [];
+
+
+        if (
+            prevTransform.length < 6 ||
+            currentTransform.length < 6
+        ) {
+
+            return true;
+        }
+
+
+        const previousX =
+            prevTransform[4] || 0;
+
+
+        const currentX =
+            currentTransform[4] || 0;
+
+
+        const previousWidth =
+            a.width || 0;
+
+
+        const gap =
+            currentX -
+            (previousX + previousWidth);
+
+
+        /*
+         * Prag relativ.
+         *
+         * Nu încercăm să reconstruim layout-ul complet.
+         * Stabilim doar dacă între două fragmente există
+         * probabil un spațiu.
+         */
+
+        const averageCharacterWidth =
+            Math.max(
+                1,
+                Math.abs(
+                    previousWidth /
+                    Math.max(
+                        1,
+                        previousText.length
+                    )
+                )
+            );
+
+
+        return (
+            gap >
+            averageCharacterWidth * 0.15
+        );
+
+    }
+
+
+    // ========================================================
+    // RECONSTRUIRE SELECȚIE
+    // ========================================================
+
+    function reconstructSelection(
+        range
+    ) {
+
+        const startInfo =
+            getTextNodeInfo(
+                range.startContainer
+            );
+
+
+        const endInfo =
+            getTextNodeInfo(
+                range.endContainer
+            );
+
+
+        /*
+         * Dacă selecția nu este în TextLayer,
+         * nu o acceptăm.
+         */
+
+        if (
+            !startInfo ||
+            !endInfo
+        ) {
+
+            return null;
+
+        }
+
+
+        let startIndex =
+            startInfo.index;
+
+
+        let endIndex =
+            endInfo.index;
+
+
+        let startOffset =
+            getCharacterOffset(
+                range.startContainer,
+                range.startOffset
+            );
+
+
+        let endOffset =
+            getCharacterOffset(
+                range.endContainer,
+                range.endOffset
+            );
+
+
+        /*
+         * Dacă utilizatorul selectează invers,
+         * Range-ul browserului este de regulă deja
+         * normalizat, dar verificăm totuși.
+         */
+
+        if (
+            startIndex > endIndex
+        ) {
+
+            [
+                startIndex,
+                endIndex
+            ] = [
+                endIndex,
+                startIndex
+            ];
+
+            [
+                startOffset,
+                endOffset
+            ] = [
+                endOffset,
+                startOffset
+            ];
+
+        }
+
+
+        const parts = [];
+
+
+        for (
+            let i = startIndex;
+            i <= endIndex;
+            i++
+        ) {
+
+            const entry =
+                currentTextItems[i];
+
+
+            if (!entry) {
+                continue;
+            }
+
+
+            const text =
+                entry.item.str || "";
+
+
+            let part =
+                text;
+
+
+            /*
+             * Primul item:
+             * luăm de la caracterul selectat.
+             */
+
+            if (
+                i === startIndex
+            ) {
+
+                part =
+                    part.substring(
+                        startOffset
+                    );
+
+            }
+
+
+            /*
+             * Ultimul item:
+             * luăm până la caracterul selectat.
+             */
+
+            if (
+                i === endIndex
+            ) {
+
+                /*
+                 * Dacă este același item,
+                 * avem nevoie de intervalul exact.
+                 */
+
+                if (
+                    startIndex === endIndex
+                ) {
+
+                    part =
+                        text.substring(
+                            startOffset,
+                            endOffset
+                        );
+
+                } else {
+
+                    part =
+                        text.substring(
+                            0,
+                            endOffset
+                        );
+
+                }
+
+            }
+
+
+            if (!part) {
+                continue;
+            }
+
+
+            /*
+             * Dacă avem un item anterior,
+             * reconstruim spațiul sau newline-ul.
+             */
+
+            if (
+                parts.length > 0
+            ) {
+
+                const previousEntry =
+                    currentTextItems[i - 1];
+
+
+                /*
+                 * Dacă item-ul anterior are EOL,
+                 * punem newline.
+                 */
+
+                if (
+                    previousEntry &&
+                    previousEntry.item.hasEOL
+                ) {
+
+                    parts.push("\n");
+
+                } else if (
+                    needsSpaceBetween(
+                        previousEntry,
+                        entry
+                    )
+                ) {
+
+                    parts.push(" ");
+
+                }
+
+            }
+
+
+            parts.push(part);
+
+        }
+
+
+        let text =
+            parts.join("");
+
+
+        /*
+         * În anumite PDF-uri primul/ultimul fragment
+         * poate conține spații artificiale.
+         */
+
+        text =
+            normalizeText(text);
+
+
+        if (!text) {
+            return null;
+        }
+
+
+        return {
+            text: text,
+            page: currentPage,
+            startIndex: startIndex,
+            endIndex: endIndex,
+            startOffset: startOffset,
+            endOffset: endOffset
+        };
+
+    }
+
+
+    // ========================================================
+    // SELECȚIE MOUSEUP
+    // ========================================================
+
+    document.addEventListener(
+        "mouseup",
+        function(event) {
+
+            /*
+             * Așteptăm ca browserul să finalizeze Range-ul.
+             */
+
+            setTimeout(
+                function() {
+
+                    if (
+                        !pdfContainer.contains(
+                            event.target
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const selection =
+                        window.getSelection();
+
+
+                    if (
+                        !selection ||
+                        selection.rangeCount === 0
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        selection.isCollapsed
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const range =
+                        selection.getRangeAt(0);
+
+
+                    const reconstructed =
+                        reconstructSelection(
+                            range
+                        );
+
+
+                    if (!reconstructed) {
+
+                        selectedText.value =
+                            "";
+
+                        selectionInfo.textContent =
+                            "Selectează text din stratul text al PDF-ului.";
+
+                        return;
+
+                    }
+
+
+                    selectedText.value =
+                        reconstructed.text;
+
+
+                    selectionInfo.textContent =
+                        `Pagina ${reconstructed.page} · ` +
+                        `TextItem ${reconstructed.startIndex + 1}–${reconstructed.endIndex + 1}`;
+
+                },
+                0
+            );
+
+        }
+    );
+
+
+    // ========================================================
+    // CLEAR SELECTION
+    // ========================================================
+
+    clearSelection.addEventListener(
+        "click",
+        clearCurrentSelection
+    );
+
 
     function clearCurrentSelection() {
 
-        selectedText.value = "";
+        selectedText.value =
+            "";
+
+        selectionInfo.textContent =
+            "Nicio selecție.";
 
 
         const selection =
@@ -1468,26 +2092,21 @@
     }
 
 
-    clearSelectionButton.addEventListener(
-        "click",
-        clearCurrentSelection
-    );
+    // ========================================================
+    // TAG BUTTONS
+    // ========================================================
 
-
-    /* ========================================================
-       TAG BUTTONS
-       ======================================================== */
-
-    document
-        .querySelectorAll(".tag-button")
-        .forEach(button => {
+    document.querySelectorAll(
+        ".tag-button"
+    ).forEach(
+        function(button) {
 
             button.addEventListener(
                 "click",
                 function() {
 
                     const tag =
-                        this.dataset.tag;
+                        button.dataset.tag;
 
 
                     const text =
@@ -1501,385 +2120,313 @@
                         );
 
                         return;
+
                     }
 
 
                     addTaggedItem(
                         tag,
-                        text,
-                        currentPage
+                        text
                     );
 
                 }
             );
 
-        });
+        }
+    );
 
 
-    /* ========================================================
-       ADD TAGGED ITEM
-       ======================================================== */
+    // ========================================================
+    // ADD TAGGED ITEM
+    // ========================================================
 
     function addTaggedItem(
         tag,
-        text,
-        page
+        text
     ) {
 
-        itemCounter++;
-
-
-        taggedItems.push({
-
-            id:
-                itemCounter,
-
-            tag:
-                tag,
-
-            text:
-                text,
-
-            page:
-                page
-
+        taggedData.push({
+            tag: tag,
+            text: text,
+            page: currentPage
         });
 
 
         renderTaggedItems();
 
-        updateXml();
-
-
-        /*
-         * După atribuirea tag-ului,
-         * eliminăm selecția.
-         */
+        generateXml();
 
         clearCurrentSelection();
 
     }
 
 
-    /* ========================================================
-       RENDER TAGGED ITEMS
-       ======================================================== */
+    // ========================================================
+    // RENDER TAGGED ITEMS
+    // ========================================================
 
     function renderTaggedItems() {
 
-        taggedItemsContainer.innerHTML = "";
+        taggedItems.innerHTML = "";
 
 
-        if (taggedItems.length === 0) {
+        if (
+            taggedData.length === 0
+        ) {
 
-            taggedItemsContainer.innerHTML = `
-
-                <div
-                    style="
-                        color:#6b7280;
-                        font-size:13px;
-                    "
-                >
+            taggedItems.innerHTML =
+                `<div class="empty">
                     Nu există încă elemente taguite.
-                </div>
-
-            `;
+                </div>`;
 
             return;
+
         }
 
 
-        taggedItems.forEach((item, index) => {
+        taggedData.forEach(
+            function(item, index) {
 
-            const div =
-                document.createElement("div");
+                const box =
+                    document.createElement("div");
 
-            div.className =
-                "tagged-item";
-
-
-            div.innerHTML = `
-
-                <div class="tagged-item-header">
-
-                    <div>
-
-                        <span class="tag-name">
-                            &lt;${escapeHtml(item.tag)}&gt;
-                        </span>
-
-                        <span class="page-number">
-                            pagina ${item.page}
-                        </span>
-
-                    </div>
-
-                </div>
+                box.className =
+                    "tagged-item";
 
 
-                <div class="tagged-text">
-                    ${escapeHtml(item.text)}
-                </div>
+                const header =
+                    document.createElement("div");
+
+                header.className =
+                    "tagged-header";
 
 
-                <div class="item-actions">
+                const tagName =
+                    document.createElement("span");
 
-                    <button
-                        class="btn-secondary"
-                        type="button"
-                        data-action="up"
-                        data-index="${index}"
-                    >
-                        ▲
-                    </button>
+                tagName.className =
+                    "tag-name";
+
+                tagName.textContent =
+                    `<${item.tag}> · Pagina ${item.page}`;
 
 
-                    <button
-                        class="btn-secondary"
-                        type="button"
-                        data-action="down"
-                        data-index="${index}"
-                    >
-                        ▼
-                    </button>
+                header.appendChild(
+                    tagName
+                );
 
 
-                    <button
-                        class="btn-danger"
-                        type="button"
-                        data-action="delete"
-                        data-index="${index}"
-                    >
-                        Șterge
-                    </button>
+                const text =
+                    document.createElement("div");
 
-                </div>
+                text.className =
+                    "tagged-text";
 
-            `;
+                text.textContent =
+                    item.text;
 
 
-            taggedItemsContainer.appendChild(
-                div
-            );
+                const actions =
+                    document.createElement("div");
 
-        });
+                actions.className =
+                    "tagged-actions";
 
 
-        /*
-         * Acțiuni.
-         */
+                const up =
+                    document.createElement("button");
 
-        taggedItemsContainer
-            .querySelectorAll("button")
-            .forEach(button => {
+                up.type =
+                    "button";
 
-                button.addEventListener(
+                up.textContent =
+                    "▲";
+
+                up.title =
+                    "Mută în sus";
+
+                up.disabled =
+                    index === 0;
+
+
+                up.addEventListener(
                     "click",
                     function() {
 
-                        const action =
-                            this.dataset.action;
-
-                        const index =
-                            Number(
-                                this.dataset.index
-                            );
+                        if (index <= 0) {
+                            return;
+                        }
 
 
-                        handleItemAction(
-                            action,
-                            index
-                        );
+                        [
+                            taggedData[index - 1],
+                            taggedData[index]
+                        ] = [
+                            taggedData[index],
+                            taggedData[index - 1]
+                        ];
+
+
+                        renderTaggedItems();
+
+                        generateXml();
 
                     }
                 );
 
-            });
+
+                const down =
+                    document.createElement("button");
+
+                down.type =
+                    "button";
+
+                down.textContent =
+                    "▼";
+
+                down.title =
+                    "Mută în jos";
+
+                down.disabled =
+                    index ===
+                    taggedData.length - 1;
+
+
+                down.addEventListener(
+                    "click",
+                    function() {
+
+                        if (
+                            index >=
+                            taggedData.length - 1
+                        ) {
+                            return;
+                        }
+
+
+                        [
+                            taggedData[index],
+                            taggedData[index + 1]
+                        ] = [
+                            taggedData[index + 1],
+                            taggedData[index]
+                        ];
+
+
+                        renderTaggedItems();
+
+                        generateXml();
+
+                    }
+                );
+
+
+                const remove =
+                    document.createElement("button");
+
+                remove.type =
+                    "button";
+
+                remove.textContent =
+                    "Șterge";
+
+                remove.className =
+                    "danger";
+
+
+                remove.addEventListener(
+                    "click",
+                    function() {
+
+                        taggedData.splice(
+                            index,
+                            1
+                        );
+
+
+                        renderTaggedItems();
+
+                        generateXml();
+
+                    }
+                );
+
+
+                actions.appendChild(
+                    up
+                );
+
+                actions.appendChild(
+                    down
+                );
+
+                actions.appendChild(
+                    remove
+                );
+
+
+                box.appendChild(
+                    header
+                );
+
+                box.appendChild(
+                    text
+                );
+
+                box.appendChild(
+                    actions
+                );
+
+
+                taggedItems.appendChild(
+                    box
+                );
+
+            }
+        );
 
     }
 
 
-    /* ========================================================
-       ITEM ACTION
-       ======================================================== */
+    // ========================================================
+    // XML
+    // ========================================================
 
-    function handleItemAction(
-        action,
-        index
-    ) {
+    function generateXml() {
 
-        if (
-            index < 0 ||
-            index >= taggedItems.length
+        let xml =
+`<?xml version="1.0" encoding="UTF-8"?>
+<TaggedPDF-doc>
+<Document>
+<Article>
+<Story>
+`;
+
+
+        for (
+            const item of taggedData
         ) {
-            return;
-        }
-
-
-        if (action === "delete") {
-
-            taggedItems.splice(
-                index,
-                1
-            );
-
-        }
-
-
-        else if (
-            action === "up" &&
-            index > 0
-        ) {
-
-            [
-                taggedItems[index - 1],
-                taggedItems[index]
-            ] = [
-                taggedItems[index],
-                taggedItems[index - 1]
-            ];
-
-        }
-
-
-        else if (
-            action === "down" &&
-            index < taggedItems.length - 1
-        ) {
-
-            [
-                taggedItems[index],
-                taggedItems[index + 1]
-            ] = [
-                taggedItems[index + 1],
-                taggedItems[index]
-            ];
-
-        }
-
-
-        renderTaggedItems();
-
-        updateXml();
-
-    }
-
-
-    /* ========================================================
-       XML ESCAPE
-       ======================================================== */
-
-    function escapeXml(text) {
-
-        return text
-
-            .replace(/&/g, "&amp;")
-
-            .replace(/</g, "&lt;")
-
-            .replace(/>/g, "&gt;")
-
-            .replace(/"/g, "&quot;")
-
-            .replace(/'/g, "&apos;");
-
-    }
-
-
-    /* ========================================================
-       HTML ESCAPE
-       ======================================================== */
-
-    function escapeHtml(text) {
-
-        return text
-
-            .replace(/&/g, "&amp;")
-
-            .replace(/</g, "&lt;")
-
-            .replace(/>/g, "&gt;")
-
-            .replace(/"/g, "&quot;")
-
-            .replace(/'/g, "&#039;");
-
-    }
-
-
-    /* ========================================================
-       XML GENERATION
-       ======================================================== */
-
-    function updateXml() {
-
-        let xml = "";
-
-
-        xml +=
-            '<?xml version="1.0" encoding="UTF-8"?>\n';
-
-
-        xml +=
-            "<TaggedPDF-doc>\n";
-
-
-        xml +=
-            "  <Document>\n";
-
-
-        xml +=
-            "    <Article>\n";
-
-
-        /*
-         * Pentru moment fiecare selecție este pusă
-         * în propriul Story.
-         *
-         * Ulterior putem introduce logică pentru:
-         *
-         * Story
-         * pagini
-         * articole
-         * grupuri
-         *
-         * fără să schimbăm mecanismul de selecție.
-         */
-
-        taggedItems.forEach(item => {
 
             xml +=
-                "      <Story>\n";
-
-
-            xml +=
-                `        <${item.tag}>`;
-
+                `<${item.tag}>`;
 
             xml +=
                 escapeXml(item.text);
 
+            xml +=
+                `</${item.tag}>`;
 
             xml +=
-                `</${item.tag}>\n`;
+                "\n";
 
-
-            xml +=
-                "      </Story>\n";
-
-        });
+        }
 
 
         xml +=
-            "    </Article>\n";
-
-
-        xml +=
-            "  </Document>\n";
-
-
-        xml +=
-            "</TaggedPDF-doc>";
+`</Story>
+</Article>
+</Document>
+</TaggedPDF-doc>`;
 
 
         xmlPreview.value =
@@ -1888,9 +2435,9 @@
     }
 
 
-    /* ========================================================
-       COPY XML
-       ======================================================== */
+    // ========================================================
+    // COPY XML
+    // ========================================================
 
     copyXml.addEventListener(
         "click",
@@ -1900,12 +2447,7 @@
                 xmlPreview.value;
 
 
-            if (!xml.trim()) {
-
-                alert(
-                    "Nu există XML de copiat."
-                );
-
+            if (!xml) {
                 return;
             }
 
@@ -1917,26 +2459,29 @@
                 );
 
 
-                const oldText =
-                    copyXml.textContent;
-
-
                 copyXml.textContent =
-                    "Copiat ✓";
+                    "Copiat!";
 
 
-                setTimeout(() => {
+                setTimeout(
+                    function() {
 
-                    copyXml.textContent =
-                        oldText;
+                        copyXml.textContent =
+                            "Copiază XML";
 
-                }, 1500);
+                    },
+                    1500
+                );
 
 
             } catch (error) {
 
-                console.error(error);
+                /*
+                 * Fallback pentru browsere unde clipboard API
+                 * nu este disponibil.
+                 */
 
+                xmlPreview.focus();
 
                 xmlPreview.select();
 
@@ -1950,9 +2495,9 @@
     );
 
 
-    /* ========================================================
-       DOWNLOAD XML
-       ======================================================== */
+    // ========================================================
+    // DOWNLOAD XML
+    // ========================================================
 
     downloadXml.addEventListener(
         "click",
@@ -1962,27 +2507,20 @@
                 xmlPreview.value;
 
 
-            if (!xml.trim()) {
+            if (!xml) {
 
                 alert(
                     "Nu există XML de exportat."
                 );
 
                 return;
+
             }
 
 
-            /*
-             * BOM UTF-8 pentru compatibilitate
-             * mai bună cu aplicațiile Windows.
-             */
-
             const blob =
                 new Blob(
-                    [
-                        "\uFEFF",
-                        xml
-                    ],
+                    [xml],
                     {
                         type:
                             "application/xml;charset=utf-8"
@@ -1991,7 +2529,9 @@
 
 
             const url =
-                URL.createObjectURL(blob);
+                URL.createObjectURL(
+                    blob
+                );
 
 
             const link =
@@ -2002,8 +2542,18 @@
                 url;
 
 
+            const baseName =
+                currentFilename
+                    ? currentFilename
+                        .replace(
+                            /\.pdf$/i,
+                            ""
+                        )
+                    : "tagged-document";
+
+
             link.download =
-                "document.xml";
+                `${baseName}.xml`;
 
 
             document.body.appendChild(
@@ -2025,18 +2575,20 @@
     );
 
 
-    /* ========================================================
-       CLEAR ALL
-       ======================================================== */
+    // ========================================================
+    // CLEAR ALL
+    // ========================================================
 
     clearAll.addEventListener(
         "click",
         function() {
 
             if (
-                taggedItems.length === 0
+                taggedData.length === 0
             ) {
+
                 return;
+
             }
 
 
@@ -2051,80 +2603,26 @@
             }
 
 
-            taggedItems = [];
+            taggedData = [];
 
 
             renderTaggedItems();
 
-            updateXml();
-
-            clearCurrentSelection();
+            generateXml();
 
         }
     );
 
 
-    /* ========================================================
-       INITIAL STATE
-       ======================================================== */
+    // ========================================================
+    // INITIAL XML
+    // ========================================================
 
-    pageInfo.textContent =
-        "Pagina -";
+    generateXml();
 
-
-    prevPage.disabled =
-        true;
-
-    nextPage.disabled =
-        true;
-
-
-    /*
-     * Actualizăm butoanele de paginare.
-     */
-
-    function updatePageButtons() {
-
-        prevPage.disabled =
-            !pdfDocument ||
-            currentPage <= 1;
-
-
-        nextPage.disabled =
-            !pdfDocument ||
-            currentPage >= totalPages;
-
-    }
-
-
-    /*
-     * Facem wrapper-ul de render să actualizeze
-     * butoanele după fiecare pagină.
-     */
-
-    const originalRenderCurrentPage =
-        renderCurrentPage;
-
-
-    /*
-     * Actualizăm butoanele după încărcare.
-     */
-
-    setInterval(() => {
-
-        updatePageButtons();
-
-    }, 250);
-
-
-    /* ========================================================
-       INITIAL XML
-       ======================================================== */
-
-    updateXml();
+    renderTaggedItems();
 
 </script>
-
 
 </body>
 </html>
