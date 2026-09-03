@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import shutil
 
@@ -25,9 +24,25 @@ app = FastAPI(
 BASE_DIR = Path(__file__).resolve().parent
 
 TEMPLATES_DIR = BASE_DIR / "templates"
-UPLOADS_DIR = BASE_DIR / "uploads"
 
-UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+UPLOADS_DIR = BASE_DIR / "uploads"
+HTML_UPLOADS_DIR = UPLOADS_DIR / "html"
+PDF_UPLOADS_DIR = UPLOADS_DIR / "pdf"
+
+UPLOADS_DIR.mkdir(
+    parents=True,
+    exist_ok=True
+)
+
+HTML_UPLOADS_DIR.mkdir(
+    parents=True,
+    exist_ok=True
+)
+
+PDF_UPLOADS_DIR.mkdir(
+    parents=True,
+    exist_ok=True
+)
 
 
 # ============================================================
@@ -40,13 +55,23 @@ templates = Jinja2Templates(
 
 
 # ============================================================
-# PDF-URI STATICE
+# FISIERE STATICE
 # ============================================================
 
 app.mount(
-    "/pdf",
-    StaticFiles(directory=str(UPLOADS_DIR)),
-    name="pdf"
+    "/files/html",
+    StaticFiles(
+        directory=str(HTML_UPLOADS_DIR)
+    ),
+    name="html_files"
+)
+
+app.mount(
+    "/files/pdf",
+    StaticFiles(
+        directory=str(PDF_UPLOADS_DIR)
+    ),
+    name="pdf_files"
 )
 
 
@@ -54,7 +79,10 @@ app.mount(
 # PAGINA PRINCIPALA
 # ============================================================
 
-@app.get("/", response_class=HTMLResponse)
+@app.get(
+    "/",
+    response_class=HTMLResponse
+)
 async def index(request: Request):
 
     return templates.TemplateResponse(
@@ -67,33 +95,120 @@ async def index(request: Request):
 
 
 # ============================================================
-# UPLOAD PDF
+# UPLOAD HTML5
 # ============================================================
 
-@app.post("/upload")
-async def upload_pdf(file: UploadFile = File(...)):
+@app.post("/upload-html")
+async def upload_html(
+    file: UploadFile = File(...)
+):
 
     if not file.filename:
+
         raise HTTPException(
             status_code=400,
             detail="Nu a fost selectat niciun fișier."
         )
 
+    # --------------------------------------------------------
     # Eliminăm eventualele directoare din numele fișierului
-    original_name = Path(file.filename).name
+    # --------------------------------------------------------
 
+    original_name = Path(
+        file.filename
+    ).name
+
+    # --------------------------------------------------------
+    # Acceptăm HTML / HTM
+    # --------------------------------------------------------
+
+    extension = Path(
+        original_name
+    ).suffix.lower()
+
+    if extension not in (
+        ".html",
+        ".htm"
+    ):
+
+        raise HTTPException(
+            status_code=400,
+            detail="Este permis doar formatul HTML sau HTM."
+        )
+
+    destination = HTML_UPLOADS_DIR / original_name
+
+    try:
+
+        with destination.open("wb") as buffer:
+
+            shutil.copyfileobj(
+                file.file,
+                buffer
+            )
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Eroare la salvarea fișierului HTML: {str(e)}"
+        )
+
+    finally:
+
+        await file.close()
+
+    return {
+        "status": "success",
+        "filename": original_name,
+        "url": f"/files/html/{original_name}"
+    }
+
+
+# ============================================================
+# UPLOAD PDF
+#
+# Păstrăm endpoint-ul existent pentru moment.
+# Nu îl eliminăm deoarece încă folosim PDF-ul actual.
+# ============================================================
+
+@app.post("/upload")
+async def upload_pdf(
+    file: UploadFile = File(...)
+):
+
+    if not file.filename:
+
+        raise HTTPException(
+            status_code=400,
+            detail="Nu a fost selectat niciun fișier."
+        )
+
+    # --------------------------------------------------------
+    # Eliminăm eventualele directoare din numele fișierului
+    # --------------------------------------------------------
+
+    original_name = Path(
+        file.filename
+    ).name
+
+    # --------------------------------------------------------
     # Acceptăm numai PDF
+    # --------------------------------------------------------
+
     if not original_name.lower().endswith(".pdf"):
+
         raise HTTPException(
             status_code=400,
             detail="Este permis doar formatul PDF."
         )
 
-    destination = UPLOADS_DIR / original_name
+    destination = PDF_UPLOADS_DIR / original_name
 
     try:
 
         with destination.open("wb") as buffer:
+
             shutil.copyfileobj(
                 file.file,
                 buffer
@@ -113,7 +228,7 @@ async def upload_pdf(file: UploadFile = File(...)):
     return {
         "status": "success",
         "filename": original_name,
-        "url": f"/pdf/{original_name}"
+        "url": f"/files/pdf/{original_name}"
     }
 
 
@@ -128,4 +243,3 @@ async def health():
         "status": "ok",
         "application": "xml_tagger"
     }
-
