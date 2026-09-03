@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="ro">
 
@@ -12,6 +12,16 @@
     >
 
     <title>XML Tagger</title>
+
+
+    <!-- =====================================================
+         PDF.JS TEXT LAYER - CSS OFICIAL
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/web/pdf_viewer.min.css"
+    >
 
 
     <style>
@@ -100,6 +110,11 @@
 
         button:hover {
             background: #f0f0f0;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: default;
         }
 
         button.primary {
@@ -232,7 +247,7 @@
 
 
         /*
-         * Canvasul este fundalul paginii PDF.
+         * Canvasul este PDF-ul vizibil.
          */
 
         .pdf-page canvas {
@@ -252,15 +267,13 @@
         ===================================================== */
 
         /*
-         * IMPORTANT:
+         * FOARTE IMPORTANT
          *
-         * Nu definim CSS pentru .textLayer span.
+         * PDF.js TextLayer rămâne peste canvas pentru selecție,
+         * dar textul este făcut INVIZIBIL.
          *
-         * PDF.js își generează singur poziționarea,
-         * transformările și dimensiunile pentru span-uri.
-         *
-         * Dacă suprascriem aceste reguli, textul poate
-         * apărea duplicat sau suprapus.
+         * Nu mai definim position/transform/font/etc. pentru
+         * span-urile generate de PDF.js.
          */
 
         .textLayer {
@@ -268,27 +281,62 @@
 
             left: 0;
             top: 0;
-            right: 0;
-            bottom: 0;
 
-            overflow: hidden;
+            width: 100%;
+            height: 100%;
 
             z-index: 5;
+
+            overflow: hidden;
 
             line-height: 1;
 
             text-size-adjust: none;
 
             forced-color-adjust: none;
+
+            transform-origin: 0 0;
         }
 
 
         /*
-         * Lăsăm selecția browserului să fie nativă.
+         * Textul PDF.js NU trebuie să fie vizibil.
+         *
+         * Folosim opacity foarte mică în loc de display:none
+         * sau visibility:hidden, deoarece elementele trebuie
+         * să rămână selectabile.
+         */
+
+        .textLayer span,
+        .textLayer br {
+            color: transparent !important;
+
+            background: transparent !important;
+
+            -webkit-text-fill-color: transparent !important;
+        }
+
+
+        /*
+         * Menținem selecția vizibilă.
          */
 
         .textLayer ::selection {
             background: rgba(0, 120, 255, 0.35);
+        }
+
+
+        /*
+         * Nu lăsăm TextLayer-ul să blocheze click-urile
+         * care nu țin de selecție.
+         *
+         * Textul rămâne selectabil.
+         */
+
+        .textLayer {
+            user-select: text;
+
+            -webkit-user-select: text;
         }
 
 
@@ -573,7 +621,7 @@
 
 
     <!-- =====================================================
-         UPLOAD PDF
+         UPLOAD
     ===================================================== -->
 
     <div class="upload-box">
@@ -647,8 +695,7 @@
             </div>
 
 
-            <div id="pdf-container">
-            </div>
+            <div id="pdf-container"></div>
 
 
         </div>
@@ -656,7 +703,7 @@
 
 
         <!-- =================================================
-             CONTROLS
+             CONTROL PANEL
         ================================================= -->
 
         <div class="control-panel">
@@ -1069,41 +1116,44 @@
 
     let currentFilename = "";
 
-    /*
-     * TextItem-urile PDF.js ale paginii curente.
-     *
-     * Fiecare element:
-     *
-     * {
-     *     item,
-     *     span,
-     *     index
-     * }
-     */
-
     let currentTextItems = [];
-
-
-    /*
-     * Elementele taguite.
-     */
 
     let taggedData = [];
 
 
 
     // ========================================================
-    // XML ESCAPE
+    // ESCAPE XML
     // ========================================================
 
     function escapeXml(value) {
 
         return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&apos;");
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&apos;"
+            );
 
     }
 
@@ -1121,12 +1171,37 @@
 
 
         return text
-            .replace(/\u00A0/g, " ")
-            .replace(/\r\n/g, "\n")
-            .replace(/\r/g, "\n")
-            .replace(/[ \t]+\n/g, "\n")
-            .replace(/\n[ \t]+/g, "\n")
-            .replace(/[ \t]{2,}/g, " ")
+
+            .replace(
+                /\u00A0/g,
+                " "
+            )
+
+            .replace(
+                /\r\n/g,
+                "\n"
+            )
+
+            .replace(
+                /\r/g,
+                "\n"
+            )
+
+            .replace(
+                /[ \t]+\n/g,
+                "\n"
+            )
+
+            .replace(
+                /\n[ \t]+/g,
+                "\n"
+            )
+
+            .replace(
+                /[ \t]{2,}/g,
+                " "
+            )
+
             .trim();
 
     }
@@ -1159,7 +1234,9 @@
 
 
             if (
-                file.type !== "application/pdf" &&
+                file.type !==
+                    "application/pdf" &&
+
                 !file.name
                     .toLowerCase()
                     .endsWith(".pdf")
@@ -1193,8 +1270,11 @@
                     await fetch(
                         "/upload",
                         {
-                            method: "POST",
-                            body: formData
+                            method:
+                                "POST",
+
+                            body:
+                                formData
                         }
                     );
 
@@ -1211,7 +1291,9 @@
                             await response.json();
 
 
-                        if (errorData.detail) {
+                        if (
+                            errorData.detail
+                        ) {
 
                             message =
                                 errorData.detail;
@@ -1252,7 +1334,9 @@
 
             } catch (error) {
 
-                console.error(error);
+                console.error(
+                    error
+                );
 
 
                 status.textContent =
@@ -1272,19 +1356,24 @@
 
     async function loadPdf(url) {
 
-        pdfContainer.innerHTML = "";
+        pdfContainer.innerHTML =
+            "";
 
-        currentTextItems = [];
+        currentTextItems =
+            [];
 
-        currentPage = 1;
+        currentPage =
+            1;
 
 
         const loadingTask =
             pdfjsLib.getDocument({
 
-                url: url,
+                url:
+                    url,
 
-                enableScripting: false
+                enableScripting:
+                    false
 
             });
 
@@ -1312,7 +1401,9 @@
     // RENDER PAGE
     // ========================================================
 
-    async function renderPage(pageNumber) {
+    async function renderPage(
+        pageNumber
+    ) {
 
         if (!pdfDocument) {
             return;
@@ -1331,7 +1422,8 @@
 
         const viewport =
             page.getViewport({
-                scale: desiredScale
+                scale:
+                    desiredScale
             });
 
 
@@ -1340,7 +1432,9 @@
          */
 
         const pageDiv =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         pageDiv.className =
@@ -1360,11 +1454,15 @@
          */
 
         const canvas =
-            document.createElement("canvas");
+            document.createElement(
+                "canvas"
+            );
 
 
         const context =
-            canvas.getContext("2d");
+            canvas.getContext(
+                "2d"
+            );
 
 
         canvas.width =
@@ -1397,7 +1495,9 @@
          */
 
         const textLayerDiv =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         textLayerDiv.className =
@@ -1423,7 +1523,7 @@
 
 
         /*
-         * CANVAS RENDER
+         * RENDER CANVAS
          */
 
         await page.render({
@@ -1451,7 +1551,7 @@
 
 
         /*
-         * PDF.JS TEXT LAYER
+         * NATIVE PDF.JS TEXT LAYER
          */
 
         const textLayer =
@@ -1473,7 +1573,7 @@
 
 
         /*
-         * Construim maparea TextItem → span.
+         * MAPARE TextItem → span
          */
 
         currentTextItems =
@@ -1484,8 +1584,7 @@
 
 
         /*
-         * Asociem indexul TextItem-ului
-         * cu span-ul PDF.js.
+         * Salvăm indexul pe span.
          */
 
         currentTextItems.forEach(
@@ -1497,7 +1596,9 @@
 
 
                 entry.span.dataset.textItemIndex =
-                    String(entry.index);
+                    String(
+                        entry.index
+                    );
 
             }
         );
@@ -1530,10 +1631,12 @@
             );
 
 
-        const result = [];
+        const result =
+            [];
 
 
-        let spanIndex = 0;
+        let spanIndex =
+            0;
 
 
         for (
@@ -1546,12 +1649,9 @@
                 items[i];
 
 
-            let span = null;
+            let span =
+                null;
 
-
-            /*
-             * Căutăm span-ul PDF.js corespunzător.
-             */
 
             while (
                 spanIndex <
@@ -1568,8 +1668,7 @@
 
                 if (
                     candidateText ===
-                    item.str ||
-                    item.str === ""
+                    item.str
                 ) {
 
                     span =
@@ -1581,9 +1680,22 @@
 
 
                 if (
+                    item.str &&
                     candidateText.includes(
                         item.str
-                    ) ||
+                    )
+                ) {
+
+                    span =
+                        candidate;
+
+                    break;
+
+                }
+
+
+                if (
+                    candidateText &&
                     item.str.includes(
                         candidateText
                     )
@@ -1616,59 +1728,52 @@
 
 
         /*
-         * A doua încercare de asociere.
+         * Asociere suplimentară.
          */
 
-        if (
-            result.some(
-                entry =>
-                    entry.span === null
-            )
+        const unusedSpans =
+            spans.filter(
+                span =>
+                    !result.some(
+                        entry =>
+                            entry.span === span
+                    )
+            );
+
+
+        for (
+            const entry of result
         ) {
 
-            const availableSpans =
-                spans.filter(
+            if (entry.span) {
+                continue;
+            }
+
+
+            const target =
+                entry.item.str || "";
+
+
+            const found =
+                unusedSpans.findIndex(
                     span =>
-                        !result.some(
-                            entry =>
-                                entry.span === span
-                        )
+                        (
+                            span.textContent ||
+                            ""
+                        ) === target
                 );
 
 
-            for (
-                const entry of result
-            ) {
+            if (found >= 0) {
 
-                if (entry.span) {
-                    continue;
-                }
+                entry.span =
+                    unusedSpans[found];
 
 
-                const target =
-                    entry.item.str || "";
-
-
-                const found =
-                    availableSpans.findIndex(
-                        span =>
-                            (span.textContent || "") ===
-                            target
-                    );
-
-
-                if (found >= 0) {
-
-                    entry.span =
-                        availableSpans[found];
-
-
-                    availableSpans.splice(
-                        found,
-                        1
-                    );
-
-                }
+                unusedSpans.splice(
+                    found,
+                    1
+                );
 
             }
 
@@ -1682,7 +1787,7 @@
 
 
     // ========================================================
-    // PAGE CONTROLS
+    // PAGINATION
     // ========================================================
 
     prevPage.addEventListener(
@@ -1693,7 +1798,9 @@
                 !pdfDocument ||
                 currentPage <= 1
             ) {
+
                 return;
+
             }
 
 
@@ -1714,7 +1821,9 @@
                 !pdfDocument ||
                 currentPage >= totalPages
             ) {
+
                 return;
+
             }
 
 
@@ -1727,12 +1836,14 @@
     );
 
 
-
     async function showCurrentPage() {
 
-        pdfContainer.innerHTML = "";
+        pdfContainer.innerHTML =
+            "";
 
-        currentTextItems = [];
+
+        currentTextItems =
+            [];
 
 
         await renderPage(
@@ -1766,17 +1877,20 @@
 
 
     // ========================================================
-    // TEXT NODE INFORMATION
+    // TEXT NODE INFO
     // ========================================================
 
-    function getTextNodeInfo(node) {
+    function getTextNodeInfo(
+        node
+    ) {
 
         if (!node) {
             return null;
         }
 
 
-        let element = null;
+        let element =
+            null;
 
 
         if (
@@ -1919,13 +2033,13 @@
     // ========================================================
 
     function needsSpaceBetween(
-        previousItem,
-        currentItem
+        previousEntry,
+        currentEntry
     ) {
 
         if (
-            !previousItem ||
-            !currentItem
+            !previousEntry ||
+            !currentEntry
         ) {
 
             return false;
@@ -1934,19 +2048,17 @@
 
 
         const a =
-            previousItem.item;
+            previousEntry.item;
 
 
         const b =
-            currentItem.item;
+            currentEntry.item;
 
-
-        /*
-         * EOL înseamnă sfârșit de linie.
-         */
 
         if (a.hasEOL) {
+
             return false;
+
         }
 
 
@@ -1969,8 +2081,12 @@
 
 
         if (
-            /\s$/.test(previousText) ||
-            /^\s/.test(currentText)
+            /\s$/.test(
+                previousText
+            ) ||
+            /^\s/.test(
+                currentText
+            )
         ) {
 
             return false;
@@ -1978,7 +2094,7 @@
         }
 
 
-        const prevTransform =
+        const previousTransform =
             a.transform || [];
 
 
@@ -1987,7 +2103,7 @@
 
 
         if (
-            prevTransform.length < 6 ||
+            previousTransform.length < 6 ||
             currentTransform.length < 6
         ) {
 
@@ -1997,7 +2113,7 @@
 
 
         const previousX =
-            prevTransform[4] || 0;
+            previousTransform[4] || 0;
 
 
         const currentX =
@@ -2101,10 +2217,6 @@
             );
 
 
-        /*
-         * Normalizare.
-         */
-
         if (
             startIndex >
             endIndex
@@ -2134,7 +2246,8 @@
         }
 
 
-        const parts = [];
+        const parts =
+            [];
 
 
         for (
@@ -2161,7 +2274,7 @@
 
 
             /*
-             * Primul TextItem.
+             * PRIMUL ITEM
              */
 
             if (
@@ -2177,7 +2290,7 @@
 
 
             /*
-             * Ultimul TextItem.
+             * ULTIMUL ITEM
              */
 
             if (
@@ -2191,8 +2304,11 @@
 
                     part =
                         text.substring(
+
                             startOffset,
+
                             endOffset
+
                         );
 
                 } else {
@@ -2214,7 +2330,7 @@
 
 
             /*
-             * Separare între fragmente.
+             * SPAȚIU / NEWLINE
              */
 
             if (
@@ -2222,7 +2338,9 @@
             ) {
 
                 const previousEntry =
-                    currentTextItems[i - 1];
+                    currentTextItems[
+                        i - 1
+                    ];
 
 
                 if (
@@ -2299,7 +2417,7 @@
 
 
     // ========================================================
-    // MOUSE SELECTION
+    // MOUSEUP SELECTION
     // ========================================================
 
     document.addEventListener(
@@ -2789,7 +2907,7 @@
 
 
     // ========================================================
-    // XML GENERATION
+    // XML
     // ========================================================
 
     function generateXml() {
@@ -2948,10 +3066,12 @@
 
             const baseName =
                 currentFilename
+
                     ? currentFilename.replace(
                         /\.pdf$/i,
                         ""
                     )
+
                     : "tagged-document";
 
 
@@ -3034,4 +3154,4 @@
 </body>
 
 </html>
-```
+
