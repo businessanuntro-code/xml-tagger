@@ -11,112 +11,68 @@
             box-sizing: border-box;
         }
 
-        html,
         body {
             margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
             font-family: Arial, Helvetica, sans-serif;
-            background: #f3f4f6;
+            background: #f2f4f7;
             color: #222;
         }
 
-        body {
-            overflow: hidden;
-        }
-
-        /* ======================================================
-           HEADER
-           ====================================================== */
-
-        .header {
-            height: 64px;
+        header {
+            height: 58px;
             background: #1f2937;
             color: white;
             display: flex;
             align-items: center;
-            justify-content: space-between;
             padding: 0 20px;
-            border-bottom: 1px solid #111827;
+            font-size: 21px;
+            font-weight: bold;
         }
-
-        .header-title {
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .header-subtitle {
-            font-size: 13px;
-            color: #d1d5db;
-        }
-
-        /* ======================================================
-           MAIN LAYOUT
-           ====================================================== */
 
         .main {
-            height: calc(100vh - 64px);
             display: flex;
-            min-height: 0;
-        }
-
-        .left-panel {
-            width: 58%;
-            min-width: 0;
-            background: #e5e7eb;
-            border-right: 1px solid #cbd5e1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .right-panel {
-            width: 42%;
-            min-width: 420px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
+            height: calc(100vh - 58px);
+            overflow: hidden;
         }
 
         /* ======================================================
-           TABS
+           STANGA
            ====================================================== */
 
-        .tabs {
+        .left-panel {
+            width: 55%;
+            min-width: 500px;
+            background: white;
+            border-right: 1px solid #ccc;
             display: flex;
-            background: #111827;
-            border-bottom: 1px solid #374151;
+            flex-direction: column;
         }
 
-        .tab {
-            padding: 13px 22px;
-            color: #d1d5db;
+        .source-tabs {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+            background: #f7f7f7;
+        }
+
+        .source-tab {
+            padding: 12px 22px;
             cursor: pointer;
             border: none;
             background: transparent;
-            font-size: 14px;
-            font-weight: 600;
+            font-weight: bold;
+            color: #555;
         }
 
-        .tab:hover {
-            background: #1f2937;
-            color: white;
-        }
-
-        .tab.active {
+        .source-tab.active {
             background: white;
             color: #111827;
+            border-bottom: 3px solid #2563eb;
         }
 
-        /* ======================================================
-           UPLOAD
-           ====================================================== */
-
-        .upload-area {
+        .source-area {
             padding: 12px;
-            background: white;
-            border-bottom: 1px solid #d1d5db;
+            border-bottom: 1px solid #ddd;
+            background: #fafafa;
         }
 
         .upload-row {
@@ -127,440 +83,293 @@
         }
 
         .upload-row input[type="file"] {
-            max-width: 360px;
+            max-width: 330px;
         }
 
         button {
-            font-family: inherit;
-        }
-
-        .button {
             border: none;
             border-radius: 5px;
-            padding: 9px 14px;
+            padding: 8px 13px;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 14px;
         }
 
-        .button-primary {
+        .btn-primary {
             background: #2563eb;
             color: white;
         }
 
-        .button-primary:hover {
-            background: #1d4ed8;
-        }
-
-        .button-secondary {
+        .btn-secondary {
             background: #6b7280;
             color: white;
         }
 
-        .button-secondary:hover {
-            background: #4b5563;
-        }
-
-        .button-success {
-            background: #059669;
+        .btn-success {
+            background: #16a34a;
             color: white;
         }
 
-        .button-success:hover {
-            background: #047857;
-        }
-
-        .button-danger {
+        .btn-danger {
             background: #dc2626;
             color: white;
         }
 
-        .button-danger:hover {
-            background: #b91c1c;
+        .btn-warning {
+            background: #d97706;
+            color: white;
         }
 
-        .button-small {
-            padding: 6px 9px;
-            font-size: 12px;
+        .btn-light {
+            background: #e5e7eb;
+            color: #111827;
         }
 
-        .upload-result {
-            margin-top: 7px;
-            font-size: 12px;
-            color: #4b5563;
-            min-height: 16px;
+        .status {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #555;
+            min-height: 18px;
         }
 
         /* ======================================================
-           SOURCE AREA
+           HTML EDITOR
            ====================================================== */
 
-        .source-wrapper {
+        .editor-wrapper {
             flex: 1;
-            min-height: 0;
-            position: relative;
             overflow: auto;
-            background: #d1d5db;
             padding: 20px;
+            background: #e5e7eb;
         }
 
-        .html-editor {
+        #htmlEditor {
             width: 100%;
             min-height: 100%;
             background: white;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
             padding: 35px;
             outline: none;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-            line-height: 1.5;
+            border: 1px solid #d1d5db;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
             overflow-wrap: break-word;
+            line-height: 1.55;
         }
 
-        .html-editor:focus {
+        #htmlEditor:focus {
             border-color: #2563eb;
         }
 
-        /*
-         * Elementele selectabile primesc temporar acest stil
-         * atunci când mouse-ul trece peste ele.
-         */
-        .html-editor [data-tagger-hover="1"] {
-            outline: 2px dashed #2563eb;
-            outline-offset: 2px;
+        #htmlEditor img {
+            max-width: 100%;
+            height: auto;
         }
 
-        /*
-         * Elementul selectat pentru etichetare.
-         */
-        .html-editor [data-tagger-selected="1"] {
-            outline: 2px solid #dc2626;
-            outline-offset: 2px;
-            background: rgba(220, 38, 38, 0.08);
+        #htmlEditor table {
+            max-width: 100%;
         }
 
-        /* Nu afișăm zonele de imagini/tabele ca elemente de lucru */
-        .html-editor img,
-        .html-editor figure,
-        .html-editor table {
-            pointer-events: none;
-        }
-
-        /* ======================================================
-           PDF TEMPORAR
-           ====================================================== */
-
-        .pdf-wrapper {
+        #pdfContainer {
             display: none;
-            width: 100%;
-            height: 100%;
-            background: #374151;
+            flex: 1;
             overflow: auto;
-            padding: 20px;
+            background: #525659;
+            padding: 15px;
+        }
+
+        #pdfViewer {
+            background: white;
+            margin: 0 auto;
         }
 
         .pdf-page {
+            display: block;
+            margin: 0 auto 15px auto;
             background: white;
-            margin: 0 auto 20px auto;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-        }
-
-        .pdf-message {
-            color: white;
-            text-align: center;
-            padding: 30px;
         }
 
         /* ======================================================
-           RIGHT PANEL HEADER
+           DREAPTA
            ====================================================== */
 
-        .right-header {
-            padding: 14px 16px;
-            border-bottom: 1px solid #d1d5db;
-            background: #f9fafb;
+        .right-panel {
+            width: 45%;
+            min-width: 470px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .right-header-title {
-            font-size: 17px;
-            font-weight: 700;
+        .right-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
         }
 
-        .right-header-info {
-            margin-top: 4px;
-            font-size: 12px;
-            color: #6b7280;
-        }
-
-        /* ======================================================
-           SELECTED TEXT
-           ====================================================== */
-
-        .selection-box {
-            padding: 12px 16px;
-            border-bottom: 1px solid #d1d5db;
+        .section {
             background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            margin-bottom: 12px;
+            padding: 12px;
         }
 
         .section-title {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 7px;
-            color: #374151;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #111827;
+            font-size: 15px;
         }
 
-        #selectedText {
-            width: 100%;
-            min-height: 72px;
-            resize: vertical;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            padding: 9px;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 13px;
-            background: #f9fafb;
-        }
-
-        /* ======================================================
-           TAGS
-           ====================================================== */
-
-        .tags-container {
-            flex: 0 0 auto;
-            max-height: 42%;
-            overflow-y: auto;
-            padding: 12px 16px;
-            border-bottom: 1px solid #d1d5db;
-        }
-
-        .tag-group {
-            margin-bottom: 14px;
-        }
-
-        .tag-group-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: #6b7280;
-            text-transform: uppercase;
-            margin-bottom: 7px;
-            letter-spacing: 0.4px;
-        }
-
-        .tag-buttons {
+        .tag-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
         }
 
-        .tag-button {
+        .tag-btn {
             background: #eef2ff;
             border: 1px solid #c7d2fe;
-            color: #3730a3;
-            border-radius: 4px;
+            color: #1e3a8a;
             padding: 7px 9px;
-            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .tag-btn:hover {
+            background: #dbeafe;
+        }
+
+        .tag-btn.special {
+            background: #fff7ed;
+            border-color: #fed7aa;
+            color: #9a3412;
+        }
+
+        .tag-btn.bibliografie {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+            font-weight: bold;
+        }
+
+        .selection-box {
+            width: 100%;
+            min-height: 80px;
+            resize: vertical;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            padding: 9px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            background: #f8fafc;
+        }
+
+        .selection-info {
+            margin-top: 6px;
             font-size: 12px;
-            font-weight: 600;
-        }
-
-        .tag-button:hover {
-            background: #e0e7ff;
-            border-color: #818cf8;
-        }
-
-        .tag-button.special {
-            background: #ecfdf5;
-            border-color: #a7f3d0;
-            color: #047857;
-        }
-
-        .tag-button.special:hover {
-            background: #d1fae5;
+            color: #64748b;
         }
 
         /* ======================================================
-           TAGGED ITEMS
+           LISTA TAGURI
            ====================================================== */
 
-        .tagged-section {
-            flex: 1;
-            min-height: 0;
+        .tagged-list {
             display: flex;
             flex-direction: column;
-        }
-
-        .tagged-header {
-            padding: 10px 16px;
-            background: #f9fafb;
-            border-bottom: 1px solid #d1d5db;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .tagged-header-title {
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .tagged-count {
-            font-size: 12px;
-            color: #6b7280;
-        }
-
-        .tagged-list {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            padding: 10px 16px;
-        }
-
-        .tagged-empty {
-            padding: 25px 10px;
-            text-align: center;
-            color: #9ca3af;
-            font-size: 13px;
+            gap: 7px;
         }
 
         .tagged-item {
-            border: 1px solid #d1d5db;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
             border-radius: 5px;
-            background: white;
-            padding: 9px;
-            margin-bottom: 8px;
+            padding: 8px;
         }
 
-        .tagged-item-header {
+        .tagged-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 8px;
-            margin-bottom: 5px;
         }
 
-        .tagged-number {
-            color: #6b7280;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .tagged-tag {
+        .tag-name {
+            font-weight: bold;
             color: #1d4ed8;
             font-size: 12px;
-            font-weight: 700;
+        }
+
+        .tag-position {
+            font-size: 11px;
+            color: #64748b;
         }
 
         .tagged-text {
+            margin-top: 5px;
             font-size: 12px;
-            line-height: 1.4;
             color: #374151;
             white-space: pre-wrap;
-            word-break: break-word;
+            max-height: 55px;
+            overflow: hidden;
         }
 
-        .tagged-actions {
+        .item-buttons {
             display: flex;
-            gap: 4px;
-            margin-top: 7px;
+            gap: 3px;
+        }
+
+        .item-buttons button {
+            padding: 4px 7px;
+            font-size: 11px;
         }
 
         /* ======================================================
-           BOTTOM ACTIONS
+           XML
            ====================================================== */
 
+        #xmlPreview {
+            width: 100%;
+            min-height: 280px;
+            resize: vertical;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            background: #111827;
+            color: #e5e7eb;
+        }
+
         .bottom-actions {
-            padding: 10px 16px;
-            border-top: 1px solid #d1d5db;
-            background: #f9fafb;
             display: flex;
             flex-wrap: wrap;
             gap: 7px;
+            margin-top: 8px;
         }
 
-        /* ======================================================
-           XML PREVIEW
-           ====================================================== */
-
-        .xml-section {
-            display: none;
-            position: fixed;
-            left: 20px;
-            right: 20px;
-            top: 80px;
-            bottom: 20px;
-            background: white;
-            border: 1px solid #9ca3af;
-            border-radius: 7px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            flex-direction: column;
-        }
-
-        .xml-header {
-            padding: 12px 15px;
-            border-bottom: 1px solid #d1d5db;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f9fafb;
-        }
-
-        .xml-header-title {
-            font-weight: 700;
-            font-size: 15px;
-        }
-
-        #xmlPreview {
-            flex: 1;
-            width: 100%;
-            resize: none;
-            border: none;
-            outline: none;
-            padding: 15px;
-            font-family: Consolas, Monaco, monospace;
+        .hint {
             font-size: 12px;
+            color: #64748b;
+            line-height: 1.4;
+            margin-top: 7px;
+        }
+
+        .bibliography-hint {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            padding: 9px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #78350f;
+            margin-top: 9px;
             line-height: 1.45;
         }
 
-        /* ======================================================
-           STATUS
-           ====================================================== */
-
-        .status {
-            position: fixed;
-            bottom: 15px;
-            left: 15px;
-            z-index: 2000;
-            padding: 9px 14px;
-            border-radius: 5px;
-            background: #111827;
-            color: white;
-            font-size: 12px;
-            display: none;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
-        }
-
-        .status.success {
-            background: #059669;
-        }
-
-        .status.error {
-            background: #dc2626;
-        }
-
-        /* ======================================================
-           RESPONSIVE
-           ====================================================== */
-
         @media (max-width: 1000px) {
-            body {
-                overflow: auto;
-            }
-
             .main {
-                height: auto;
-                min-height: calc(100vh - 64px);
                 flex-direction: column;
+                height: auto;
+                overflow: visible;
             }
 
             .left-panel,
@@ -574,7 +383,7 @@
             }
 
             .right-panel {
-                min-height: 600px;
+                height: auto;
             }
         }
     </style>
@@ -582,285 +391,198 @@
 
 <body>
 
-<!-- ==========================================================
-     HEADER
-     ========================================================== -->
-
-<header class="header">
-
-    <div>
-        <div class="header-title">XML Tagger</div>
-        <div class="header-subtitle">
-            HTML5 → XML compatibil cu parserul științific
-        </div>
-    </div>
-
-    <div>
-        <button
-            type="button"
-            class="button button-secondary"
-            id="clearAllButton"
-        >
-            Șterge tot
-        </button>
-    </div>
-
+<header>
+    XML Tagger
 </header>
-
-
-<!-- ==========================================================
-     MAIN
-     ========================================================== -->
 
 <div class="main">
 
     <!-- ======================================================
-         LEFT PANEL
+         PANOU STANGA
          ====================================================== -->
 
-    <section class="left-panel">
+    <div class="left-panel">
 
-        <!-- TABS -->
-
-        <div class="tabs">
-
+        <div class="source-tabs">
             <button
-                type="button"
-                class="tab active"
                 id="htmlTab"
-            >
+                class="source-tab active"
+                type="button"
+                onclick="showSource('html')">
                 HTML5
             </button>
 
             <button
-                type="button"
-                class="tab"
                 id="pdfTab"
-            >
+                class="source-tab"
+                type="button"
+                onclick="showSource('pdf')">
                 PDF
             </button>
-
         </div>
 
-
-        <!-- ==================================================
-             HTML UPLOAD
-             ================================================== -->
-
-        <div
-            class="upload-area"
-            id="htmlUploadArea"
-        >
+        <!-- HTML -->
+        <div id="htmlSourceArea" class="source-area">
 
             <div class="upload-row">
 
                 <input
                     type="file"
                     id="htmlFile"
-                    accept=".html,.htm,text/html"
-                >
+                    accept=".html,.htm">
 
                 <button
                     type="button"
-                    class="button button-primary"
-                    id="uploadHtmlButton"
-                >
+                    class="btn-primary"
+                    onclick="uploadHtml()">
                     Încarcă HTML
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-light"
+                    onclick="clearHtmlEditor()">
+                    Curăță HTML
                 </button>
 
             </div>
 
-            <div
-                class="upload-result"
-                id="htmlUploadResult"
-            ></div>
+            <div id="htmlStatus" class="status"></div>
 
         </div>
 
-
-        <!-- ==================================================
-             PDF UPLOAD
-             ================================================== -->
-
+        <!-- PDF -->
         <div
-            class="upload-area"
-            id="pdfUploadArea"
-            style="display:none;"
-        >
+            id="pdfSourceArea"
+            class="source-area"
+            style="display:none;">
 
             <div class="upload-row">
 
                 <input
                     type="file"
                     id="pdfFile"
-                    accept=".pdf,application/pdf"
-                >
+                    accept=".pdf">
 
                 <button
                     type="button"
-                    class="button button-primary"
-                    id="uploadPdfButton"
-                >
+                    class="btn-primary"
+                    onclick="uploadPdf()">
                     Încarcă PDF
                 </button>
 
             </div>
 
-            <div
-                class="upload-result"
-                id="pdfUploadResult"
-            ></div>
+            <div id="pdfStatus" class="status"></div>
 
         </div>
 
-
-        <!-- ==================================================
-             HTML SOURCE
-             ================================================== -->
-
+        <!-- HTML EDITOR -->
         <div
-            class="source-wrapper"
-            id="htmlWrapper"
-        >
+            id="htmlEditorWrapper"
+            class="editor-wrapper">
 
             <div
                 id="htmlEditor"
-                class="html-editor"
                 contenteditable="true"
-                spellcheck="false"
-            >
+                spellcheck="false">
 
-                <div style="padding:40px; text-align:center; color:#9ca3af;">
+                <p>
                     Încarcă un fișier HTML pentru a începe.
-                </div>
+                </p>
 
             </div>
 
         </div>
 
-
-        <!-- ==================================================
-             PDF SOURCE
-             ================================================== -->
-
+        <!-- PDF VIEWER -->
         <div
-            class="source-wrapper"
-            id="pdfWrapper"
-            style="display:none;"
-        >
+            id="pdfContainer">
 
-            <div
-                class="pdf-message"
-                id="pdfMessage"
-            >
-                Încarcă un PDF.
-            </div>
-
-            <div
-                id="pdfContainer"
-            ></div>
+            <div id="pdfViewer"></div>
 
         </div>
 
-    </section>
+    </div>
 
 
     <!-- ======================================================
-         RIGHT PANEL
+         PANOU DREAPTA
          ====================================================== -->
 
-    <section class="right-panel">
+    <div class="right-panel">
 
-        <!-- HEADER -->
+        <div class="right-scroll">
 
-        <div class="right-header">
+            <!-- ==================================================
+                 SELECTIE
+                 ================================================== -->
 
-            <div class="right-header-title">
-                Etichetare XML
+            <div class="section">
+
+                <div class="section-title">
+                    Text selectat
+                </div>
+
+                <textarea
+                    id="selectedText"
+                    class="selection-box"
+                    readonly
+                    placeholder="Selectează textul din document..."></textarea>
+
+                <div
+                    id="selectionInfo"
+                    class="selection-info">
+                    Nicio selecție.
+                </div>
+
             </div>
 
-            <div class="right-header-info">
-                Selectează un fragment din HTML, apoi alege eticheta.
-                Ordinea XML va fi stabilită automat după poziția în document.
-            </div>
 
-        </div>
-
-
-        <!-- ==================================================
-             SELECTED TEXT
-             ================================================== -->
-
-        <div class="selection-box">
-
-            <div class="section-title">
-                Text selectat
-            </div>
-
-            <textarea
-                id="selectedText"
-                readonly
-                placeholder="Selectează text în documentul din stânga..."
-            ></textarea>
-
-        </div>
-
-
-        <!-- ==================================================
-             TAGS
-             ================================================== -->
-
-        <div class="tags-container">
-
-            <!-- ==============================================
+            <!-- ==================================================
                  DATE ARTICOL
-                 ============================================== -->
+                 ================================================== -->
 
-            <div class="tag-group">
+            <div class="section">
 
-                <div class="tag-group-title">
+                <div class="section-title">
                     1. Date articol
                 </div>
 
-                <div class="tag-buttons">
+                <div class="tag-grid">
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="TITLU"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('TITLU')">
                         TITLU
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="English_Title"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('English_Title')">
                         English_Title
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="Autor"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('Autor')">
                         Autor
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="Functii"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('Functii')">
                         Functii
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="Corespondent"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('Corespondent')">
                         Corespondent
                     </button>
 
@@ -869,47 +591,43 @@
             </div>
 
 
-            <!-- ==============================================
+            <!-- ==================================================
                  REZUMATE
-                 ============================================== -->
+                 ================================================== -->
 
-            <div class="tag-group">
+            <div class="section">
 
-                <div class="tag-group-title">
+                <div class="section-title">
                     2. Rezumate și cuvinte-cheie
                 </div>
 
-                <div class="tag-buttons">
+                <div class="tag-grid">
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="Abstract"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('Abstract')">
                         Abstract
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="Keywords_ENG"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('Keywords_ENG')">
                         Keywords_ENG
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="Rezumat"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('Rezumat')">
                         Rezumat
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="Keywords_ROM"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('Keywords_ROM')">
                         Keywords_ROM
                     </button>
 
@@ -918,71 +636,64 @@
             </div>
 
 
-            <!-- ==============================================
-                 CONȚINUT
-                 ============================================== -->
+            <!-- ==================================================
+                 CONTINUT
+                 ================================================== -->
 
-            <div class="tag-group">
+            <div class="section">
 
-                <div class="tag-group-title">
+                <div class="section-title">
                     3. Conținut articol
                 </div>
 
-                <div class="tag-buttons">
+                <div class="tag-grid">
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="Intertitlu"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('Intertitlu')">
                         Intertitlu
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="Sub_Intertitlu"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('Sub_Intertitlu')">
                         Sub_Intertitlu
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="TEXT_indent"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('TEXT_indent')">
                         TEXT_indent
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="L"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('L')">
                         L
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="LI"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('LI')">
                         LI
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="LBody"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('LBody')">
                         LBody
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="P"
-                    >
+                        class="tag-btn"
+                        onclick="addTaggedItem('P')">
                         P
                     </button>
 
@@ -991,48 +702,141 @@
             </div>
 
 
-            <!-- ==============================================
-                 STRUCTURĂ
-                 ============================================== -->
+            <!-- ==================================================
+                 STRUCTURA XML
+                 ================================================== -->
 
-            <div class="tag-group">
+            <div class="section">
 
-                <div class="tag-group-title">
+                <div class="section-title">
                     4. Structură XML
                 </div>
 
-                <div class="tag-buttons">
+                <div class="tag-grid">
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="Lbl"
-                    >
+                        class="tag-btn special"
+                        onclick="addTaggedItem('Lbl')">
                         Lbl
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="NormalParagraphStyle"
-                    >
+                        class="tag-btn special"
+                        onclick="addTaggedItem('NormalParagraphStyle')">
                         NormalParagraphStyle
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button"
-                        data-tag="_No_paragraph_style_"
-                    >
+                        class="tag-btn special"
+                        onclick="addTaggedItem('_No_paragraph_style_')">
                         _No_paragraph_style_
                     </button>
 
                     <button
                         type="button"
-                        class="tag-button special"
-                        data-tag="Bibliografie"
-                    >
+                        class="tag-btn bibliografie"
+                        onclick="addBibliographyMarker()">
                         Bibliografie
+                    </button>
+
+                </div>
+
+                <div class="bibliography-hint">
+
+                    <strong>Bibliografie:</strong><br>
+
+                    1. Selectează cuvântul/linia
+                    <strong>Bibliografie</strong>
+                    și apasă butonul „Bibliografie”.<br>
+
+                    2. După aceea selectează fiecare referință și
+                    apasă <strong>LBody</strong>.<br>
+
+                    3. Referințele vor fi introduse automat în XML
+                    în ordinea în care apar în document, indiferent
+                    de ordinea în care ai apăsat butoanele.
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 ELEMENTE TAG-URI
+                 ================================================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Elemente marcate
+                </div>
+
+                <div
+                    id="taggedList"
+                    class="tagged-list">
+
+                    <div class="hint">
+                        Nu există încă elemente marcate.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 XML
+                 ================================================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    XML rezultat
+                </div>
+
+                <textarea
+                    id="xmlPreview"
+                    readonly
+                    placeholder="XML-ul generat va apărea aici..."></textarea>
+
+                <div class="bottom-actions">
+
+                    <button
+                        type="button"
+                        class="btn-primary"
+                        onclick="generateXml()">
+                        Generează XML
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-success"
+                        onclick="copyXml()">
+                        Copiază XML
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-success"
+                        onclick="downloadXml()">
+                        Descarcă XML
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-warning"
+                        onclick="showXmlPreview()">
+                        Preview XML
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-danger"
+                        onclick="clearTaggedData()">
+                        Șterge tag-urile
                     </button>
 
                 </div>
@@ -1041,315 +845,746 @@
 
         </div>
 
-
-        <!-- ==================================================
-             TAGGED ITEMS
-             ================================================== -->
-
-        <div class="tagged-section">
-
-            <div class="tagged-header">
-
-                <div class="tagged-header-title">
-                    Elemente etichetate
-                </div>
-
-                <div
-                    class="tagged-count"
-                    id="taggedCount"
-                >
-                    0 elemente
-                </div>
-
-            </div>
-
-
-            <div
-                class="tagged-list"
-                id="taggedList"
-            >
-
-                <div class="tagged-empty">
-                    Nu există încă elemente etichetate.
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ==================================================
-             BOTTOM ACTIONS
-             ================================================== -->
-
-        <div class="bottom-actions">
-
-            <button
-                type="button"
-                class="button button-success"
-                id="generateXmlButton"
-            >
-                Generează XML
-            </button>
-
-            <button
-                type="button"
-                class="button button-primary"
-                id="previewXmlButton"
-            >
-                Previzualizare XML
-            </button>
-
-            <button
-                type="button"
-                class="button button-secondary"
-                id="copyXmlButton"
-            >
-                Copiază XML
-            </button>
-
-            <button
-                type="button"
-                class="button button-secondary"
-                id="downloadXmlButton"
-            >
-                Descarcă XML
-            </button>
-
-        </div>
-
-    </section>
-
-</div>
-
-
-<!-- ==========================================================
-     XML PREVIEW
-     ========================================================== -->
-
-<div
-    class="xml-section"
-    id="xmlSection"
->
-
-    <div class="xml-header">
-
-        <div class="xml-header-title">
-            Previzualizare XML
-        </div>
-
-        <button
-            type="button"
-            class="button button-secondary button-small"
-            id="closeXmlButton"
-        >
-            Închide
-        </button>
-
     </div>
 
-    <textarea
-        id="xmlPreview"
-        spellcheck="false"
-    ></textarea>
-
 </div>
 
 
-<!-- ==========================================================
-     STATUS
-     ========================================================== -->
-
-<div
-    class="status"
-    id="status"
-></div>
-
-
-<!-- ==========================================================
-     JAVASCRIPT
-     ========================================================== -->
-
-<script type="module">
+<script>
 
 /* ============================================================
-   PDF.JS - ÎNCĂRCARE OPȚIONALĂ
+   VARIABILE GLOBALE
    ============================================================ */
 
-let getDocument = null;
-let GlobalWorkerOptions = null;
-let TextLayer = null;
-let pdfJsReady = false;
+let taggedData = [];
 
-try {
+let nextId = 1;
 
-    const pdfjs = await import(
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.2.108/pdf.min.mjs"
-    );
+let savedSelection = null;
 
-    getDocument = pdfjs.getDocument;
-    GlobalWorkerOptions = pdfjs.GlobalWorkerOptions;
+let currentSource = "html";
 
-    if (GlobalWorkerOptions) {
+let currentPdfUrl = null;
 
-        GlobalWorkerOptions.workerSrc =
-            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.2.108/pdf.worker.min.mjs";
+let pdfDocument = null;
 
-    }
+let currentPage = 1;
 
-    try {
-
-        const pdfViewer = await import(
-            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.2.108/pdf_viewer.mjs"
-        );
-
-        TextLayer = pdfViewer.TextLayer;
-
-    } catch (viewerError) {
-
-        console.error(
-            "PDF.js viewer nu a putut fi încărcat:",
-            viewerError
-        );
-
-    }
-
-    if (getDocument && TextLayer) {
-        pdfJsReady = true;
-    }
-
-} catch (pdfError) {
-
-    console.error(
-        "PDF.js nu a putut fi încărcat:",
-        pdfError
-    );
-
-}
+let pdfScale = 1.25;
 
 
 /* ============================================================
    ELEMENTE
    ============================================================ */
 
-const htmlTab =
-    document.getElementById("htmlTab");
+const htmlEditor = document.getElementById("htmlEditor");
 
-const pdfTab =
-    document.getElementById("pdfTab");
+const selectedTextBox = document.getElementById("selectedText");
 
-const htmlUploadArea =
-    document.getElementById("htmlUploadArea");
+const selectionInfo = document.getElementById("selectionInfo");
 
-const pdfUploadArea =
-    document.getElementById("pdfUploadArea");
+const taggedList = document.getElementById("taggedList");
 
-const htmlWrapper =
-    document.getElementById("htmlWrapper");
-
-const pdfWrapper =
-    document.getElementById("pdfWrapper");
-
-const htmlFile =
-    document.getElementById("htmlFile");
-
-const pdfFile =
-    document.getElementById("pdfFile");
-
-const uploadHtmlButton =
-    document.getElementById("uploadHtmlButton");
-
-const uploadPdfButton =
-    document.getElementById("uploadPdfButton");
-
-const htmlUploadResult =
-    document.getElementById("htmlUploadResult");
-
-const pdfUploadResult =
-    document.getElementById("pdfUploadResult");
-
-const htmlEditor =
-    document.getElementById("htmlEditor");
-
-const selectedText =
-    document.getElementById("selectedText");
-
-const taggedList =
-    document.getElementById("taggedList");
-
-const taggedCount =
-    document.getElementById("taggedCount");
-
-const generateXmlButton =
-    document.getElementById("generateXmlButton");
-
-const previewXmlButton =
-    document.getElementById("previewXmlButton");
-
-const copyXmlButton =
-    document.getElementById("copyXmlButton");
-
-const downloadXmlButton =
-    document.getElementById("downloadXmlButton");
-
-const clearAllButton =
-    document.getElementById("clearAllButton");
-
-const xmlSection =
-    document.getElementById("xmlSection");
-
-const xmlPreview =
-    document.getElementById("xmlPreview");
-
-const closeXmlButton =
-    document.getElementById("closeXmlButton");
-
-const status =
-    document.getElementById("status");
-
-const pdfContainer =
-    document.getElementById("pdfContainer");
-
-const pdfMessage =
-    document.getElementById("pdfMessage");
+const xmlPreview = document.getElementById("xmlPreview");
 
 
 /* ============================================================
-   STATE
+   SCHIMBARE SURSA
    ============================================================ */
 
-let currentSource = "html";
+function showSource(source) {
 
-let currentHtmlUrl = null;
-let currentPdfUrl = null;
+    currentSource = source;
 
-let savedSelection = null;
+    const htmlTab = document.getElementById("htmlTab");
+    const pdfTab = document.getElementById("pdfTab");
 
-let taggedData = [];
+    const htmlArea = document.getElementById("htmlSourceArea");
+    const pdfArea = document.getElementById("pdfSourceArea");
 
-let generatedXml = "";
+    const htmlWrapper = document.getElementById("htmlEditorWrapper");
+    const pdfContainer = document.getElementById("pdfContainer");
+
+    if (source === "html") {
+
+        htmlTab.classList.add("active");
+        pdfTab.classList.remove("active");
+
+        htmlArea.style.display = "block";
+        pdfArea.style.display = "none";
+
+        htmlWrapper.style.display = "block";
+        pdfContainer.style.display = "none";
+
+    } else {
+
+        htmlTab.classList.remove("active");
+        pdfTab.classList.add("active");
+
+        htmlArea.style.display = "none";
+        pdfArea.style.display = "block";
+
+        htmlWrapper.style.display = "none";
+        pdfContainer.style.display = "block";
+
+    }
+}
 
 
 /* ============================================================
-   STATUS
+   HTML UPLOAD
    ============================================================ */
 
-function showStatus(message, type = "success") {
+async function uploadHtml() {
 
-    status.textContent = message;
+    const input = document.getElementById("htmlFile");
 
-    status.className = "status " + type;
+    const status = document.getElementById("htmlStatus");
 
-    status.style.display = "block";
+    if (!input.files || !input.files.length) {
 
-    clearTimeout(showStatus.timer);
+        status.textContent = "Selectează un fișier HTML.";
 
-    showStatus.timer = setTimeout(function() {
+        return;
+    }
 
-        status.style.display = "none";
+    const file = input.files[0];
 
-    }, 3000);
+    const formData = new FormData();
 
+    formData.append("file", file);
+
+    status.textContent = "Se încarcă HTML-ul...";
+
+    try {
+
+        const response = await fetch("/upload-html", {
+            method: "POST",
+            body: formData
+        });
+
+        const raw = await response.text();
+
+        let data;
+
+        try {
+
+            data = JSON.parse(raw);
+
+        } catch (e) {
+
+            throw new Error(
+                "Serverul nu a returnat JSON. Răspuns: " +
+                raw.substring(0, 500)
+            );
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail || "Eroare la încărcarea fișierului."
+            );
+        }
+
+        const htmlResponse = await fetch(data.url);
+
+        if (!htmlResponse.ok) {
+
+            throw new Error(
+                "Fișierul HTML nu poate fi citit de server."
+            );
+        }
+
+        const htmlText = await htmlResponse.text();
+
+        loadHtmlIntoEditor(htmlText);
+
+        status.textContent =
+            "HTML încărcat: " + data.filename;
+
+    } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "Eroare: " + error.message;
+    }
+}
+
+
+/* ============================================================
+   HTML -> EDITOR
+   ============================================================ */
+
+function loadHtmlIntoEditor(htmlText) {
+
+    const parser = new DOMParser();
+
+    const doc = parser.parseFromString(
+        htmlText,
+        "text/html"
+    );
+
+    htmlEditor.innerHTML = "";
+
+    /*
+     * Dacă documentul are BODY, folosim conținutul BODY.
+     * Nu inserăm <html>, <head> sau <body> în editor.
+     */
+
+    if (doc.body) {
+
+        Array.from(doc.body.childNodes).forEach(node => {
+
+            htmlEditor.appendChild(
+                document.importNode(node, true)
+            );
+
+        });
+
+    } else {
+
+        htmlEditor.innerHTML = htmlText;
+    }
+
+    /*
+     * Recalculăm ordinea documentului.
+     */
+
+    prepareDocumentOrder();
+
+    /*
+     * Resetăm tag-urile pentru documentul nou.
+     */
+
+    taggedData = [];
+
+    nextId = 1;
+
+    savedSelection = null;
+
+    updateSelectedText("");
+
+    renderTaggedList();
+
+    xmlPreview.value = "";
+
+    showSource("html");
+}
+
+
+/* ============================================================
+   ORDINE DOCUMENT
+   ============================================================ */
+
+/*
+ * Aceasta este partea importantă pentru bibliografie.
+ *
+ * Nu mai folosim Range.toString() pentru a calcula poziția
+ * după ce elementele au fost modificate.
+ *
+ * Pentru fiecare selecție calculăm un offset absolut de caractere
+ * față de începutul #htmlEditor.
+ */
+
+function getTextOffset(root, targetNode, targetOffset) {
+
+    const walker = document.createTreeWalker(
+        root,
+        NodeFilter.SHOW_TEXT,
+        null
+    );
+
+    let offset = 0;
+
+    let node;
+
+    while ((node = walker.nextNode())) {
+
+        if (node === targetNode) {
+
+            return offset + targetOffset;
+        }
+
+        offset += node.nodeValue.length;
+    }
+
+    /*
+     * Dacă selecția este direct pe un element, calculăm offsetul
+     * folosind Range.
+     */
+
+    return offset;
+}
+
+
+function getSelectionOffsets(range) {
+
+    const start = getTextOffset(
+        htmlEditor,
+        range.startContainer,
+        range.startOffset
+    );
+
+    const end = getTextOffset(
+        htmlEditor,
+        range.endContainer,
+        range.endOffset
+    );
+
+    return {
+        start: Math.min(start, end),
+        end: Math.max(start, end)
+    };
+}
+
+
+function prepareDocumentOrder() {
+
+    /*
+     * Nu modificăm conținutul documentului.
+     *
+     * Această funcție există pentru a putea identifica faptul că
+     * editorul este sursa documentului.
+     */
+
+    return true;
+}
+
+
+/* ============================================================
+   CAPTURE SELECTION
+   ============================================================ */
+
+function captureSelection() {
+
+    if (currentSource !== "html") {
+        return;
+    }
+
+    const selection = window.getSelection();
+
+    if (!selection || selection.rangeCount === 0) {
+        return;
+    }
+
+    const text = selection.toString();
+
+    if (!text || !text.trim()) {
+        return;
+    }
+
+    const range = selection.getRangeAt(0);
+
+    /*
+     * Verificăm dacă selecția aparține editorului.
+     */
+
+    let container = range.commonAncestorContainer;
+
+    if (container.nodeType === Node.TEXT_NODE) {
+        container = container.parentNode;
+    }
+
+    if (!htmlEditor.contains(container)) {
+        return;
+    }
+
+    const offsets = getSelectionOffsets(range);
+
+    savedSelection = {
+        text: text.trim(),
+        startOffset: offsets.start,
+        endOffset: offsets.end
+    };
+
+    updateSelectedText(savedSelection.text);
+
+    selectionInfo.textContent =
+        "Poziție document: " +
+        savedSelection.startOffset +
+        " – " +
+        savedSelection.endOffset;
+}
+
+
+function updateSelectedText(text) {
+
+    selectedTextBox.value = text || "";
+
+    if (!text) {
+
+        selectionInfo.textContent =
+            "Nicio selecție.";
+    }
+}
+
+
+/*
+ * mouseup + keyup acoperă selecția făcută cu mouse-ul și
+ * selecția făcută cu tastatura.
+ */
+
+htmlEditor.addEventListener(
+    "mouseup",
+    function() {
+
+        setTimeout(
+            captureSelection,
+            0
+        );
+    }
+);
+
+htmlEditor.addEventListener(
+    "keyup",
+    function() {
+
+        setTimeout(
+            captureSelection,
+            0
+        );
+    }
+);
+
+
+/* ============================================================
+   ADĂUGARE TAG
+   ============================================================ */
+
+function addTaggedItem(tag) {
+
+    if (!savedSelection || !savedSelection.text) {
+
+        alert(
+            "Selectează mai întâi textul din document."
+        );
+
+        return;
+    }
+
+    /*
+     * Facem o copie independentă a selecției.
+     *
+     * Nu păstrăm Range-ul browserului deoarece selecția se poate
+     * pierde când utilizatorul apasă butonul.
+     */
+
+    const item = {
+
+        id: nextId++,
+
+        tag: tag,
+
+        text: savedSelection.text,
+
+        startOffset: savedSelection.startOffset,
+
+        endOffset: savedSelection.endOffset
+
+    };
+
+    taggedData.push(item);
+
+    /*
+     * Ordinea este întotdeauna cea din document.
+     */
+
+    sortTaggedData();
+
+    renderTaggedList();
+
+    /*
+     * Păstrăm selecția pentru eventuale operații ulterioare.
+     */
+
+    selectionInfo.textContent =
+        "Adăugat: " +
+        tag +
+        " | poziție " +
+        item.startOffset;
+}
+
+
+/* ============================================================
+   BIBLIOGRAFIE
+   ============================================================ */
+
+function addBibliographyMarker() {
+
+    if (!savedSelection || !savedSelection.text) {
+
+        alert(
+            "Selectează mai întâi textul «Bibliografie» din document."
+        );
+
+        return;
+    }
+
+    /*
+     * Există un singur marker Bibliografie.
+     */
+
+    const existing = taggedData.find(
+        item => item.tag === "Bibliografie"
+    );
+
+    if (existing) {
+
+        alert(
+            "Markerul «Bibliografie» există deja."
+        );
+
+        return;
+    }
+
+    const item = {
+
+        id: nextId++,
+
+        tag: "Bibliografie",
+
+        /*
+         * Parserul științific caută EXACT:
+         *
+         * <_No_paragraph_style_>Bibliografie</_No_paragraph_style_>
+         *
+         * De aceea nu folosim textul selectat ca valoare XML.
+         */
+
+        text: "Bibliografie",
+
+        startOffset: savedSelection.startOffset,
+
+        endOffset: savedSelection.endOffset
+
+    };
+
+    taggedData.push(item);
+
+    sortTaggedData();
+
+    renderTaggedList();
+
+    selectionInfo.textContent =
+        "Marker Bibliografie adăugat la poziția " +
+        item.startOffset;
+}
+
+
+/* ============================================================
+   SORTARE
+   ============================================================ */
+
+function sortTaggedData() {
+
+    taggedData.sort(
+        function(a, b) {
+
+            if (a.startOffset !== b.startOffset) {
+
+                return a.startOffset - b.startOffset;
+            }
+
+            /*
+             * Dacă două elemente încep exact în aceeași poziție,
+             * păstrăm ordinea în care au fost adăugate.
+             */
+
+            return a.id - b.id;
+        }
+    );
+}
+
+
+/* ============================================================
+   LISTA TAGURI
+   ============================================================ */
+
+function renderTaggedList() {
+
+    taggedList.innerHTML = "";
+
+    if (!taggedData.length) {
+
+        taggedList.innerHTML =
+            '<div class="hint">Nu există încă elemente marcate.</div>';
+
+        return;
+    }
+
+    sortTaggedData();
+
+    taggedData.forEach(
+        function(item, index) {
+
+            const wrapper =
+                document.createElement("div");
+
+            wrapper.className =
+                "tagged-item";
+
+            const header =
+                document.createElement("div");
+
+            header.className =
+                "tagged-header";
+
+            const left =
+                document.createElement("div");
+
+            const tagName =
+                document.createElement("span");
+
+            tagName.className =
+                "tag-name";
+
+            tagName.textContent =
+                item.tag;
+
+            const position =
+                document.createElement("span");
+
+            position.className =
+                "tag-position";
+
+            position.textContent =
+                "  #" +
+                (index + 1) +
+                " | " +
+                item.startOffset;
+
+            left.appendChild(tagName);
+            left.appendChild(position);
+
+            const buttons =
+                document.createElement("div");
+
+            buttons.className =
+                "item-buttons";
+
+            const upButton =
+                document.createElement("button");
+
+            upButton.className =
+                "btn-light";
+
+            upButton.textContent =
+                "↑";
+
+            upButton.title =
+                "Mută manual în sus";
+
+            upButton.onclick =
+                function() {
+                    moveItem(index, -1);
+                };
+
+            const downButton =
+                document.createElement("button");
+
+            downButton.className =
+                "btn-light";
+
+            downButton.textContent =
+                "↓";
+
+            downButton.title =
+                "Mută manual în jos";
+
+            downButton.onclick =
+                function() {
+                    moveItem(index, 1);
+                };
+
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.className =
+                "btn-danger";
+
+            deleteButton.textContent =
+                "X";
+
+            deleteButton.title =
+                "Șterge";
+
+            deleteButton.onclick =
+                function() {
+                    deleteItem(item.id);
+                };
+
+            buttons.appendChild(upButton);
+            buttons.appendChild(downButton);
+            buttons.appendChild(deleteButton);
+
+            header.appendChild(left);
+            header.appendChild(buttons);
+
+            const text =
+                document.createElement("div");
+
+            text.className =
+                "tagged-text";
+
+            text.textContent =
+                item.text;
+
+            wrapper.appendChild(header);
+            wrapper.appendChild(text);
+
+            taggedList.appendChild(wrapper);
+        }
+    );
+}
+
+
+/* ============================================================
+   MUTARE MANUALA
+   ============================================================ */
+
+function moveItem(index, direction) {
+
+    /*
+     * Pentru XML-ul final ordinea documentului este prioritară.
+     *
+     * Butoanele rămân pentru interfață, dar după regenerare
+     * elementele sunt ordonate după poziția lor reală în document.
+     */
+
+    const newIndex = index + direction;
+
+    if (
+        newIndex < 0 ||
+        newIndex >= taggedData.length
+    ) {
+        return;
+    }
+
+    const temp = taggedData[index];
+
+    taggedData[index] =
+        taggedData[newIndex];
+
+    taggedData[newIndex] =
+        temp;
+
+    renderTaggedList();
+}
+
+
+/* ============================================================
+   STERGERE ELEMENT
+   ============================================================ */
+
+function deleteItem(id) {
+
+    taggedData =
+        taggedData.filter(
+            item => item.id !== id
+        );
+
+    renderTaggedList();
 }
 
 
@@ -1359,503 +1594,36 @@ function showStatus(message, type = "success") {
 
 function escapeXml(value) {
 
+    if (value === null || value === undefined) {
+        return "";
+    }
+
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&apos;");
-
 }
 
 
 /* ============================================================
-   NORMALIZARE TEXT
+   GENERARE STORY
    ============================================================ */
 
-function normalizeText(value) {
-
-    return String(value || "")
-        .replace(/\u00a0/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-
-}
-
-
-/* ============================================================
-   DETERMINĂ POZIȚIA ÎN DOCUMENT
-   ============================================================ */
-
-function getDocumentPosition(node) {
-
-    if (!node) {
-        return Number.MAX_SAFE_INTEGER;
-    }
-
-    const range =
-        document.createRange();
-
-    try {
-
-        range.selectNodeContents(node);
-
-        const preRange =
-            document.createRange();
-
-        preRange.selectNodeContents(htmlEditor);
-
-        preRange.setEnd(
-            range.startContainer,
-            range.startOffset
-        );
-
-        return preRange.toString().length;
-
-    } catch (error) {
-
-        return Number.MAX_SAFE_INTEGER;
-
-    }
-
-}
-
-
-/* ============================================================
-   ORDONEAZĂ DUPĂ POZIȚIA REALĂ
-   ============================================================ */
-
-function sortTaggedData() {
-
-    taggedData.sort(function(a, b) {
-
-        return a.position - b.position;
-
-    });
-
-}
-
-
-/* ============================================================
-   GĂSEȘTE ELEMENTUL DOM DIN SELECȚIE
-   ============================================================ */
-
-function getSelectionElement(range) {
-
-    let node =
-        range.commonAncestorContainer;
-
-    if (node.nodeType === Node.TEXT_NODE) {
-        node = node.parentElement;
-    }
-
-    if (!node) {
-        return null;
-    }
-
-    if (node === htmlEditor) {
-        return htmlEditor;
-    }
-
-    return node.closest(
-        "p,h1,h2,h3,h4,h5,h6,li,div,span"
-    ) || node;
-
-}
-
-
-/* ============================================================
-   SELECȚIE TEXT
-   ============================================================ */
-
-function captureSelection() {
-
-    if (currentSource !== "html") {
-        return;
-    }
-
-    const selection =
-        window.getSelection();
-
-    if (!selection || selection.rangeCount === 0) {
-        return;
-    }
-
-    const range =
-        selection.getRangeAt(0);
-
-    if (!htmlEditor.contains(range.commonAncestorContainer)) {
-        return;
-    }
-
-    const text =
-        normalizeText(selection.toString());
-
-    if (!text) {
-        return;
-    }
-
-    savedSelection = {
-        range: range.cloneRange(),
-        text: text,
-        element: getSelectionElement(range)
-    };
-
-    selectedText.value = text;
-
-}
-
-
-/* ============================================================
-   EVENTURI SELECȚIE
-   ============================================================ */
-
-htmlEditor.addEventListener(
-    "mouseup",
-    function() {
-        setTimeout(captureSelection, 0);
-    }
-);
-
-htmlEditor.addEventListener(
-    "keyup",
-    function() {
-        setTimeout(captureSelection, 0);
-    }
-);
-
-
-/* ============================================================
-   HOVER ELEMENTE
-   ============================================================ */
-
-htmlEditor.addEventListener(
-    "mouseover",
-    function(event) {
-
-        const element =
-            event.target.closest(
-                "p,h1,h2,h3,h4,h5,h6,li,div"
-            );
-
-        if (!element || !htmlEditor.contains(element)) {
-            return;
-        }
-
-        element.dataset.taggerHover = "1";
-
-    }
-);
-
-htmlEditor.addEventListener(
-    "mouseout",
-    function(event) {
-
-        const element =
-            event.target.closest(
-                "p,h1,h2,h3,h4,h5,h6,li,div"
-            );
-
-        if (!element) {
-            return;
-        }
-
-        delete element.dataset.taggerHover;
-
-    }
-);
-
-
-/* ============================================================
-   MARCARE ELEMENT SELECTAT
-   ============================================================ */
-
-function clearVisualSelection() {
-
-    htmlEditor
-        .querySelectorAll("[data-tagger-selected]")
-        .forEach(function(element) {
-
-            delete element.dataset.taggerSelected;
-
-        });
-
-}
-
-function markSelectedElement() {
-
-    clearVisualSelection();
-
-    if (
-        savedSelection &&
-        savedSelection.element &&
-        savedSelection.element !== htmlEditor
-    ) {
-
-        savedSelection
-            .element
-            .dataset
-            .taggerSelected = "1";
-
-    }
-
-}
-
-
-/* ============================================================
-   ADAUGĂ TAG
-   ============================================================ */
-
-function addTaggedItem(tag) {
-
-    if (!savedSelection || !savedSelection.text) {
-
-        showStatus(
-            "Selectează mai întâi textul din document.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    const text =
-        savedSelection.text;
-
-    let element =
-        savedSelection.element;
-
-    let position =
-        getDocumentPosition(element);
-
-
-    /*
-     * Bibliografia este tratată ca marker de început.
-     *
-     * Textul selectat rămâne păstrat pentru identificarea
-     * poziției, dar generatorul XML va construi structura
-     * specială pentru bibliografie.
-     */
-
-    if (tag === "Bibliografie") {
-
-        const existingBibliography =
-            taggedData.find(function(item) {
-
-                return item.tag === "Bibliografie";
-
-            });
-
-        if (existingBibliography) {
-
-            showStatus(
-                "Bibliografia este deja marcată.",
-                "error"
-            );
-
-            return;
-
-        }
-
-    }
-
-
-    taggedData.push({
-
-        id:
-            Date.now() +
-            "_" +
-            Math.random()
-                .toString(36)
-                .substring(2, 9),
-
-        tag: tag,
-
-        text: text,
-
-        element: element,
-
-        position: position
-
-    });
-
-
-    sortTaggedData();
-
-    renderTaggedList();
-
-    markSelectedElement();
-
-    showStatus(
-        "Eticheta " + tag + " a fost adăugată."
+function createStory(tag, text) {
+
+    return (
+        "      <Story>\n" +
+        "        <" +
+        tag +
+        ">" +
+        escapeXml(text) +
+        "</" +
+        tag +
+        ">\n" +
+        "      </Story>\n"
     );
-
-}
-
-
-/* ============================================================
-   BUTOANE TAG
-   ============================================================ */
-
-document
-    .querySelectorAll(".tag-button")
-    .forEach(function(button) {
-
-        button.addEventListener(
-            "click",
-            function() {
-
-                const tag =
-                    button.dataset.tag;
-
-                addTaggedItem(tag);
-
-            }
-        );
-
-    });
-
-
-/* ============================================================
-   RENDER TAGGED LIST
-   ============================================================ */
-
-function renderTaggedList() {
-
-    taggedList.innerHTML = "";
-
-    if (!taggedData.length) {
-
-        taggedList.innerHTML = `
-            <div class="tagged-empty">
-                Nu există încă elemente etichetate.
-            </div>
-        `;
-
-        taggedCount.textContent =
-            "0 elemente";
-
-        return;
-    }
-
-
-    taggedCount.textContent =
-        taggedData.length +
-        (
-            taggedData.length === 1
-                ? " element"
-                : " elemente"
-        );
-
-
-    taggedData.forEach(function(item, index) {
-
-        const wrapper =
-            document.createElement("div");
-
-        wrapper.className =
-            "tagged-item";
-
-
-        const header =
-            document.createElement("div");
-
-        header.className =
-            "tagged-item-header";
-
-
-        const left =
-            document.createElement("div");
-
-        left.innerHTML = `
-            <span class="tagged-number">
-                #${index + 1}
-            </span>
-            &nbsp;
-            <span class="tagged-tag">
-                &lt;${escapeHtml(item.tag)}&gt;
-            </span>
-        `;
-
-
-        const actions =
-            document.createElement("div");
-
-        actions.className =
-            "tagged-actions";
-
-
-        const deleteButton =
-            document.createElement("button");
-
-        deleteButton.type =
-            "button";
-
-        deleteButton.className =
-            "button button-danger button-small";
-
-        deleteButton.textContent =
-            "Șterge";
-
-
-        deleteButton.addEventListener(
-            "click",
-            function() {
-
-                taggedData =
-                    taggedData.filter(function(entry) {
-
-                        return entry.id !== item.id;
-
-                    });
-
-                renderTaggedList();
-
-                clearVisualSelection();
-
-            }
-        );
-
-
-        actions.appendChild(deleteButton);
-
-        header.appendChild(left);
-        header.appendChild(actions);
-
-
-        const text =
-            document.createElement("div");
-
-        text.className =
-            "tagged-text";
-
-        text.textContent =
-            item.text;
-
-
-        wrapper.appendChild(header);
-        wrapper.appendChild(text);
-
-        taggedList.appendChild(wrapper);
-
-    });
-
-}
-
-
-/* ============================================================
-   ESCAPE HTML
-   ============================================================ */
-
-function escapeHtml(value) {
-
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
 }
 
 
@@ -1866,7 +1634,6 @@ function escapeHtml(value) {
 function generateXml() {
 
     sortTaggedData();
-
 
     let xml =
         '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -1882,153 +1649,138 @@ function generateXml() {
 
 
     /*
-     * ----------------------------------------------------------
-     * ELEMENTE NORMALE
-     * ----------------------------------------------------------
+     * ==========================================================
+     * IDENTIFICĂM MARKERUL BIBLIOGRAFIE
+     * ==========================================================
      */
 
-    let bibliographyIndex =
-        taggedData.findIndex(function(item) {
-
-            return item.tag === "Bibliografie";
-
-        });
+    const bibliography =
+        taggedData.find(
+            item => item.tag === "Bibliografie"
+        );
 
 
     /*
-     * ----------------------------------------------------------
-     * PARTEA DE DINAINTEA BIBLIOGRAFIEI
-     * ----------------------------------------------------------
+     * ==========================================================
+     * PARTEA NORMALĂ A DOCUMENTULUI
+     * ==========================================================
      */
 
-    const normalItems =
-        bibliographyIndex === -1
-            ? taggedData
-            : taggedData.slice(
-                0,
-                bibliographyIndex
+    if (!bibliography) {
+
+        taggedData.forEach(
+            function(item) {
+
+                /*
+                 * Bibliografie nu este emisă ca tag propriu.
+                 */
+
+                if (item.tag === "Bibliografie") {
+                    return;
+                }
+
+                xml += createStory(
+                    item.tag,
+                    item.text
+                );
+            }
+        );
+
+    } else {
+
+        /*
+         * Tot ce este înainte de markerul Bibliografie.
+         */
+
+        const beforeBibliography =
+            taggedData.filter(
+                item =>
+                    item.tag !== "Bibliografie" &&
+                    item.startOffset <
+                    bibliography.startOffset
             );
 
 
-    normalItems.forEach(function(item) {
+        beforeBibliography.forEach(
+            function(item) {
+
+                xml += createStory(
+                    item.tag,
+                    item.text
+                );
+            }
+        );
+
+
+        /*
+         * ======================================================
+         * MARKER BIBLIOGRAFIE
+         * ======================================================
+         *
+         * EXACT structura necesară parserului științific:
+         *
+         * <Story>
+         *   <_No_paragraph_style_>Bibliografie</_No_paragraph_style_>
+         * </Story>
+         */
 
         xml +=
-            "      <Story>\n";
-
-        xml +=
-            "        <" +
-            item.tag +
-            ">";
-
-        xml +=
-            escapeXml(item.text);
-
-        xml +=
-            "</" +
-            item.tag +
-            ">\n";
-
-        xml +=
-            "      </Story>\n";
-
-    });
-
-
-    /*
-     * ----------------------------------------------------------
-     * BIBLIOGRAFIE
-     * ----------------------------------------------------------
-     *
-     * IMPORTANT:
-     *
-     * Nu generăm:
-     *
-     * <Bibliografie>...</Bibliografie>
-     *
-     * deoarece parserul științific actual nu caută această
-     * structură.
-     *
-     * Generăm markerul:
-     *
-     * <_No_paragraph_style_>Bibliografie</_No_paragraph_style_>
-     *
-     * iar apoi referințele vor fi construite ulterior din
-     * conținutul documentului.
-     *
-     * ----------------------------------------------------------
-     */
-
-    if (bibliographyIndex !== -1) {
-
-        const bibliographyItem =
-            taggedData[bibliographyIndex];
-
-
-        xml +=
-            "      <Story>\n";
-
-        xml +=
-            "        <_No_paragraph_style_>";
-
-        xml +=
-            escapeXml(
-                bibliographyItem.text
-            );
-
-        xml +=
-            "</_No_paragraph_style_>\n";
-
-        xml +=
+            "      <Story>\n" +
+            "        <_No_paragraph_style_>Bibliografie</_No_paragraph_style_>\n" +
             "      </Story>\n";
 
 
         /*
-         * În versiunea actuală, orice element LBody aflat
-         * după markerul Bibliografie este considerat referință.
+         * ======================================================
+         * REFERINȚELE BIBLIOGRAFICE
+         * ======================================================
          *
-         * Ulterior putem automatiza complet extragerea
-         * paragrafelor din HTML.
+         * Luăm toate LBody-urile care se află după marker.
+         *
+         * IMPORTANT:
+         * Nu contează în ce ordine a apăsat utilizatorul
+         * butoanele.
+         *
+         * Se folosește startOffset = poziția reală în document.
          */
 
         const bibliographyItems =
-            taggedData.filter(function(item) {
-
-                return (
-                    item.tag === "LBody" &&
-                    item.position >
-                    bibliographyItem.position
+            taggedData
+                .filter(
+                    item =>
+                        item.tag === "LBody" &&
+                        item.startOffset >
+                        bibliography.startOffset
+                )
+                .sort(
+                    (a, b) =>
+                        a.startOffset -
+                        b.startOffset
                 );
 
-            });
+
+        bibliographyItems.forEach(
+            function(item) {
+
+                xml += createStory(
+                    "LBody",
+                    item.text
+                );
+            }
+        );
 
 
-        bibliographyItems.forEach(function(item) {
-
-            xml +=
-                "      <Story>\n";
-
-            xml +=
-                "        <LBody>";
-
-            xml +=
-                escapeXml(item.text);
-
-            xml +=
-                "</LBody>\n";
-
-            xml +=
-                "      </Story>\n";
-
-        });
-
+        /*
+         * ======================================================
+         * ELEMENTE DUPĂ BIBLIOGRAFIE CARE NU SUNT LBody
+         * ======================================================
+         *
+         * Le ignorăm intenționat din zona bibliografiei.
+         *
+         * Astfel, LBody-urile sunt tratate ca referințe.
+         */
     }
 
-
-    /*
-     * ----------------------------------------------------------
-     * ÎNCHIDERE
-     * ----------------------------------------------------------
-     */
 
     xml +=
         "    </Article>\n";
@@ -2040,755 +1792,323 @@ function generateXml() {
         "</TaggedPDF-doc>";
 
 
-    generatedXml =
-        xml;
+    xmlPreview.value = xml;
 
-    xmlPreview.value =
-        generatedXml;
-
-
-    return generatedXml;
-
+    return xml;
 }
-
-
-/* ============================================================
-   BUTON GENERARE XML
-   ============================================================ */
-
-generateXmlButton.addEventListener(
-    "click",
-    function() {
-
-        generateXml();
-
-        showStatus(
-            "XML generat cu succes."
-        );
-
-    }
-);
 
 
 /* ============================================================
    PREVIEW XML
    ============================================================ */
 
-previewXmlButton.addEventListener(
-    "click",
-    function() {
+function showXmlPreview() {
 
-        generateXml();
+    generateXml();
 
-        xmlSection.style.display =
-            "flex";
-
-    }
-);
+    xmlPreview.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+}
 
 
 /* ============================================================
-   ÎNCHIDE XML
+   COPY XML
    ============================================================ */
 
-closeXmlButton.addEventListener(
-    "click",
-    function() {
+async function copyXml() {
 
-        xmlSection.style.display =
-            "none";
+    const xml =
+        xmlPreview.value || generateXml();
 
+    try {
+
+        await navigator.clipboard.writeText(
+            xml
+        );
+
+        alert(
+            "XML-ul a fost copiat."
+        );
+
+    } catch (error) {
+
+        xmlPreview.select();
+
+        document.execCommand("copy");
+
+        alert(
+            "XML-ul a fost copiat."
+        );
     }
-);
+}
 
 
 /* ============================================================
-   COPIAZĂ XML
+   DOWNLOAD XML
    ============================================================ */
 
-copyXmlButton.addEventListener(
-    "click",
-    async function() {
+function downloadXml() {
 
-        generateXml();
+    const xml =
+        xmlPreview.value || generateXml();
 
-        try {
+    const blob =
+        new Blob(
+            [xml],
+            {
+                type: "application/xml;charset=utf-8"
+            }
+        );
 
-            await navigator.clipboard.writeText(
-                generatedXml
-            );
+    const url =
+        URL.createObjectURL(blob);
 
-            showStatus(
-                "XML copiat în clipboard."
-            );
+    const a =
+        document.createElement("a");
 
-        } catch (error) {
+    a.href = url;
 
-            xmlPreview.focus();
-            xmlPreview.select();
+    a.download =
+        "article.xml";
 
-            document.execCommand("copy");
+    document.body.appendChild(a);
 
-            showStatus(
-                "XML copiat în clipboard."
-            );
+    a.click();
 
-        }
+    document.body.removeChild(a);
 
-    }
-);
+    URL.revokeObjectURL(url);
+}
 
 
 /* ============================================================
-   DESCĂRCARE XML
+   CLEAR TAGGED DATA
    ============================================================ */
 
-downloadXmlButton.addEventListener(
-    "click",
-    function() {
+function clearTaggedData() {
 
-        generateXml();
+    if (!taggedData.length) {
+        return;
+    }
 
-        const blob =
-            new Blob(
-                [generatedXml],
+    const confirmed =
+        confirm(
+            "Sigur vrei să ștergi toate tag-urile?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    taggedData = [];
+
+    nextId = 1;
+
+    savedSelection = null;
+
+    updateSelectedText("");
+
+    renderTaggedList();
+
+    xmlPreview.value = "";
+}
+
+
+/* ============================================================
+   CLEAR HTML
+   ============================================================ */
+
+function clearHtmlEditor() {
+
+    const confirmed =
+        confirm(
+            "Sigur vrei să ștergi conținutul HTML?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    htmlEditor.innerHTML =
+        "<p>Încarcă un fișier HTML pentru a începe.</p>";
+
+    taggedData = [];
+
+    nextId = 1;
+
+    savedSelection = null;
+
+    updateSelectedText("");
+
+    renderTaggedList();
+
+    xmlPreview.value = "";
+}
+
+
+/* ============================================================
+   PDF UPLOAD
+   ============================================================ */
+
+async function uploadPdf() {
+
+    const input =
+        document.getElementById("pdfFile");
+
+    const status =
+        document.getElementById("pdfStatus");
+
+    if (!input.files || !input.files.length) {
+
+        status.textContent =
+            "Selectează un fișier PDF.";
+
+        return;
+    }
+
+    const file =
+        input.files[0];
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "file",
+        file
+    );
+
+    status.textContent =
+        "Se încarcă PDF-ul...";
+
+    try {
+
+        const response =
+            await fetch(
+                "/upload",
                 {
-                    type:
-                        "application/xml;charset=utf-8"
+                    method: "POST",
+                    body: formData
                 }
             );
 
-        const url =
-            URL.createObjectURL(blob);
+        const data =
+            await response.json();
 
-        const link =
-            document.createElement("a");
+        if (!response.ok) {
 
-        link.href =
-            url;
+            throw new Error(
+                data.detail ||
+                "Eroare la încărcarea PDF-ului."
+            );
+        }
 
-        link.download =
-            "article-tagged.xml";
+        currentPdfUrl =
+            data.url;
 
-        document.body.appendChild(link);
+        status.textContent =
+            "PDF încărcat: " +
+            data.filename;
 
-        link.click();
-
-        document.body.removeChild(link);
-
-        URL.revokeObjectURL(url);
-
-        showStatus(
-            "XML descărcat."
+        await loadPdf(
+            currentPdfUrl
         );
 
+        showSource("pdf");
+
+    } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "Eroare: " +
+            error.message;
     }
-);
+}
 
 
 /* ============================================================
-   CLEAR
-   ============================================================ */
-
-clearAllButton.addEventListener(
-    "click",
-    function() {
-
-        const confirmed =
-            confirm(
-                "Sigur vrei să ștergi toate etichetele?"
-            );
-
-        if (!confirmed) {
-            return;
-        }
-
-        taggedData = [];
-
-        generatedXml = "";
-
-        selectedText.value = "";
-
-        xmlPreview.value = "";
-
-        savedSelection = null;
-
-        clearVisualSelection();
-
-        renderTaggedList();
-
-        showStatus(
-            "Etichetarea a fost resetată."
-        );
-
-    }
-);
-
-
-/* ============================================================
-   HTML TAB
-   ============================================================ */
-
-htmlTab.addEventListener(
-    "click",
-    function() {
-
-        currentSource =
-            "html";
-
-        htmlTab.classList.add("active");
-        pdfTab.classList.remove("active");
-
-        htmlUploadArea.style.display =
-            "block";
-
-        pdfUploadArea.style.display =
-            "none";
-
-        htmlWrapper.style.display =
-            "block";
-
-        pdfWrapper.style.display =
-            "none";
-
-    }
-);
-
-
-/* ============================================================
-   PDF TAB
-   ============================================================ */
-
-pdfTab.addEventListener(
-    "click",
-    function() {
-
-        currentSource =
-            "pdf";
-
-        pdfTab.classList.add("active");
-        htmlTab.classList.remove("active");
-
-        htmlUploadArea.style.display =
-            "none";
-
-        pdfUploadArea.style.display =
-            "block";
-
-        htmlWrapper.style.display =
-            "none";
-
-        pdfWrapper.style.display =
-            "block";
-
-    }
-);
-
-
-/* ============================================================
-   UPLOAD HTML
-   ============================================================ */
-
-uploadHtmlButton.addEventListener(
-    "click",
-    async function() {
-
-        if (
-            !htmlFile.files ||
-            !htmlFile.files.length
-        ) {
-
-            showStatus(
-                "Selectează un fișier HTML.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        const file =
-            htmlFile.files[0];
-
-
-        const extension =
-            file.name
-                .split(".")
-                .pop()
-                .toLowerCase();
-
-
-        if (
-            extension !== "html" &&
-            extension !== "htm"
-        ) {
-
-            showStatus(
-                "Este permis doar formatul HTML sau HTM.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        const formData =
-            new FormData();
-
-        formData.append(
-            "file",
-            file
-        );
-
-
-        uploadHtmlButton.disabled =
-            true;
-
-        htmlUploadResult.textContent =
-            "Se încarcă HTML-ul...";
-
-
-        try {
-
-            const response =
-                await fetch(
-                    "/upload-html",
-                    {
-                        method: "POST",
-                        body: formData
-                    }
-                );
-
-
-            const responseText =
-                await response.text();
-
-
-            let data;
-
-            try {
-
-                data =
-                    JSON.parse(
-                        responseText
-                    );
-
-            } catch (jsonError) {
-
-                throw new Error(
-                    "Serverul nu a returnat un răspuns JSON valid."
-                );
-
-            }
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data.detail ||
-                    "Eroare la upload."
-                );
-
-            }
-
-
-            if (!data.url) {
-
-                throw new Error(
-                    "Serverul nu a returnat URL-ul HTML."
-                );
-
-            }
-
-
-            htmlUploadResult.textContent =
-                "Fișier încărcat: " +
-                data.filename;
-
-
-            const htmlResponse =
-                await fetch(
-                    data.url
-                );
-
-
-            if (!htmlResponse.ok) {
-
-                throw new Error(
-                    "HTML-ul încărcat nu a putut fi citit."
-                );
-
-            }
-
-
-            const html =
-                await htmlResponse.text();
-
-
-            /*
-             * IMPORTANT:
-             *
-             * Folosim DOMParser pentru a extrage BODY-ul
-             * documentului HTML.
-             *
-             * Astfel nu introducem accidental <html>,
-             * <head>, <script> etc. în contenteditable.
-             */
-
-            const parser =
-                new DOMParser();
-
-            const parsed =
-                parser.parseFromString(
-                    html,
-                    "text/html"
-                );
-
-
-            /*
-             * Curățăm complet editorul.
-             */
-
-            htmlEditor.innerHTML =
-                "";
-
-
-            /*
-             * Copiem doar conținutul BODY.
-             */
-
-            if (parsed.body) {
-
-                Array.from(
-                    parsed.body.childNodes
-                ).forEach(function(node) {
-
-                    htmlEditor.appendChild(
-                        document.importNode(
-                            node,
-                            true
-                        )
-                    );
-
-                });
-
-            }
-
-
-            currentHtmlUrl =
-                data.url;
-
-            currentSource =
-                "html";
-
-
-            htmlTab.classList.add("active");
-            pdfTab.classList.remove("active");
-
-            htmlUploadArea.style.display =
-                "block";
-
-            pdfUploadArea.style.display =
-                "none";
-
-            htmlWrapper.style.display =
-                "block";
-
-            pdfWrapper.style.display =
-                "none";
-
-
-            /*
-             * Resetăm doar selecția vizuală.
-             * Tagurile deja existente nu sunt șterse.
-             */
-
-            savedSelection =
-                null;
-
-            selectedText.value =
-                "";
-
-            clearVisualSelection();
-
-
-            showStatus(
-                "HTML încărcat cu succes."
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                error
-            );
-
-            htmlUploadResult.textContent =
-                error.message;
-
-
-            showStatus(
-                error.message,
-                "error"
-            );
-
-        } finally {
-
-            uploadHtmlButton.disabled =
-                false;
-
-        }
-
-    }
-);
-
-
-/* ============================================================
-   UPLOAD PDF
-   ============================================================ */
-
-uploadPdfButton.addEventListener(
-    "click",
-    async function() {
-
-        if (!pdfJsReady) {
-
-            showStatus(
-                "PDF.js nu este disponibil. Pentru noul flux folosește HTML5.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        if (
-            !pdfFile.files ||
-            !pdfFile.files.length
-        ) {
-
-            showStatus(
-                "Selectează un PDF.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        const file =
-            pdfFile.files[0];
-
-
-        if (
-            !file.name
-                .toLowerCase()
-                .endsWith(".pdf")
-        ) {
-
-            showStatus(
-                "Este permis doar formatul PDF.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        const formData =
-            new FormData();
-
-        formData.append(
-            "file",
-            file
-        );
-
-
-        uploadPdfButton.disabled =
-            true;
-
-        pdfUploadResult.textContent =
-            "Se încarcă PDF-ul...";
-
-
-        try {
-
-            const response =
-                await fetch(
-                    "/upload",
-                    {
-                        method: "POST",
-                        body: formData
-                    }
-                );
-
-
-            const responseText =
-                await response.text();
-
-
-            let data;
-
-            try {
-
-                data =
-                    JSON.parse(
-                        responseText
-                    );
-
-            } catch (jsonError) {
-
-                throw new Error(
-                    "Serverul nu a returnat un răspuns JSON valid."
-                );
-
-            }
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data.detail ||
-                    "Eroare la upload."
-                );
-
-            }
-
-
-            currentPdfUrl =
-                data.url;
-
-
-            pdfUploadResult.textContent =
-                "Fișier încărcat: " +
-                data.filename;
-
-
-            await loadPdf(
-                data.url
-            );
-
-
-            showStatus(
-                "PDF încărcat."
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                error
-            );
-
-            pdfUploadResult.textContent =
-                error.message;
-
-            showStatus(
-                error.message,
-                "error"
-            );
-
-        } finally {
-
-            uploadPdfButton.disabled =
-                false;
-
-        }
-
-    }
-);
-
-
-/* ============================================================
-   ÎNCĂRCARE PDF
+   PDF.JS
    ============================================================ */
 
 async function loadPdf(url) {
 
-    if (!pdfJsReady) {
+    const viewer =
+        document.getElementById("pdfViewer");
 
-        throw new Error(
-            "PDF.js nu este disponibil."
-        );
-
-    }
-
-
-    pdfContainer.innerHTML =
+    viewer.innerHTML =
         "";
 
-    pdfMessage.style.display =
-        "none";
+    try {
 
-
-    const loadingTask =
-        getDocument(url);
-
-
-    const pdf =
-        await loadingTask.promise;
-
-
-    for (
-        let pageNumber = 1;
-        pageNumber <= pdf.numPages;
-        pageNumber++
-    ) {
-
-        const page =
-            await pdf.getPage(
-                pageNumber
+        const pdfjsLib =
+            await import(
+                "/static/pdfjs/build/pdf.mjs"
             );
 
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "/static/pdfjs/build/pdf.worker.mjs";
 
-        const viewport =
-            page.getViewport({
-                scale: 1.5
-            });
+        pdfDocument =
+            await pdfjsLib.getDocument(
+                url
+            ).promise;
 
+        for (
+            let pageNumber = 1;
+            pageNumber <= pdfDocument.numPages;
+            pageNumber++
+        ) {
 
-        const canvas =
-            document.createElement(
-                "canvas"
+            const page =
+                await pdfDocument.getPage(
+                    pageNumber
+                );
+
+            const viewport =
+                page.getViewport({
+                    scale: pdfScale
+                });
+
+            const canvas =
+                document.createElement(
+                    "canvas"
+                );
+
+            canvas.className =
+                "pdf-page";
+
+            canvas.width =
+                viewport.width;
+
+            canvas.height =
+                viewport.height;
+
+            viewer.appendChild(
+                canvas
             );
 
+            const context =
+                canvas.getContext(
+                    "2d"
+                );
 
-        canvas.className =
-            "pdf-page";
+            await page.render({
+                canvasContext: context,
+                viewport: viewport
+            }).promise;
+        }
 
+    } catch (error) {
 
-        canvas.width =
-            viewport.width;
+        console.error(error);
 
-        canvas.height =
-            viewport.height;
-
-
-        const context =
-            canvas.getContext(
-                "2d"
-            );
-
-
-        await page.render({
-            canvasContext:
-                context,
-            viewport:
-                viewport
-        }).promise;
-
-
-        pdfContainer.appendChild(
-            canvas
-        );
-
+        viewer.innerHTML =
+            "<p style='color:white;text-align:center'>" +
+            "PDF.js nu a putut încărca documentul." +
+            "</p>";
     }
-
 }
 
 
@@ -2796,19 +2116,16 @@ async function loadPdf(url) {
    INITIALIZARE
    ============================================================ */
 
-renderTaggedList();
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
-htmlWrapper.style.display =
-    "block";
+        showSource("html");
 
-pdfWrapper.style.display =
-    "none";
+        renderTaggedList();
 
-htmlUploadArea.style.display =
-    "block";
-
-pdfUploadArea.style.display =
-    "none";
+    }
+);
 
 </script>
 
