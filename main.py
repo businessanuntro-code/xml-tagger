@@ -1,4 +1,4 @@
-```python
+
 from pathlib import Path
 import shutil
 
@@ -136,4 +136,4 @@ async def health():
         "status": "ok",
         "application": "xml_tagger"
     }
-```
+
