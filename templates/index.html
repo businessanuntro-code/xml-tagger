@@ -1,136 +1,425 @@
+```html
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>XML Tagger</title>
 
+
     <style>
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
             color: #222;
         }
 
+
+        /* ==================================================
+           HEADER
+           ================================================== */
+
         header {
-            background: #ffffff;
-            border-bottom: 1px solid #ddd;
-            padding: 15px 20px;
+            background: #1f2937;
+            color: white;
+            padding: 18px 25px;
         }
 
         header h1 {
             margin: 0;
-            font-size: 22px;
-            font-weight: 600;
+            font-size: 24px;
         }
 
-        main {
-            padding: 20px;
+        header p {
+            margin: 6px 0 0;
+            color: #d1d5db;
+            font-size: 14px;
         }
+
+
+        /* ==================================================
+           CONTAINER
+           ================================================== */
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+
+        /* ==================================================
+           UPLOAD BOX
+           ================================================== */
 
         .upload-box {
-            max-width: 600px;
-            margin: 40px auto;
-            background: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 30px;
-            text-align: center;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
         }
 
         .upload-box h2 {
             margin-top: 0;
-            font-size: 20px;
+            margin-bottom: 15px;
         }
 
-        .upload-box p {
-            color: #666;
-            margin-bottom: 25px;
+
+        .upload-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
+
 
         input[type="file"] {
-            display: block;
-            width: 100%;
-            margin-bottom: 20px;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
         }
 
+
         button {
-            border: 0;
-            border-radius: 5px;
-            padding: 10px 20px;
-            background: #333;
-            color: #fff;
-            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 18px;
+            background: #2563eb;
+            color: white;
             font-size: 14px;
+            cursor: pointer;
         }
 
         button:hover {
-            background: #555;
+            background: #1d4ed8;
         }
 
-        #status {
-            margin-top: 20px;
-            color: #666;
-            font-size: 14px;
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
         }
+
+
+        /* ==================================================
+           STATUS
+           ================================================== */
+
+        #status {
+            margin-top: 15px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .success {
+            color: #15803d;
+        }
+
+        .error {
+            color: #dc2626;
+        }
+
+
+        /* ==================================================
+           PDF AREA
+           ================================================== */
+
+        .pdf-box {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .pdf-box h2 {
+            margin: 5px 0 15px;
+            font-size: 20px;
+        }
+
+        #pdf-name {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+
+        #pdf-viewer {
+            width: 100%;
+            height: 800px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #e5e7eb;
+        }
+
+
+        /* ==================================================
+           ASCUNS INITIAL
+           ================================================== */
+
+        .hidden {
+            display: none;
+        }
+
+
+        /* ==================================================
+           RESPONSIVE
+           ================================================== */
+
+        @media (max-width: 700px) {
+
+            .container {
+                padding: 0 10px;
+            }
+
+            #pdf-viewer {
+                height: 600px;
+            }
+
+            .upload-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
-<header>
-    <h1>XML Tagger</h1>
-</header>
 
-<main>
+    <!-- ====================================================
+         HEADER
+         ==================================================== -->
 
-    <div class="upload-box">
+    <header>
 
-        <h2>Încarcă PDF</h2>
+        <h1>🏷️ XML Tagger</h1>
 
         <p>
-            Selectează articolul PDF pe care dorești să îl transformi în XML.
+            Încărcare și pregătire articole științifice pentru taguire XML
         </p>
 
-        <input
-            type="file"
-            id="pdfFile"
-            accept=".pdf,application/pdf"
+    </header>
+
+
+    <!-- ====================================================
+         CONTAINER
+         ==================================================== -->
+
+    <main class="container">
+
+
+        <!-- ==================================================
+             UPLOAD
+             ================================================== -->
+
+        <section class="upload-box">
+
+            <h2>Încarcă PDF</h2>
+
+            <div class="upload-row">
+
+                <input
+                    type="file"
+                    id="pdf-file"
+                    accept=".pdf,application/pdf"
+                >
+
+                <button
+                    type="button"
+                    id="upload-button"
+                    onclick="uploadPDF()"
+                >
+                    Încarcă PDF
+                </button>
+
+            </div>
+
+
+            <div id="status"></div>
+
+        </section>
+
+
+        <!-- ==================================================
+             PDF VIEWER
+             ================================================== -->
+
+        <section
+            id="pdf-section"
+            class="pdf-box hidden"
         >
 
-        <button type="button" onclick="selectPDF()">
-            Selectează PDF
-        </button>
+            <h2>PDF</h2>
 
-        <div id="status"></div>
+            <div id="pdf-name"></div>
 
-    </div>
+            <iframe
+                id="pdf-viewer"
+                title="PDF Viewer"
+            ></iframe>
 
-</main>
+        </section>
 
 
-<script>
-function selectPDF() {
+    </main>
 
-    const input = document.getElementById("pdfFile");
-    const status = document.getElementById("status");
 
-    if (!input.files.length) {
-        status.textContent = "Nu ai selectat niciun PDF.";
-        return;
-    }
+    <!-- ====================================================
+         JAVASCRIPT
+         ==================================================== -->
 
-    const file = input.files[0];
+    <script>
 
-    status.textContent = "PDF selectat: " + file.name;
-}
-</script>
+        async function uploadPDF() {
+
+            const fileInput = document.getElementById("pdf-file");
+            const uploadButton = document.getElementById("upload-button");
+            const status = document.getElementById("status");
+
+            const pdfSection = document.getElementById("pdf-section");
+            const pdfViewer = document.getElementById("pdf-viewer");
+            const pdfName = document.getElementById("pdf-name");
+
+
+            // ------------------------------------------------
+            // Verificare fișier
+            // ------------------------------------------------
+
+            if (!fileInput.files.length) {
+
+                status.textContent = "Selectează mai întâi un fișier PDF.";
+                status.className = "error";
+
+                return;
+            }
+
+
+            const file = fileInput.files[0];
+
+
+            // ------------------------------------------------
+            // Verificare extensie
+            // ------------------------------------------------
+
+            if (!file.name.toLowerCase().endsWith(".pdf")) {
+
+                status.textContent = "Este permis doar un fișier PDF.";
+                status.className = "error";
+
+                return;
+            }
+
+
+            // ------------------------------------------------
+            // Pregătim upload-ul
+            // ------------------------------------------------
+
+            const formData = new FormData();
+
+            formData.append("file", file);
+
+
+            uploadButton.disabled = true;
+
+            status.textContent = "Se încarcă PDF-ul...";
+            status.className = "";
+
+
+            try {
+
+                const response = await fetch(
+                    "/upload",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+                const data = await response.json();
+
+
+                // ------------------------------------------------
+                // Eroare server
+                // ------------------------------------------------
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail || "A apărut o eroare la upload."
+                    );
+                }
+
+
+                // ------------------------------------------------
+                // Upload reușit
+                // ------------------------------------------------
+
+                status.textContent =
+                    "PDF încărcat cu succes.";
+
+                status.className = "success";
+
+
+                pdfName.textContent =
+                    data.filename;
+
+
+                pdfViewer.src =
+                    data.url;
+
+
+                pdfSection.classList.remove("hidden");
+
+
+                // Scroll către PDF
+
+                pdfSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+
+            } catch (error) {
+
+                status.textContent =
+                    error.message || "Eroare la upload.";
+
+                status.className = "error";
+
+
+                pdfSection.classList.add("hidden");
+
+            } finally {
+
+                uploadButton.disabled = false;
+
+            }
+
+        }
+
+    </script>
+
 
 </body>
+
 </html>
+```
