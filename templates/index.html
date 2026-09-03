@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>XML Tagger</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            color: #222;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .upload-box {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .upload-box h2 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        .upload-box p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 5px;
+            padding: 10px 20px;
+            background: #333;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        #status {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>XML Tagger</h1>
+</header>
+
+<main>
+
+    <div class="upload-box">
+
+        <h2>Încarcă PDF</h2>
+
+        <p>
+            Selectează articolul PDF pe care dorești să îl transformi în XML.
+        </p>
+
+        <input
+            type="file"
+            id="pdfFile"
+            accept=".pdf,application/pdf"
+        >
+
+        <button type="button" onclick="selectPDF()">
+            Selectează PDF
+        </button>
+
+        <div id="status"></div>
+
+    </div>
+
+</main>
+
+
+<script>
+function selectPDF() {
+
+    const input = document.getElementById("pdfFile");
+    const status = document.getElementById("status");
+
+    if (!input.files.length) {
+        status.textContent = "Nu ai selectat niciun PDF.";
+        return;
+    }
+
+    const file = input.files[0];
+
+    status.textContent = "PDF selectat: " + file.name;
+}
+</script>
+
+</body>
+</html>
