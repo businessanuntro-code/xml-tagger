@@ -34,7 +34,6 @@
         body {
 
             margin: 0;
-            padding: 0;
 
             font-family:
                 Arial,
@@ -57,7 +56,7 @@
 
             color: white;
 
-            padding: 16px 24px;
+            padding: 15px 22px;
 
             display: flex;
 
@@ -71,7 +70,7 @@
 
             margin: 0;
 
-            font-size: 22px;
+            font-size: 21px;
         }
 
 
@@ -84,16 +83,16 @@
 
 
         /* ==================================================
-           MAIN
+           CONTAINER
            ================================================== */
 
         .container {
 
-            padding: 20px;
-
             max-width: 1800px;
 
             margin: auto;
+
+            padding: 18px;
         }
 
 
@@ -105,11 +104,11 @@
 
             background: white;
 
+            padding: 14px;
+
             border-radius: 8px;
 
-            padding: 16px;
-
-            margin-bottom: 18px;
+            margin-bottom: 16px;
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.08);
@@ -130,7 +129,7 @@
 
         input[type="file"] {
 
-            padding: 7px;
+            padding: 6px;
         }
 
 
@@ -140,11 +139,11 @@
 
             border-radius: 5px;
 
-            padding: 9px 14px;
+            padding: 8px 13px;
 
             cursor: pointer;
 
-            font-size: 14px;
+            font-size: 13px;
 
             background: #2563eb;
 
@@ -155,6 +154,14 @@
         button:hover {
 
             opacity: 0.9;
+        }
+
+
+        button:disabled {
+
+            opacity: 0.4;
+
+            cursor: not-allowed;
         }
 
 
@@ -172,25 +179,17 @@
 
         button.small {
 
-            padding: 6px 9px;
+            padding: 5px 8px;
 
             font-size: 12px;
         }
 
 
-        button:disabled {
-
-            opacity: 0.45;
-
-            cursor: not-allowed;
-        }
-
-
         #status {
 
-            margin-top: 10px;
+            margin-top: 9px;
 
-            font-size: 14px;
+            font-size: 13px;
         }
 
 
@@ -206,14 +205,14 @@
                 minmax(500px, 1fr)
                 390px;
 
-            gap: 18px;
+            gap: 16px;
 
             align-items: start;
         }
 
 
         /* ==================================================
-           PDF
+           PDF PANEL
            ================================================== */
 
         .pdf-panel {
@@ -222,13 +221,17 @@
 
             border-radius: 8px;
 
-            padding: 15px;
+            padding: 12px;
 
-            min-height: 700px;
+            min-height: 800px;
 
             overflow: auto;
         }
 
+
+        /* ==================================================
+           PDF TOOLBAR
+           ================================================== */
 
         .pdf-toolbar {
 
@@ -236,7 +239,7 @@
 
             color: white;
 
-            padding: 10px;
+            padding: 9px;
 
             border-radius: 6px;
 
@@ -248,7 +251,7 @@
 
             justify-content: center;
 
-            gap: 12px;
+            gap: 10px;
         }
 
 
@@ -256,13 +259,13 @@
 
             background: #374151;
 
-            padding: 6px 10px;
+            min-width: 38px;
         }
 
 
         #pageInfo {
 
-            min-width: 80px;
+            min-width: 110px;
 
             text-align: center;
 
@@ -270,21 +273,19 @@
         }
 
 
+        /* ==================================================
+           PDF PAGE
+           ================================================== */
+
         #pdfContainer {
 
             display: flex;
 
-            flex-direction: column;
+            justify-content: center;
 
-            align-items: center;
-
-            gap: 20px;
+            width: 100%;
         }
 
-
-        /* ==================================================
-           PDF PAGE
-           ================================================== */
 
         .pdf-page {
 
@@ -293,7 +294,7 @@
             background: white;
 
             box-shadow:
-                0 2px 12px rgba(0,0,0,0.35);
+                0 2px 14px rgba(0,0,0,0.35);
 
             user-select: text;
 
@@ -307,57 +308,62 @@
         }
 
 
-        /*
-         * Text layer PDF.js
-         *
-         * IMPORTANT:
-         * Doar textul din acest layer poate fi selectat.
-         * Imaginile și graficele nu sunt introduse aici.
-         */
+        /* ==================================================
+           PDF.JS TEXT LAYER
+           ================================================== */
 
         .textLayer {
 
             position: absolute;
 
-            left: 0;
-
-            top: 0;
-
-            right: 0;
-
-            bottom: 0;
+            inset: 0;
 
             overflow: hidden;
 
             line-height: 1;
 
-            opacity: 1;
+            text-size-adjust: none;
+
+            forced-color-adjust: none;
+
+            transform-origin: 0 0;
+
+            z-index: 2;
+
+            cursor: text;
         }
 
 
-        .textLayer span {
+        .textLayer span,
+        .textLayer br {
+
+            color: transparent;
 
             position: absolute;
 
             white-space: pre;
 
             transform-origin: 0% 0%;
+        }
 
-            color: transparent;
+
+        .textLayer span {
 
             cursor: text;
         }
 
 
-        .textLayer span::selection {
+        .textLayer ::selection {
 
-            background: rgba(37, 99, 235, 0.35);
+            background:
+                rgba(37, 99, 235, 0.35);
         }
 
 
-        .textLayer::selection {
+        .textLayer span::selection {
 
-            background: rgba(37, 99, 235, 0.35);
+            background:
+                rgba(37, 99, 235, 0.35);
         }
 
 
@@ -371,7 +377,7 @@
 
             flex-direction: column;
 
-            gap: 16px;
+            gap: 14px;
         }
 
 
@@ -381,7 +387,7 @@
 
             border-radius: 8px;
 
-            padding: 16px;
+            padding: 14px;
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.08);
@@ -390,31 +396,32 @@
 
         .card h2 {
 
-            margin-top: 0;
+            margin: 0 0 10px 0;
 
-            margin-bottom: 12px;
-
-            font-size: 17px;
+            font-size: 16px;
         }
 
 
         /* ==================================================
-           SELECTED TEXT
+           SELECTION
            ================================================== */
 
         #selectedText {
 
             min-height: 70px;
 
-            border: 1px solid #d1d5db;
+            padding: 9px;
+
+            border:
+                1px solid #d1d5db;
 
             border-radius: 5px;
-
-            padding: 10px;
 
             background: #f9fafb;
 
             font-size: 13px;
+
+            line-height: 1.45;
 
             white-space: pre-wrap;
 
@@ -436,9 +443,10 @@
 
             display: grid;
 
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns:
+                1fr 1fr;
 
-            gap: 7px;
+            gap: 6px;
         }
 
 
@@ -448,11 +456,12 @@
 
             color: #1e3a8a;
 
-            border: 1px solid #c7d2fe;
+            border:
+                1px solid #c7d2fe;
 
             text-align: left;
 
-            padding: 8px;
+            padding: 7px;
 
             font-size: 12px;
         }
@@ -465,7 +474,7 @@
 
 
         /* ==================================================
-           ELEMENTE TAGUITE
+           TAGGED ITEMS
            ================================================== */
 
         .tagged-list {
@@ -474,17 +483,18 @@
 
             flex-direction: column;
 
-            gap: 8px;
+            gap: 7px;
         }
 
 
         .tagged-item {
 
-            border: 1px solid #d1d5db;
+            border:
+                1px solid #d1d5db;
 
             border-radius: 6px;
 
-            padding: 9px;
+            padding: 8px;
 
             background: #fafafa;
         }
@@ -494,31 +504,29 @@
 
             display: flex;
 
-            align-items: center;
-
             justify-content: space-between;
 
-            gap: 8px;
+            align-items: center;
 
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
 
         .tag-name {
 
+            font-size: 12px;
+
             font-weight: bold;
 
             color: #1d4ed8;
-
-            font-size: 12px;
         }
 
 
         .tag-number {
 
-            color: #6b7280;
-
             font-size: 11px;
+
+            color: #6b7280;
         }
 
 
@@ -542,7 +550,7 @@
 
             display: flex;
 
-            gap: 5px;
+            gap: 4px;
         }
 
 
@@ -552,25 +560,23 @@
 
         .xml-panel {
 
-            margin-top: 18px;
+            margin-top: 16px;
 
             background: #111827;
 
-            color: #e5e7eb;
+            color: white;
 
             border-radius: 8px;
 
-            padding: 16px;
+            padding: 14px;
         }
 
 
         .xml-panel h2 {
 
-            margin-top: 0;
+            margin: 0 0 10px 0;
 
-            color: white;
-
-            font-size: 17px;
+            font-size: 16px;
         }
 
 
@@ -578,19 +584,20 @@
 
             width: 100%;
 
-            min-height: 300px;
+            min-height: 280px;
 
             resize: vertical;
 
-            border: 1px solid #374151;
+            padding: 10px;
+
+            border:
+                1px solid #374151;
 
             border-radius: 5px;
 
             background: #030712;
 
             color: #d1d5db;
-
-            padding: 12px;
 
             font-family:
                 Consolas,
@@ -605,19 +612,13 @@
 
         .xml-actions {
 
-            margin-top: 10px;
+            margin-top: 9px;
 
             display: flex;
 
-            gap: 8px;
-
-            flex-wrap: wrap;
+            gap: 7px;
         }
 
-
-        /* ==================================================
-           EMPTY
-           ================================================== */
 
         .empty {
 
@@ -627,7 +628,7 @@
 
             text-align: center;
 
-            padding: 15px;
+            padding: 20px;
         }
 
 
@@ -642,12 +643,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .right-panel {
-
-                width: 100%;
-            }
         }
-
 
     </style>
 
@@ -662,7 +658,7 @@
     <h1>🏷️ XML Tagger</h1>
 
     <span>
-        PDF → selecție text → taguri XML
+        PDF → selecție text → tag XML
     </span>
 
 </header>
@@ -707,13 +703,14 @@
 
 
         <!-- =================================================
-             PDF PANEL
+             PDF
              ================================================= -->
 
         <div class="pdf-panel">
 
 
             <div class="pdf-toolbar">
+
 
                 <button
                     id="prevPage"
@@ -734,6 +731,7 @@
                 >
                     ▶
                 </button>
+
 
             </div>
 
@@ -776,7 +774,7 @@
                 </div>
 
 
-                <div style="margin-top:10px;">
+                <div style="margin-top:8px;">
 
                     <button
                         id="clearSelection"
@@ -962,7 +960,7 @@
 
 
             <!-- =============================================
-                 ELEMENTE TAGUITE
+                 TAGGED ITEMS
                  ============================================= -->
 
             <div class="card">
@@ -993,7 +991,7 @@
 
 
     <!-- ==================================================
-         XML PREVIEW
+         XML
          ================================================== -->
 
     <div class="xml-panel">
@@ -1011,16 +1009,12 @@
 
         <div class="xml-actions">
 
-            <button
-                id="copyXml"
-            >
+            <button id="copyXml">
                 Copiază XML
             </button>
 
 
-            <button
-                id="downloadXml"
-            >
+            <button id="downloadXml">
                 Exportă XML
             </button>
 
@@ -1038,64 +1032,77 @@
 
 <script type="module">
 
+
+    // =====================================================
+    // PDF.JS
+    // =====================================================
+
     import * as pdfjsLib
         from "https://cdn.jsdelivr.net/npm/pdfjs-dist@latest/build/pdf.min.mjs";
 
-
-    // =====================================================
-    // PDF.JS WORKER
-    // =====================================================
 
     pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdn.jsdelivr.net/npm/pdfjs-dist@latest/build/pdf.worker.min.mjs";
 
 
     // =====================================================
-    // ELEMENTE DOM
+    // DOM
     // =====================================================
 
     const pdfFile =
         document.getElementById("pdfFile");
 
+
     const uploadButton =
         document.getElementById("uploadButton");
+
 
     const status =
         document.getElementById("status");
 
+
     const pdfContainer =
         document.getElementById("pdfContainer");
+
 
     const selectedTextBox =
         document.getElementById("selectedText");
 
+
     const clearSelectionButton =
         document.getElementById("clearSelection");
+
 
     const taggedList =
         document.getElementById("taggedList");
 
+
     const xmlPreview =
         document.getElementById("xmlPreview");
+
 
     const copyXmlButton =
         document.getElementById("copyXml");
 
+
     const downloadXmlButton =
         document.getElementById("downloadXml");
+
 
     const prevPageButton =
         document.getElementById("prevPage");
 
+
     const nextPageButton =
         document.getElementById("nextPage");
+
 
     const pageInfo =
         document.getElementById("pageInfo");
 
 
     // =====================================================
-    // STARE
+    // STATE
     // =====================================================
 
     let pdfDocument = null;
@@ -1104,20 +1111,19 @@
 
     let currentPage = 1;
 
-    let scale = 1.35;
-
     let selectedText = "";
 
     let taggedItems = [];
 
 
     // =====================================================
-    // UPLOAD PDF
+    // UPLOAD
     // =====================================================
 
     uploadButton.addEventListener(
         "click",
         async () => {
+
 
             const file =
                 pdfFile.files[0];
@@ -1134,7 +1140,9 @@
 
             if (
                 file.type !== "application/pdf" &&
-                !file.name.toLowerCase().endsWith(".pdf")
+                !file.name
+                    .toLowerCase()
+                    .endsWith(".pdf")
             ) {
 
                 status.textContent =
@@ -1159,6 +1167,7 @@
 
 
             try {
+
 
                 const response =
                     await fetch(
@@ -1195,12 +1204,14 @@
 
             } catch (error) {
 
+
                 console.error(error);
 
 
                 status.textContent =
                     "Eroare: " +
                     error.message;
+
             }
 
         }
@@ -1208,16 +1219,19 @@
 
 
     // =====================================================
-    // ÎNCĂRCARE PDF.JS
+    // LOAD PDF
     // =====================================================
 
     async function loadPdf(url) {
 
+
         pdfContainer.innerHTML = "";
+
 
         taggedItems = [];
 
         selectedText = "";
+
 
         updateSelectedText();
 
@@ -1228,11 +1242,16 @@
 
         try {
 
+
             pdfDocument =
                 await pdfjsLib.getDocument({
+
                     url: url,
+
                     enableXfa: false,
+
                     enableScripting: false
+
                 }).promise;
 
 
@@ -1246,62 +1265,60 @@
             updatePageControls();
 
 
-            await renderAllPages();
+            await renderCurrentPage();
 
 
         } catch (error) {
+
 
             console.error(error);
 
 
             pdfContainer.innerHTML =
-                '<div class="empty">' +
-                'Nu am putut afișa PDF-ul.' +
-                '</div>';
+                `
+                <div class="empty">
+                    Nu am putut afișa PDF-ul.
+                </div>
+                `;
 
 
             status.textContent =
                 "Eroare PDF.js: " +
                 error.message;
+
         }
 
     }
 
 
     // =====================================================
-    // RENDER PAGINI
+    // RENDER CURRENT PAGE
     // =====================================================
 
-    async function renderAllPages() {
+    async function renderCurrentPage() {
+
+
+        if (!pdfDocument) {
+
+            return;
+        }
+
 
         pdfContainer.innerHTML = "";
 
 
-        for (
-            let pageNumber = 1;
-            pageNumber <= totalPages;
-            pageNumber++
-        ) {
-
-            await renderPage(
-                pageNumber
-            );
-
-        }
-
-    }
-
-
-    // =====================================================
-    // RENDER O PAGINĂ
-    // =====================================================
-
-    async function renderPage(pageNumber) {
-
         const page =
             await pdfDocument.getPage(
-                pageNumber
+                currentPage
             );
+
+
+        /*
+         * Scala poate fi modificată ulterior
+         * pentru zoom.
+         */
+
+        const scale = 1.35;
 
 
         const viewport =
@@ -1311,7 +1328,7 @@
 
 
         // ================================================
-        // CONTAINER PAGINĂ
+        // PAGE CONTAINER
         // ================================================
 
         const pageContainer =
@@ -1320,10 +1337,6 @@
 
         pageContainer.className =
             "pdf-page";
-
-
-        pageContainer.dataset.page =
-            pageNumber;
 
 
         pageContainer.style.width =
@@ -1342,16 +1355,12 @@
             document.createElement("canvas");
 
 
-        const context =
-            canvas.getContext("2d");
-
-
         canvas.width =
-            viewport.width;
+            Math.ceil(viewport.width);
 
 
         canvas.height =
-            viewport.height;
+            Math.ceil(viewport.height);
 
 
         canvas.style.width =
@@ -1360,6 +1369,10 @@
 
         canvas.style.height =
             `${viewport.height}px`;
+
+
+        const context =
+            canvas.getContext("2d");
 
 
         pageContainer.appendChild(
@@ -1403,9 +1416,11 @@
 
         await page.render({
 
-            canvasContext: context,
+            canvasContext:
+                context,
 
-            viewport: viewport
+            viewport:
+                viewport
 
         }).promise;
 
@@ -1415,21 +1430,126 @@
         // ================================================
 
         const textContent =
-            await page.getTextContent();
+            await page.getTextContent({
+
+                includeMarkedContent:
+                    false,
+
+                disableNormalization:
+                    false
+
+            });
 
 
-        // ================================================
-        // CONSTRUIM TEXT LAYER
-        // ================================================
+        /*
+         * Construim text layer-ul folosind
+         * datele reale furnizate de PDF.js.
+         *
+         * Important:
+         * nu mai facem manual presupuneri
+         * despre poziția cuvintelor.
+         */
+
+        await renderTextLayer(
+
+            textContent,
+
+            viewport,
+
+            textLayer
+
+        );
+
+
+        updatePageControls();
+
+    }
+
+
+    // =====================================================
+    // PDF.JS TEXT LAYER
+    // =====================================================
+
+    async function renderTextLayer(
+        textContent,
+        viewport,
+        container
+    ) {
+
+
+        /*
+         * Folosim TextLayer-ul PDF.js.
+         *
+         * Dacă versiunea CDN disponibilă expune
+         * TextLayer, acesta este mecanismul oficial
+         * pentru poziționarea textului.
+         */
+
+        if (
+            typeof pdfjsLib.TextLayer ===
+            "function"
+        ) {
+
+
+            const textLayer =
+                new pdfjsLib.TextLayer({
+
+                    textContentSource:
+                        textContent,
+
+                    container:
+                        container,
+
+                    viewport:
+                        viewport
+
+                });
+
+
+            await textLayer.render();
+
+
+            return;
+        }
+
+
+        /*
+         * Fallback pentru versiuni PDF.js
+         * care nu expun TextLayer în build.
+         */
+
+        await renderTextLayerFallback(
+            textContent,
+            viewport,
+            container
+        );
+
+    }
+
+
+    // =====================================================
+    // FALLBACK TEXT LAYER
+    // =====================================================
+
+    async function renderTextLayerFallback(
+        textContent,
+        viewport,
+        container
+    ) {
+
+
+        const items =
+            textContent.items;
+
 
         for (
             const item
-            of textContent.items
+            of items
         ) {
 
+
             if (
-                !item.str ||
-                !item.str.trim()
+                !item.str
             ) {
 
                 continue;
@@ -1444,12 +1564,17 @@
                 item.str;
 
 
-            // Transformare PDF → CSS
+            /*
+             * Transformarea PDF.js.
+             */
 
             const tx =
                 pdfjsLib.Util.transform(
+
                     viewport.transform,
+
                     item.transform
+
                 );
 
 
@@ -1463,8 +1588,10 @@
 
             const fontHeight =
                 Math.sqrt(
+
                     tx[2] * tx[2] +
                     tx[3] * tx[3]
+
                 );
 
 
@@ -1481,27 +1608,45 @@
 
 
             span.style.fontFamily =
-                item.fontName
-                    ? "sans-serif"
-                    : "sans-serif";
+                "sans-serif";
 
 
             /*
-             * Estimare lățime.
+             * Folosim lățimea reală furnizată
+             * de PDF.js.
              */
 
-            const scaleX =
-                Math.sqrt(
-                    tx[0] * tx[0] +
-                    tx[1] * tx[1]
-                );
+            if (
+                item.width
+            ) {
+
+                const scaleX =
+                    (
+                        item.width *
+                        viewport.scale
+                    ) /
+                    Math.max(
+                        1,
+                        span
+                            .getBoundingClientRect()
+                            .width
+                    );
 
 
-            span.style.transform =
-                `scaleX(${scaleX})`;
+                if (
+                    Number.isFinite(scaleX) &&
+                    scaleX > 0
+                ) {
+
+                    span.style.transform =
+                        `scaleX(${scaleX})`;
+
+                }
+
+            }
 
 
-            textLayer.appendChild(
+            container.appendChild(
                 span
             );
 
@@ -1511,12 +1656,112 @@
 
 
     // =====================================================
-    // SELECȚIE TEXT
+    // NEXT PAGE
+    // =====================================================
+
+    nextPageButton.addEventListener(
+        "click",
+        async () => {
+
+
+            if (
+                !pdfDocument ||
+                currentPage >= totalPages
+            ) {
+
+                return;
+            }
+
+
+            currentPage++;
+
+
+            selectedText = "";
+
+
+            window
+                .getSelection()
+                ?.removeAllRanges();
+
+
+            updateSelectedText();
+
+
+            await renderCurrentPage();
+
+
+        }
+    );
+
+
+    // =====================================================
+    // PREVIOUS PAGE
+    // =====================================================
+
+    prevPageButton.addEventListener(
+        "click",
+        async () => {
+
+
+            if (
+                !pdfDocument ||
+                currentPage <= 1
+            ) {
+
+                return;
+            }
+
+
+            currentPage--;
+
+
+            selectedText = "";
+
+
+            window
+                .getSelection()
+                ?.removeAllRanges();
+
+
+            updateSelectedText();
+
+
+            await renderCurrentPage();
+
+
+        }
+    );
+
+
+    // =====================================================
+    // PAGE CONTROLS
+    // =====================================================
+
+    function updatePageControls() {
+
+
+        pageInfo.textContent =
+            `Pagina ${currentPage} / ${totalPages}`;
+
+
+        prevPageButton.disabled =
+            currentPage <= 1;
+
+
+        nextPageButton.disabled =
+            currentPage >= totalPages;
+
+    }
+
+
+    // =====================================================
+    // TEXT SELECTION
     // =====================================================
 
     document.addEventListener(
         "mouseup",
         () => {
+
 
             const selection =
                 window.getSelection();
@@ -1528,53 +1773,98 @@
             }
 
 
-            const text =
-                selection
-                    .toString()
-                    .replace(/\s+/g, " ")
-                    .trim();
+            if (
+                selection.rangeCount === 0
+            ) {
+
+                return;
+            }
 
 
-            if (!text) {
+            const rawText =
+                selection.toString();
+
+
+            if (!rawText) {
 
                 return;
             }
 
 
             /*
-             * Verificăm că selecția provine
-             * din text layer-ul PDF-ului.
-             *
-             * Dacă utilizatorul selectează o imagine
-             * sau alt element, această verificare
-             * nu permite folosirea lui pentru tagging.
+             * Verificăm originea selecției.
              */
 
-            let node =
+            let anchor =
                 selection.anchorNode;
 
 
             if (
-                node &&
-                node.nodeType === Node.TEXT_NODE
+                anchor &&
+                anchor.nodeType ===
+                Node.TEXT_NODE
             ) {
 
-                node =
-                    node.parentElement;
+                anchor =
+                    anchor.parentElement;
+
             }
 
 
             if (
-                !node ||
-                !node.closest(".textLayer")
+                !anchor
             ) {
 
                 return;
             }
 
 
+            const textLayer =
+                anchor.closest(
+                    ".textLayer"
+                );
+
+
+            /*
+             * Dacă nu este text layer,
+             * ignorăm selecția.
+             *
+             * Asta înseamnă că imaginile,
+             * canvas-ul și graficele nu
+             * devin tag-uibile.
+             */
+
+            if (
+                !textLayer
+            ) {
+
+                return;
+            }
+
+
+            /*
+             * Curățăm inteligent spațiile.
+             *
+             * Nu folosim pur și simplu
+             * replace(/\s+/g, " "), deoarece
+             * selecțiile PDF pot conține
+             * newline-uri artificiale.
+             */
+
+            const cleaned =
+                normalizeSelectedText(
+                    rawText
+                );
+
+
+            if (!cleaned) {
+
+                return;
+            }
+
+
             selectedText =
-                text;
+                cleaned;
 
 
             updateSelectedText();
@@ -1584,19 +1874,75 @@
 
 
     // =====================================================
-    // AFIȘARE SELECȚIE
+    // NORMALIZARE SELECȚIE
+    // =====================================================
+
+    function normalizeSelectedText(text) {
+
+
+        return text
+
+            // CRLF / CR → LF
+            .replace(
+                /\r\n?/g,
+                "\n"
+            )
+
+            /*
+             * Spațiile multiple din interior
+             * devin un singur spațiu.
+             */
+
+            .replace(
+                /[ \t]+/g,
+                " "
+            )
+
+            /*
+             * Eliminăm spațiile de la
+             * începutul și sfârșitul
+             * fiecărei linii.
+             */
+
+            .replace(
+                / *\n */g,
+                "\n"
+            )
+
+            /*
+             * Dacă PDF.js introduce mai multe
+             * rânduri goale consecutiv,
+             * le reducem.
+             */
+
+            .replace(
+                /\n{3,}/g,
+                "\n\n"
+            )
+
+            .trim();
+
+    }
+
+
+    // =====================================================
+    // UPDATE SELECTED TEXT
     // =====================================================
 
     function updateSelectedText() {
 
+
         if (!selectedText) {
+
 
             selectedTextBox.textContent =
                 "Selectează textul din PDF.";
 
+
             selectedTextBox.classList.add(
                 "no-selection"
             );
+
 
             return;
         }
@@ -1604,6 +1950,7 @@
 
         selectedTextBox.textContent =
             selectedText;
+
 
         selectedTextBox.classList.remove(
             "no-selection"
@@ -1613,16 +1960,21 @@
 
 
     // =====================================================
-    // ȘTERGERE SELECȚIE
+    // CLEAR SELECTION
     // =====================================================
 
     clearSelectionButton.addEventListener(
         "click",
         () => {
 
+
             selectedText = "";
 
-            window.getSelection()?.removeAllRanges();
+
+            window
+                .getSelection()
+                ?.removeAllRanges();
+
 
             updateSelectedText();
 
@@ -1639,9 +1991,11 @@
         .forEach(
             button => {
 
+
                 button.addEventListener(
                     "click",
                     () => {
+
 
                         const tag =
                             button.dataset.tag;
@@ -1659,16 +2013,19 @@
 
 
     // =====================================================
-    // ADAUGĂ ELEMENT TAGUIT
+    // ADD TAG
     // =====================================================
 
     function addTaggedItem(tag) {
 
+
         if (!selectedText) {
+
 
             alert(
                 "Selectează mai întâi textul din PDF."
             );
+
 
             return;
         }
@@ -1684,7 +2041,10 @@
                 tag,
 
             text:
-                selectedText
+                selectedText,
+
+            page:
+                currentPage
 
         });
 
@@ -1692,7 +2052,9 @@
         selectedText = "";
 
 
-        window.getSelection()?.removeAllRanges();
+        window
+            .getSelection()
+            ?.removeAllRanges();
 
 
         updateSelectedText();
@@ -1705,10 +2067,11 @@
 
 
     // =====================================================
-    // LISTA ELEMENTE
+    // TAGGED LIST
     // =====================================================
 
     function updateTaggedList() {
+
 
         taggedList.innerHTML = "";
 
@@ -1717,10 +2080,14 @@
             taggedItems.length === 0
         ) {
 
+
             taggedList.innerHTML =
-                '<div class="empty">' +
-                'Nu există încă elemente taguite.' +
-                '</div>';
+                `
+                <div class="empty">
+                    Nu există încă elemente taguite.
+                </div>
+                `;
+
 
             return;
         }
@@ -1729,184 +2096,147 @@
         taggedItems.forEach(
             (item, index) => {
 
+
                 const element =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
 
                 element.className =
                     "tagged-item";
 
 
-                const header =
-                    document.createElement("div");
+                element.innerHTML =
+                    `
+                    <div class="tagged-header">
 
+                        <span class="tag-name">
+                            &lt;${escapeHtml(item.tag)}&gt;
+                        </span>
 
-                header.className =
-                    "tagged-header";
+                        <span class="tag-number">
+                            #${index + 1}
+                            · Pag. ${item.page}
+                        </span>
 
+                    </div>
 
-                header.innerHTML = `
+                    <div class="tagged-text">
+                        ${escapeHtml(item.text)}
+                    </div>
 
-                    <span class="tag-name">
-                        &lt;${escapeHtml(item.tag)}&gt;
-                    </span>
+                    <div class="item-actions">
 
-                    <span class="tag-number">
-                        #${index + 1}
-                    </span>
+                        <button
+                            class="small secondary"
+                            data-action="up"
+                        >
+                            ↑
+                        </button>
 
-                `;
+                        <button
+                            class="small secondary"
+                            data-action="down"
+                        >
+                            ↓
+                        </button>
 
+                        <button
+                            class="small danger"
+                            data-action="delete"
+                        >
+                            Șterge
+                        </button>
 
-                const text =
-                    document.createElement("div");
-
-
-                text.className =
-                    "tagged-text";
-
-
-                text.textContent =
-                    item.text;
-
-
-                const actions =
-                    document.createElement("div");
-
-
-                actions.className =
-                    "item-actions";
+                    </div>
+                    `;
 
 
                 // ========================================
-                // SUS
+                // UP
                 // ========================================
 
-                const upButton =
-                    document.createElement("button");
-
-
-                upButton.textContent =
-                    "↑";
-
-
-                upButton.className =
-                    "small secondary";
-
-
-                upButton.disabled =
+                element
+                    .querySelector(
+                        '[data-action="up"]'
+                    )
+                    .disabled =
                     index === 0;
 
 
-                upButton.addEventListener(
-                    "click",
-                    () => {
+                element
+                    .querySelector(
+                        '[data-action="up"]'
+                    )
+                    .addEventListener(
+                        "click",
+                        () => {
 
-                        moveItem(
-                            index,
-                            index - 1
-                        );
+                            moveItem(
+                                index,
+                                index - 1
+                            );
 
-                    }
-                );
+                        }
+                    );
 
 
                 // ========================================
-                // JOS
+                // DOWN
                 // ========================================
 
-                const downButton =
-                    document.createElement("button");
-
-
-                downButton.textContent =
-                    "↓";
-
-
-                downButton.className =
-                    "small secondary";
-
-
-                downButton.disabled =
+                element
+                    .querySelector(
+                        '[data-action="down"]'
+                    )
+                    .disabled =
                     index ===
                     taggedItems.length - 1;
 
 
-                downButton.addEventListener(
-                    "click",
-                    () => {
+                element
+                    .querySelector(
+                        '[data-action="down"]'
+                    )
+                    .addEventListener(
+                        "click",
+                        () => {
 
-                        moveItem(
-                            index,
-                            index + 1
-                        );
+                            moveItem(
+                                index,
+                                index + 1
+                            );
 
-                    }
-                );
+                        }
+                    );
 
 
                 // ========================================
-                // ȘTERGE
+                // DELETE
                 // ========================================
 
-                const deleteButton =
-                    document.createElement("button");
+                element
+                    .querySelector(
+                        '[data-action="delete"]'
+                    )
+                    .addEventListener(
+                        "click",
+                        () => {
 
 
-                deleteButton.textContent =
-                    "Șterge";
+                            taggedItems.splice(
+                                index,
+                                1
+                            );
 
 
-                deleteButton.className =
-                    "small danger";
+                            updateTaggedList();
 
+                            updateXml();
 
-                deleteButton.addEventListener(
-                    "click",
-                    () => {
-
-                        taggedItems.splice(
-                            index,
-                            1
-                        );
-
-
-                        updateTaggedList();
-
-                        updateXml();
-
-                    }
-                );
-
-
-                actions.appendChild(
-                    upButton
-                );
-
-
-                actions.appendChild(
-                    downButton
-                );
-
-
-                actions.appendChild(
-                    deleteButton
-                );
-
-
-                element.appendChild(
-                    header
-                );
-
-
-                element.appendChild(
-                    text
-                );
-
-
-                element.appendChild(
-                    actions
-                );
+                        }
+                    );
 
 
                 taggedList.appendChild(
@@ -1920,13 +2250,14 @@
 
 
     // =====================================================
-    // MUTARE ELEMENT
+    // MOVE ITEM
     // =====================================================
 
     function moveItem(
         fromIndex,
         toIndex
     ) {
+
 
         if (
             toIndex < 0 ||
@@ -1964,12 +2295,33 @@
 
     function escapeXml(text) {
 
+
         return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&apos;");
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&apos;"
+            );
 
     }
 
@@ -1980,21 +2332,43 @@
 
     function escapeHtml(text) {
 
+
         return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
 
     }
 
 
     // =====================================================
-    // GENERARE XML
+    // GENERATE XML
     // =====================================================
 
     function generateXml() {
+
 
         let xml =
 `<?xml version="1.0" encoding="UTF-8"?>
@@ -2005,16 +2379,16 @@
 `;
 
 
-        for (
-            const item
-            of taggedItems
-        ) {
+        taggedItems.forEach(
+            item => {
 
-            xml +=
+
+                xml +=
 `<${item.tag}>${escapeXml(item.text)}</${item.tag}>
 `;
 
-        }
+            }
+        );
 
 
         xml +=
@@ -2035,6 +2409,7 @@
 
     function updateXml() {
 
+
         xmlPreview.value =
             generateXml();
 
@@ -2049,7 +2424,9 @@
         "click",
         async () => {
 
+
             try {
+
 
                 await navigator.clipboard.writeText(
                     xmlPreview.value
@@ -2073,6 +2450,7 @@
 
             } catch (error) {
 
+
                 alert(
                     "Nu am putut copia XML-ul."
                 );
@@ -2090,6 +2468,7 @@
     downloadXmlButton.addEventListener(
         "click",
         () => {
+
 
             const xml =
                 generateXml();
@@ -2112,7 +2491,9 @@
 
 
             const link =
-                document.createElement("a");
+                document.createElement(
+                    "a"
+                );
 
 
             link.href =
@@ -2140,169 +2521,6 @@
 
         }
     );
-
-
-    // =====================================================
-    // PAGINI
-    // =====================================================
-
-    prevPageButton.addEventListener(
-        "click",
-        () => {
-
-            if (
-                currentPage <= 1
-            ) {
-
-                return;
-            }
-
-
-            currentPage--;
-
-            scrollToPage(
-                currentPage
-            );
-
-            updatePageControls();
-
-        }
-    );
-
-
-    nextPageButton.addEventListener(
-        "click",
-        () => {
-
-            if (
-                currentPage >= totalPages
-            ) {
-
-                return;
-            }
-
-
-            currentPage++;
-
-            scrollToPage(
-                currentPage
-            );
-
-            updatePageControls();
-
-        }
-    );
-
-
-    // =====================================================
-    // SCROLL LA PAGINĂ
-    // =====================================================
-
-    function scrollToPage(
-        pageNumber
-    ) {
-
-        const page =
-            document.querySelector(
-                `.pdf-page[data-page="${pageNumber}"]`
-            );
-
-
-        if (!page) {
-
-            return;
-        }
-
-
-        page.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-    }
-
-
-    // =====================================================
-    // PAGINATION UI
-    // =====================================================
-
-    function updatePageControls() {
-
-        pageInfo.textContent =
-            `Pagina ${currentPage} / ${totalPages}`;
-
-
-        prevPageButton.disabled =
-            currentPage <= 1;
-
-
-        nextPageButton.disabled =
-            currentPage >= totalPages;
-
-    }
-
-
-    // =====================================================
-    // DETECTARE PAGINA LA SCROLL
-    // =====================================================
-
-    const pdfObserver =
-        new IntersectionObserver(
-            entries => {
-
-                entries.forEach(
-                    entry => {
-
-                        if (
-                            entry.isIntersecting
-                        ) {
-
-                            const pageNumber =
-                                parseInt(
-                                    entry
-                                        .target
-                                        .dataset
-                                        .page
-                                );
-
-
-                            if (
-                                !isNaN(pageNumber)
-                            ) {
-
-                                currentPage =
-                                    pageNumber;
-
-
-                                updatePageControls();
-
-                            }
-
-                        }
-
-                    }
-                );
-
-            },
-            {
-                root:
-                    document.querySelector(
-                        ".pdf-panel"
-                    ),
-
-                threshold:
-                    0.5
-            }
-        );
-
-
-    /*
-     * Observer-ul este atașat după fiecare
-     * încărcare a documentului.
-     */
-
-    const originalRenderAllPages =
-        renderAllPages;
 
 
     // =====================================================
