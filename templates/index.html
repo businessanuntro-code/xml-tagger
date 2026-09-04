@@ -1,13 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>XML Tagger</title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -16,912 +22,1056 @@
         body {
             margin: 0;
             padding: 0;
-            width: 100%;
-            min-height: 100%;
+            height: 100%;
             font-family: Arial, Helvetica, sans-serif;
-            background: #eef1f5;
-            color: #222;
+            background: #e9edf2;
         }
 
         body {
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        /* =====================================================
-           HEADER
-        ===================================================== */
+
+        /* ==================================================
+           TOPBAR
+        ================================================== */
 
         .topbar {
-            width: 100%;
-            background: #1f2937;
+            height: 58px;
+            background: #20252b;
             color: white;
-            padding: 14px 20px;
+
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+
+            padding: 0 18px;
+
+            gap: 15px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,.18);
+
+            position: relative;
+            z-index: 100;
         }
 
         .topbar-title {
-            font-size: 21px;
+            font-size: 18px;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .topbar-subtitle {
             font-size: 13px;
-            opacity: 0.8;
+            opacity: .7;
         }
-
-        /* =====================================================
-           UPLOAD
-        ===================================================== */
 
         .upload-area {
-            background: white;
-            border-bottom: 1px solid #d7dce2;
-            padding: 14px 20px;
-        }
+            margin-left: auto;
 
-        .upload-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
 
-        .upload-label {
-            font-weight: 700;
-            font-size: 14px;
+            gap: 8px;
         }
 
         #wordFile {
-            max-width: 350px;
+            color: white;
+            font-size: 12px;
+            max-width: 260px;
         }
 
-        button {
-            border: none;
+        .upload-button {
+            border: 0;
+            background: #ffffff;
+            color: #20252b;
+
+            padding: 8px 14px;
+
             border-radius: 5px;
-            padding: 8px 13px;
+
+            font-weight: 700;
+
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
         }
 
-        button:hover {
-            opacity: 0.9;
+        .upload-button:hover {
+            background: #e5e5e5;
         }
 
-        .btn-primary {
-            background: #2563eb;
-            color: white;
-        }
 
-        .btn-success {
-            background: #16a34a;
-            color: white;
-        }
+        /* ==================================================
+           MAIN
+        ================================================== */
 
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-        }
+        .main {
+            height: calc(100vh - 58px);
 
-        .btn-secondary {
-            background: #6b7280;
-            color: white;
-        }
-
-        .btn-light {
-            background: #e5e7eb;
-            color: #111827;
-        }
-
-        .status {
-            margin-top: 8px;
-            font-size: 13px;
-            color: #374151;
-        }
-
-        /* =====================================================
-           MAIN LAYOUT
-        ===================================================== */
-
-        .main-layout {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 390px;
+
+            grid-template-columns:
+                minmax(500px, 1fr)
+                430px;
+
             gap: 0;
-            width: 100%;
-            min-height: calc(100vh - 115px);
         }
 
-        /* =====================================================
-           LEFT - DOCUMENT
-        ===================================================== */
+
+        /* ==================================================
+           LEFT SIDE
+        ================================================== */
 
         .document-panel {
             min-width: 0;
-            padding: 25px;
-            overflow: auto;
-            background: #dfe4ea;
+
+            height: 100%;
+
+            overflow: hidden;
+
+            background: #bfc5cb;
+
+            border-right:
+                1px solid #9da3a9;
+
+            display: flex;
+            flex-direction: column;
         }
 
-        .document-panel-header {
+        .document-toolbar {
+            height: 45px;
+
+            flex-shrink: 0;
+
+            background: #f5f6f7;
+
+            border-bottom:
+                1px solid #c7cbd0;
+
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            gap: 10px;
+
+            padding: 0 12px;
+
+            gap: 12px;
+
+            font-size: 12px;
+
+            color: #555;
         }
 
-        .document-panel-title {
-            font-size: 17px;
+        .document-name {
             font-weight: 700;
-            color: #1f2937;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .document-info {
-            font-size: 12px;
-            color: #6b7280;
+            margin-left: auto;
+
+            white-space: nowrap;
         }
 
-        /*
-         * IMPORTANT:
-         * Nu mai avem o înălțime fixă mică.
-         * Pagina se poate extinde pe toată lungimea documentului.
-         */
+
+        /* ==================================================
+           DOCUMENT VIEWER
+        ================================================== */
+
+        .document-scroll {
+            flex: 1;
+
+            overflow: auto;
+
+            padding: 35px;
+
+            scroll-behavior: smooth;
+        }
 
         .document-page {
-            width: min(950px, 100%);
-            min-height: 1200px;
-            margin: 0 auto 30px auto;
-            padding: 65px 75px;
+
+            position: relative;
+
+            margin: 0 auto;
 
             background: white;
-            color: #111;
 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+            color: #000;
 
-            line-height: 1.5;
-            font-family: Georgia, "Times New Roman", serif;
-            font-size: 16px;
+            box-shadow:
+                0 3px 15px rgba(0,0,0,.25);
 
-            outline: none;
+            min-height: 1100px;
+
+            width: 794px;
+
+            padding:
+                96px
+                96px
+                96px
+                96px;
+
             overflow: visible;
 
-            user-select: text;
-            -webkit-user-select: text;
+            transform-origin: top center;
         }
 
-        /* =====================================================
-           WORD ELEMENTS
-        ===================================================== */
 
-        .document-page p {
-            margin: 0 0 12px 0;
+        /* ==================================================
+           WORD PARAGRAPHS
+        ================================================== */
+
+        .word-paragraph {
+
+            margin-top: 0;
+
+            margin-bottom: 8px;
+
+            min-height: 1em;
+
             white-space: pre-wrap;
-            word-break: normal;
-        }
 
-        .document-page h1,
-        .document-page h2,
-        .document-page h3,
-        .document-page h4,
-        .document-page h5,
-        .document-page h6 {
-            display: block;
-            width: 100%;
-            white-space: normal;
-            overflow: visible;
-            word-break: normal;
-            color: #111;
-        }
+            word-wrap: break-word;
 
-        .word-title {
-            font-size: 27px;
-            line-height: 1.25;
-            font-weight: 700;
-            margin: 0 0 24px 0;
-        }
+            font-family:
+                "Times New Roman",
+                Times,
+                serif;
 
-        .word-subtitle {
-            font-size: 22px;
-            line-height: 1.3;
-            font-weight: 700;
-            margin: 0 0 20px 0;
-        }
-
-        .word-heading-1 {
-            font-size: 24px;
-            line-height: 1.3;
-            font-weight: 700;
-            margin: 28px 0 14px 0;
-        }
-
-        .word-heading-2 {
-            font-size: 21px;
-            line-height: 1.3;
-            font-weight: 700;
-            margin: 25px 0 12px 0;
-        }
-
-        .word-heading-3 {
-            font-size: 19px;
-            line-height: 1.35;
-            font-weight: 700;
-            margin: 22px 0 10px 0;
-        }
-
-        .word-heading-4 {
-            font-size: 17px;
-            line-height: 1.4;
-            font-weight: 700;
-            margin: 19px 0 9px 0;
-        }
-
-        .word-heading-5 {
             font-size: 16px;
-            line-height: 1.45;
-            font-weight: 700;
-            margin: 17px 0 8px 0;
+
+            line-height: 1.15;
         }
 
-        .word-heading-6 {
-            font-size: 15px;
-            line-height: 1.45;
-            font-weight: 700;
-            margin: 15px 0 7px 0;
+
+        /* ==================================================
+           IMPORTANT:
+           NU MODIFICAM FORMATAREA WORD DUPA STYLE.
+
+           Aceste clase sunt doar fallback.
+        ================================================== */
+
+        .word-paragraph.style-title {
+            font-weight: normal;
         }
 
-        .word-list-paragraph {
-            margin-left: 25px !important;
+        .word-paragraph.style-heading-1,
+        .word-paragraph.style-heading-2,
+        .word-paragraph.style-heading-3,
+        .word-paragraph.style-heading-4,
+        .word-paragraph.style-heading-5,
+        .word-paragraph.style-heading-6 {
+            font-weight: normal;
+        }
+
+
+        /* ==================================================
+           TAB
+        ================================================== */
+
+        .word-tab {
+            display: inline-block;
+
+            width: 45px;
+        }
+
+
+        /* ==================================================
+           IMAGES
+        ================================================== */
+
+        .word-image {
+
+            max-width: 100%;
+
+            height: auto;
+
+            display: inline-block;
+
+            vertical-align: middle;
+
+            margin: 4px 0;
+        }
+
+
+        /* ==================================================
+           TABLES
+        ================================================== */
+
+        .word-table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            margin-top: 10px;
+
+            margin-bottom: 10px;
         }
 
         .word-table {
-            width: 100%;
+
             border-collapse: collapse;
-            margin: 20px 0;
-            font-family: Arial, Helvetica, sans-serif;
+
+            width: 100%;
+
+            table-layout: auto;
+
             font-size: 14px;
         }
 
-        .word-table td,
-        .word-table th {
-            border: 1px solid #999;
-            padding: 6px 8px;
+        .word-table-cell {
+
+            border:
+                1px solid #444;
+
+            padding: 5px 7px;
+
             vertical-align: top;
+
+            text-align: left;
         }
 
-        .word-image {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 15px auto;
+        .word-table th {
+            font-weight: 700;
         }
 
-        /* =====================================================
+        .word-table .word-paragraph {
+            margin-bottom: 3px;
+        }
+
+
+        /* ==================================================
            SELECTION
-        ===================================================== */
+        ================================================== */
 
-        .selected-tag {
-            outline: 2px solid #2563eb;
-            background: rgba(37, 99, 235, 0.08);
+        .document-page ::selection {
+            background: #b8d7ff;
+            color: #000;
         }
 
-        /* =====================================================
+
+        /* ==================================================
            RIGHT PANEL
-        ===================================================== */
+        ================================================== */
 
-        .right-panel {
-            background: #f8fafc;
-            border-left: 1px solid #cfd5dc;
-            height: calc(100vh - 115px);
+        .tag-panel {
+
+            height: 100%;
+
             overflow-y: auto;
-            padding: 18px;
-            position: sticky;
-            top: 115px;
+
+            background: #f7f8f9;
+
+            padding: 16px;
         }
+
 
         .panel-section {
+
             background: white;
-            border: 1px solid #d7dce2;
+
+            border:
+                1px solid #d7dbe0;
+
             border-radius: 7px;
-            margin-bottom: 15px;
-            overflow: hidden;
+
+            margin-bottom: 13px;
+
+            padding: 12px;
         }
 
-        .panel-section-title {
-            background: #f1f5f9;
-            padding: 10px 12px;
-            font-size: 14px;
+        .panel-title {
+
+            font-size: 13px;
+
             font-weight: 700;
-            border-bottom: 1px solid #d7dce2;
+
+            margin-bottom: 9px;
+
+            color: #30343a;
         }
 
-        .panel-section-content {
-            padding: 10px;
-        }
 
-        /* =====================================================
+        /* ==================================================
            TAG BUTTONS
-        ===================================================== */
+        ================================================== */
 
         .tag-grid {
+
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 7px;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 6px;
         }
 
         .tag-button {
-            width: 100%;
-            padding: 8px 6px;
-            background: #e8eef7;
-            color: #1e3a5f;
-            border: 1px solid #c7d4e7;
+
+            border:
+                1px solid #c7ccd2;
+
+            background: #fff;
+
             border-radius: 5px;
-            font-size: 12px;
-            font-weight: 600;
+
+            padding: 8px 7px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
             cursor: pointer;
-            text-align: center;
+
+            color: #30343a;
         }
 
         .tag-button:hover {
-            background: #dbeafe;
+
+            background: #eef2f6;
+
+            border-color: #9da6af;
         }
 
-        .tag-button.special {
-            background: #fef3c7;
-            border-color: #f59e0b;
-            color: #92400e;
-        }
 
-        /* =====================================================
-           SELECTED TEXT
-        ===================================================== */
+        /* ==================================================
+           SELECTION BOX
+        ================================================== */
 
         .selection-box {
-            width: 100%;
-            min-height: 75px;
-            padding: 9px;
-            border: 1px solid #cbd5e1;
+
+            background: #f1f4f7;
+
+            border:
+                1px solid #d2d7dc;
+
             border-radius: 5px;
-            background: #f8fafc;
+
+            padding: 9px;
+
             font-size: 12px;
-            line-height: 1.45;
+
+            line-height: 1.4;
+
+            min-height: 55px;
+
+            max-height: 130px;
+
+            overflow-y: auto;
+
             white-space: pre-wrap;
-            overflow-wrap: anywhere;
+
+            word-break: break-word;
         }
+
 
         .selection-empty {
-            color: #94a3b8;
-            font-style: italic;
+
+            color: #888;
         }
 
-        /* =====================================================
+
+        /* ==================================================
            TAGGED ITEMS
-        ===================================================== */
+        ================================================== */
 
         .tagged-list {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 7px;
-            max-height: 500px;
-            overflow-y: auto;
         }
 
         .tagged-item {
-            border: 1px solid #d1d5db;
-            background: #fff;
+
+            border:
+                1px solid #d3d8dd;
+
+            background: #fafafa;
+
             border-radius: 5px;
+
             padding: 8px;
         }
 
         .tagged-item-header {
+
             display: flex;
-            justify-content: space-between;
+
             align-items: center;
-            gap: 8px;
+
+            gap: 6px;
+
             margin-bottom: 5px;
         }
 
-        .tagged-item-tag {
-            font-size: 11px;
+        .tag-name {
+
+            font-size: 10px;
+
             font-weight: 700;
-            color: #1d4ed8;
-            background: #eff6ff;
-            padding: 3px 6px;
+
+            background: #30363d;
+
+            color: white;
+
             border-radius: 4px;
+
+            padding: 3px 5px;
         }
 
-        .tagged-item-position {
-            font-size: 10px;
-            color: #9ca3af;
+        .tag-position {
+
+            font-size: 9px;
+
+            color: #888;
+
+            margin-left: auto;
         }
 
-        .tagged-item-text {
-            font-size: 12px;
-            line-height: 1.4;
-            color: #374151;
+        .tagged-text {
+
+            font-size: 11px;
+
+            line-height: 1.35;
+
             max-height: 70px;
+
             overflow: hidden;
-            word-break: break-word;
+
+            white-space: pre-wrap;
         }
 
-        .tagged-item-actions {
-            display: flex;
-            gap: 5px;
-            margin-top: 7px;
-        }
+        .remove-tag {
 
-        .tagged-item-actions button {
+            margin-top: 6px;
+
+            border: 0;
+
+            background: #eee;
+
+            color: #555;
+
             padding: 4px 7px;
+
             font-size: 10px;
+
+            border-radius: 4px;
+
+            cursor: pointer;
         }
 
-        /* =====================================================
+        .remove-tag:hover {
+
+            background: #ddd;
+        }
+
+
+        /* ==================================================
            XML
-        ===================================================== */
+        ================================================== */
 
         .xml-preview {
+
             width: 100%;
-            min-height: 260px;
+
+            min-height: 200px;
+
+            max-height: 350px;
+
             resize: vertical;
-            font-family: Consolas, "Courier New", monospace;
+
+            font-family:
+                Consolas,
+                "Courier New",
+                monospace;
+
             font-size: 11px;
+
             line-height: 1.4;
-            padding: 10px;
-            border: 1px solid #cbd5e1;
+
+            padding: 9px;
+
+            border:
+                1px solid #cbd0d5;
+
             border-radius: 5px;
-            background: #0f172a;
-            color: #e2e8f0;
+
+            background: #20252b;
+
+            color: #fff;
         }
 
+
+        /* ==================================================
+           ACTION BUTTONS
+        ================================================== */
+
         .action-row {
-            display: flex;
-            gap: 7px;
-            flex-wrap: wrap;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 6px;
+
             margin-top: 8px;
         }
 
-        /* =====================================================
-           EMPTY DOCUMENT
-        ===================================================== */
+        .action-button {
 
-        .empty-document {
-            width: min(950px, 100%);
-            min-height: 600px;
-            margin: 0 auto;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 50px;
-            color: #94a3b8;
+            border: 0;
+
+            border-radius: 5px;
+
+            padding: 9px;
+
+            cursor: pointer;
+
+            font-weight: 700;
+
+            font-size: 11px;
         }
 
-        /* =====================================================
+        .action-primary {
+
+            background: #30363d;
+
+            color: white;
+        }
+
+        .action-secondary {
+
+            background: #e5e8eb;
+
+            color: #30343a;
+        }
+
+
+        /* ==================================================
+           STATUS
+        ================================================== */
+
+        #status {
+
+            position: fixed;
+
+            bottom: 15px;
+
+            left: 15px;
+
+            background: #20252b;
+
+            color: white;
+
+            padding: 8px 12px;
+
+            border-radius: 5px;
+
+            font-size: 11px;
+
+            display: none;
+
+            z-index: 1000;
+        }
+
+
+        /* ==================================================
            RESPONSIVE
-        ===================================================== */
+        ================================================== */
 
-        @media (max-width: 1100px) {
-            .main-layout {
-                grid-template-columns: minmax(0, 1fr) 340px;
+        @media (max-width: 1000px) {
+
+            body {
+                overflow: auto;
             }
 
-            .document-page {
-                padding: 50px;
-            }
-        }
-
-        @media (max-width: 850px) {
-            .main-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .right-panel {
-                position: static;
+            .main {
                 height: auto;
-                border-left: none;
-                border-top: 1px solid #cfd5dc;
+
+                min-height:
+                    calc(100vh - 58px);
+
+                grid-template-columns:
+                    1fr;
             }
 
             .document-panel {
-                padding: 12px;
+                height: 75vh;
             }
 
-            .document-page {
-                padding: 35px 25px;
+            .tag-panel {
+                height: auto;
+
+                overflow: visible;
             }
         }
+
     </style>
+
 </head>
+
 
 <body>
 
-<!-- =========================================================
-     HEADER
-========================================================= -->
+
+<!-- ======================================================
+     TOPBAR
+======================================================= -->
 
 <div class="topbar">
-    <div>
-        <div class="topbar-title">XML Tagger</div>
-        <div class="topbar-subtitle">
-            Word → XML compatibil cu parserul articolelor științifice
-        </div>
+
+    <div class="topbar-title">
+        XML Tagger
     </div>
 
-    <div>
-        <button
-            type="button"
-            class="btn-light"
-            onclick="clearAll()">
-            Șterge tot
-        </button>
+    <div class="topbar-subtitle">
+        Word → XML
     </div>
-</div>
 
-
-<!-- =========================================================
-     WORD UPLOAD
-========================================================= -->
-
-<div class="upload-area">
-
-    <div class="upload-row">
-
-        <span class="upload-label">
-            Document Word:
-        </span>
+    <div class="upload-area">
 
         <input
             type="file"
             id="wordFile"
-            accept=".docx">
+            accept=".docx"
+        >
 
         <button
-            type="button"
-            class="btn-primary"
-            onclick="uploadWord()">
+            class="upload-button"
+            onclick="uploadWord()"
+        >
             Încarcă Word
         </button>
 
     </div>
 
-    <div
-        id="uploadStatus"
-        class="status">
-        Selectează un fișier .docx.
-    </div>
-
 </div>
 
 
-<!-- =========================================================
+<!-- ======================================================
      MAIN
-========================================================= -->
+======================================================= -->
 
-<div class="main-layout">
+<div class="main">
 
-    <!-- =====================================================
-         DOCUMENT
-    ====================================================== -->
 
-    <div class="document-panel">
+    <!-- ==================================================
+         LEFT - DOCUMENT
+    =================================================== -->
 
-        <div class="document-panel-header">
+    <section class="document-panel">
 
-            <div class="document-panel-title">
-                Document
+        <div class="document-toolbar">
+
+            <div
+                id="documentName"
+                class="document-name"
+            >
+                Niciun document încărcat
             </div>
 
             <div
                 id="documentInfo"
-                class="document-info">
-                Niciun document încărcat
+                class="document-info"
+            >
+                Selectează textul din document
             </div>
 
         </div>
 
-        <div id="documentContainer">
 
-            <div class="empty-document">
-                <div>
-                    <h2>Încarcă un document Word</h2>
+        <div
+            id="documentScroll"
+            class="document-scroll"
+        >
 
-                    <p>
-                        După încărcare, documentul va fi afișat aici
-                        și textul va putea fi selectat pentru etichetare.
-                    </p>
+            <div
+                id="documentPage"
+                class="document-page"
+            >
+
+                <div
+                    style="
+                        color:#888;
+                        text-align:center;
+                        padding-top:400px;
+                        font-size:14px;
+                    "
+                >
+                    Încarcă un document Word (.docx)
                 </div>
+
             </div>
 
         </div>
 
-    </div>
+    </section>
 
 
-    <!-- =====================================================
-         RIGHT PANEL
-    ====================================================== -->
+    <!-- ==================================================
+         RIGHT - TAGS
+    =================================================== -->
 
-    <div class="right-panel">
+    <aside class="tag-panel">
 
-        <!-- =================================================
+
+        <!-- ==================================================
              SELECTED TEXT
-        ================================================== -->
+        =================================================== -->
 
         <div class="panel-section">
 
-            <div class="panel-section-title">
+            <div class="panel-title">
                 Text selectat
             </div>
 
-            <div class="panel-section-content">
-
-                <div
-                    id="selectionBox"
-                    class="selection-box">
-
-                    <span class="selection-empty">
-                        Selectează un text din document.
-                    </span>
-
-                </div>
-
+            <div
+                id="selectionBox"
+                class="selection-box"
+            >
+                <span class="selection-empty">
+                    Selectează text în documentul din stânga.
+                </span>
             </div>
 
         </div>
 
 
-        <!-- =================================================
+        <!-- ==================================================
              DATE ARTICOL
-        ================================================== -->
+        =================================================== -->
 
         <div class="panel-section">
 
-            <div class="panel-section-title">
+            <div class="panel-title">
                 Date articol
             </div>
 
-            <div class="panel-section-content">
+            <div class="tag-grid">
 
-                <div class="tag-grid">
+                <button
+                    class="tag-button"
+                    onclick="addTag('TITLU')"
+                >
+                    TITLU
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('TITLU')">
-                        TITLU
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('English_Title')"
+                >
+                    English_Title
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('English_Title')">
-                        English_Title
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('Autor')"
+                >
+                    Autor
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('Autor')">
-                        Autor
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('Functii')"
+                >
+                    Functii
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('Functii')">
-                        Functii
-                    </button>
-
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('Corespondent')">
-                        Corespondent
-                    </button>
-
-                </div>
+                <button
+                    class="tag-button"
+                    onclick="addTag('Corespondent')"
+                >
+                    Corespondent
+                </button>
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             REZUMATE / KEYWORDS
-        ================================================== -->
+        <!-- ==================================================
+             REZUMATE
+        =================================================== -->
 
         <div class="panel-section">
 
-            <div class="panel-section-title">
+            <div class="panel-title">
                 Rezumate și cuvinte-cheie
             </div>
 
-            <div class="panel-section-content">
+            <div class="tag-grid">
 
-                <div class="tag-grid">
+                <button
+                    class="tag-button"
+                    onclick="addTag('Abstract')"
+                >
+                    Abstract
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('Abstract')">
-                        Abstract
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('Keywords_ENG')"
+                >
+                    Keywords_ENG
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('Keywords_ENG')">
-                        Keywords_ENG
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('Rezumat')"
+                >
+                    Rezumat
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('Rezumat')">
-                        Rezumat
-                    </button>
-
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('Keywords_ROM')">
-                        Keywords_ROM
-                    </button>
-
-                </div>
+                <button
+                    class="tag-button"
+                    onclick="addTag('Keywords_ROM')"
+                >
+                    Keywords_ROM
+                </button>
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             CONTINUT ARTICOL
-        ================================================== -->
+        <!-- ==================================================
+             CONTINUT
+        =================================================== -->
 
         <div class="panel-section">
 
-            <div class="panel-section-title">
+            <div class="panel-title">
                 Conținut articol
             </div>
 
-            <div class="panel-section-content">
+            <div class="tag-grid">
 
-                <div class="tag-grid">
+                <button
+                    class="tag-button"
+                    onclick="addTag('Intertitlu')"
+                >
+                    Intertitlu
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('Intertitlu')">
-                        Intertitlu
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('Sub_Intertitlu')"
+                >
+                    Sub_Intertitlu
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('Sub_Intertitlu')">
-                        Sub_Intertitlu
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('TEXT_indent')"
+                >
+                    TEXT_indent
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('TEXT_indent')">
-                        TEXT_indent
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('L')"
+                >
+                    L
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('L')">
-                        L
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('LI')"
+                >
+                    LI
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('LI')">
-                        LI
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('LBody')"
+                >
+                    LBody
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('LBody')">
-                        LBody
-                    </button>
-
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('P')">
-                        P
-                    </button>
-
-                </div>
+                <button
+                    class="tag-button"
+                    onclick="addTag('P')"
+                >
+                    P
+                </button>
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             STRUCTURA XML
-        ================================================== -->
+        <!-- ==================================================
+             STRUCTURA
+        =================================================== -->
 
         <div class="panel-section">
 
-            <div class="panel-section-title">
+            <div class="panel-title">
                 Structură XML
             </div>
 
-            <div class="panel-section-content">
+            <div class="tag-grid">
 
-                <div class="tag-grid">
+                <button
+                    class="tag-button"
+                    onclick="addTag('Lbl')"
+                >
+                    Lbl
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('Lbl')">
-                        Lbl
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('NormalParagraphStyle')"
+                >
+                    NormalParagraphStyle
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('NormalParagraphStyle')">
-                        NormalParagraphStyle
-                    </button>
+                <button
+                    class="tag-button"
+                    onclick="addTag('_No_paragraph_style_')"
+                >
+                    _No_paragraph_style_
+                </button>
 
-                    <button
-                        type="button"
-                        class="tag-button"
-                        onclick="addTaggedItem('_No_paragraph_style_')">
-                        _No_paragraph_style_
-                    </button>
-
-                    <button
-                        type="button"
-                        class="tag-button special"
-                        onclick="addTaggedItem('Bibliografie')">
-                        Bibliografie
-                    </button>
-
-                </div>
+                <button
+                    class="tag-button"
+                    onclick="addTag('Bibliografie')"
+                >
+                    Bibliografie
+                </button>
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
+        <!-- ==================================================
              TAGGED ITEMS
-        ================================================== -->
+        =================================================== -->
 
         <div class="panel-section">
 
-            <div class="panel-section-title">
+            <div class="panel-title">
                 Elemente etichetate
             </div>
 
-            <div class="panel-section-content">
+            <div
+                id="taggedList"
+                class="tagged-list"
+            >
 
                 <div
-                    id="taggedList"
-                    class="tagged-list">
-
-                    <div class="selection-empty">
-                        Nu există elemente etichetate.
-                    </div>
-
+                    style="
+                        color:#888;
+                        font-size:11px;
+                    "
+                >
+                    Nu există elemente etichetate.
                 </div>
 
             </div>
@@ -929,546 +1079,109 @@
         </div>
 
 
-        <!-- =================================================
-             XML PREVIEW
-        ================================================== -->
+        <!-- ==================================================
+             XML
+        =================================================== -->
 
         <div class="panel-section">
 
-            <div class="panel-section-title">
-                XML
+            <div class="panel-title">
+                XML rezultat
             </div>
 
-            <div class="panel-section-content">
+            <textarea
+                id="xmlPreview"
+                class="xml-preview"
+                readonly
+            ></textarea>
 
-                <textarea
-                    id="xmlPreview"
-                    class="xml-preview"
-                    spellcheck="false"
-                    placeholder="XML-ul generat va apărea aici..."></textarea>
+            <div class="action-row">
 
-                <div class="action-row">
+                <button
+                    class="action-button action-primary"
+                    onclick="generateXml()"
+                >
+                    Generează XML
+                </button>
 
-                    <button
-                        type="button"
-                        class="btn-primary"
-                        onclick="generateXml()">
-                        Generează XML
-                    </button>
+                <button
+                    class="action-button action-secondary"
+                    onclick="copyXml()"
+                >
+                    Copiază XML
+                </button>
 
-                    <button
-                        type="button"
-                        class="btn-secondary"
-                        onclick="copyXml()">
-                        Copiază
-                    </button>
+                <button
+                    class="action-button action-secondary"
+                    onclick="downloadXml()"
+                >
+                    Descarcă XML
+                </button>
 
-                    <button
-                        type="button"
-                        class="btn-success"
-                        onclick="downloadXml()">
-                        Descarcă XML
-                    </button>
-
-                </div>
+                <button
+                    class="action-button action-secondary"
+                    onclick="clearAll()"
+                >
+                    Șterge tot
+                </button>
 
             </div>
 
         </div>
 
-    </div>
+
+    </aside>
 
 </div>
 
 
+<div id="status"></div>
+
+
 <script>
 
-/* ============================================================
-   GLOBAL DATA
-============================================================ */
+
+// ============================================================
+// GLOBAL DATA
+// ============================================================
 
 let taggedData = [];
 
-let selectionData = {
-    text: "",
-    startOffset: 0,
-    endOffset: 0
-};
+let selectionData = null;
 
 let documentText = "";
 
 let currentWordFilename = "";
 
 
-/* ============================================================
-   WORD UPLOAD
-============================================================ */
+// ============================================================
+// STATUS
+// ============================================================
 
-async function uploadWord() {
+function showStatus(message, duration = 2500) {
 
-    const fileInput = document.getElementById("wordFile");
-    const status = document.getElementById("uploadStatus");
+    const status =
+        document.getElementById("status");
 
-    if (!fileInput.files || fileInput.files.length === 0) {
+    status.textContent = message;
 
-        status.textContent =
-            "Selectează mai întâi un fișier Word (.docx).";
+    status.style.display = "block";
 
-        return;
-    }
+    setTimeout(() => {
 
-    const file = fileInput.files[0];
+        status.style.display = "none";
 
-    if (!file.name.toLowerCase().endsWith(".docx")) {
-
-        status.textContent =
-            "Este permis doar formatul .docx.";
-
-        return;
-    }
-
-    status.textContent =
-        "Se încarcă documentul Word...";
-
-    const formData = new FormData();
-
-    formData.append("file", file);
-
-    try {
-
-        const response = await fetch("/upload-word", {
-            method: "POST",
-            body: formData
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.detail ||
-                data.message ||
-                "Eroare la încărcarea documentului."
-            );
-        }
-
-        if (!data.html) {
-
-            throw new Error(
-                "Serverul nu a returnat conținutul documentului."
-            );
-        }
-
-        currentWordFilename =
-            data.filename || file.name;
-
-        renderWordDocument(data.html);
-
-        status.textContent =
-            "Document încărcat: " +
-            currentWordFilename;
-
-    } catch (error) {
-
-        console.error(error);
-
-        status.textContent =
-            "Eroare: " + error.message;
-    }
+    }, duration);
 }
 
 
-/* ============================================================
-   RENDER WORD
-============================================================ */
+// ============================================================
+// ESCAPE XML
+// ============================================================
 
-function renderWordDocument(html) {
+function escapeXml(text) {
 
-    const container =
-        document.getElementById("documentContainer");
-
-    container.innerHTML = "";
-
-    const page =
-        document.createElement("div");
-
-    page.className = "document-page";
-
-    page.id = "documentPage";
-
-    /*
-     * IMPORTANT:
-     * HTML-ul vine deja în ordinea reală din Word,
-     * inclusiv paragrafele și tabelele.
-     */
-
-    page.innerHTML = html;
-
-    container.appendChild(page);
-
-    /*
-     * Construim textul documentului în ordinea
-     * efectivă din DOM.
-     */
-
-    documentText =
-        page.innerText || page.textContent || "";
-
-    document.getElementById("documentInfo").textContent =
-        currentWordFilename +
-        " • " +
-        documentText.length +
-        " caractere";
-
-    /*
-     * Ascultăm selecțiile.
-     */
-
-    page.addEventListener(
-        "mouseup",
-        captureSelection
-    );
-
-    page.addEventListener(
-        "keyup",
-        captureSelection
-    );
-
-    /*
-     * Eliminăm eventualele restricții de selecție
-     * din HTML-ul primit.
-     */
-
-    page.querySelectorAll("*").forEach(el => {
-
-        el.style.userSelect = "text";
-        el.style.webkitUserSelect = "text";
-
-    });
-}
-
-
-/* ============================================================
-   FIND CHARACTER OFFSET
-============================================================ */
-
-function getCharacterOffset(root, targetNode, targetOffset) {
-
-    let total = 0;
-
-    const walker =
-        document.createTreeWalker(
-            root,
-            NodeFilter.SHOW_TEXT,
-            null
-        );
-
-    let node;
-
-    while (node = walker.nextNode()) {
-
-        if (node === targetNode) {
-
-            return total + targetOffset;
-        }
-
-        total += node.nodeValue.length;
-    }
-
-    return total;
-}
-
-
-/* ============================================================
-   CAPTURE SELECTION
-============================================================ */
-
-function captureSelection() {
-
-    const page =
-        document.getElementById("documentPage");
-
-    if (!page) {
-        return;
-    }
-
-    const selection =
-        window.getSelection();
-
-    if (!selection || selection.rangeCount === 0) {
-        return;
-    }
-
-    const range =
-        selection.getRangeAt(0);
-
-    if (!page.contains(range.commonAncestorContainer)) {
-        return;
-    }
-
-    const text =
-        selection.toString();
-
-    if (!text || !text.trim()) {
-        return;
-    }
-
-    const start =
-        getCharacterOffset(
-            page,
-            range.startContainer,
-            range.startOffset
-        );
-
-    const end =
-        getCharacterOffset(
-            page,
-            range.endContainer,
-            range.endOffset
-        );
-
-    selectionData = {
-        text: text,
-        startOffset: Math.min(start, end),
-        endOffset: Math.max(start, end)
-    };
-
-    const box =
-        document.getElementById("selectionBox");
-
-    box.textContent = text;
-}
-
-
-/* ============================================================
-   ADD TAG
-============================================================ */
-
-function addTaggedItem(tag) {
-
-    if (!selectionData.text ||
-        !selectionData.text.trim()) {
-
-        alert(
-            "Selectează mai întâi textul din document."
-        );
-
-        return;
-    }
-
-    /*
-     * Bibliografie trebuie să existe o singură dată.
-     */
-
-    if (tag === "Bibliografie") {
-
-        const alreadyExists =
-            taggedData.some(
-                item => item.tag === "Bibliografie"
-            );
-
-        if (alreadyExists) {
-
-            alert(
-                "Marcajul Bibliografie există deja."
-            );
-
-            return;
-        }
-    }
-
-    const item = {
-
-        id:
-            Date.now() +
-            "_" +
-            Math.random()
-                .toString(36)
-                .substring(2, 8),
-
-        tag: tag,
-
-        text: selectionData.text,
-
-        startOffset:
-            selectionData.startOffset,
-
-        endOffset:
-            selectionData.endOffset
-    };
-
-    taggedData.push(item);
-
-    /*
-     * ORDINEA ESTE ÎNTOTDEAUNA ORDINEA
-     * DIN DOCUMENT, NU ORDINEA CLICK-URILOR.
-     */
-
-    sortTaggedData();
-
-    renderTaggedList();
-
-    clearSelectionVisual();
-}
-
-
-/* ============================================================
-   SORT BY DOCUMENT POSITION
-============================================================ */
-
-function sortTaggedData() {
-
-    taggedData.sort(
-        (a, b) =>
-            a.startOffset -
-            b.startOffset
-    );
-}
-
-
-/* ============================================================
-   RENDER TAGGED LIST
-============================================================ */
-
-function renderTaggedList() {
-
-    const list =
-        document.getElementById("taggedList");
-
-    if (!taggedData.length) {
-
-        list.innerHTML =
-            '<div class="selection-empty">' +
-            'Nu există elemente etichetate.' +
-            '</div>';
-
-        return;
-    }
-
-    list.innerHTML = "";
-
-    taggedData.forEach((item, index) => {
-
-        const wrapper =
-            document.createElement("div");
-
-        wrapper.className =
-            "tagged-item";
-
-        const header =
-            document.createElement("div");
-
-        header.className =
-            "tagged-item-header";
-
-        const tag =
-            document.createElement("span");
-
-        tag.className =
-            "tagged-item-tag";
-
-        tag.textContent =
-            item.tag;
-
-        const position =
-            document.createElement("span");
-
-        position.className =
-            "tagged-item-position";
-
-        position.textContent =
-            "#" + (index + 1);
-
-        header.appendChild(tag);
-
-        header.appendChild(position);
-
-        const text =
-            document.createElement("div");
-
-        text.className =
-            "tagged-item-text";
-
-        text.textContent =
-            item.text;
-
-        const actions =
-            document.createElement("div");
-
-        actions.className =
-            "tagged-item-actions";
-
-        const removeButton =
-            document.createElement("button");
-
-        removeButton.className =
-            "btn-danger";
-
-        removeButton.textContent =
-            "Șterge";
-
-        removeButton.onclick = function () {
-
-            taggedData =
-                taggedData.filter(
-                    x => x.id !== item.id
-                );
-
-            renderTaggedList();
-        };
-
-        actions.appendChild(
-            removeButton
-        );
-
-        wrapper.appendChild(header);
-
-        wrapper.appendChild(text);
-
-        wrapper.appendChild(actions);
-
-        list.appendChild(wrapper);
-    });
-}
-
-
-/* ============================================================
-   CLEAR SELECTION
-============================================================ */
-
-function clearSelectionVisual() {
-
-    window.getSelection()?.removeAllRanges();
-
-    selectionData = {
-        text: "",
-        startOffset: 0,
-        endOffset: 0
-    };
-
-    const box =
-        document.getElementById("selectionBox");
-
-    box.innerHTML =
-        '<span class="selection-empty">' +
-        'Selectează un text din document.' +
-        '</span>';
-}
-
-
-/* ============================================================
-   ESCAPE XML
-============================================================ */
-
-function escapeXml(value) {
-
-    if (value === null ||
-        value === undefined) {
-
-        return "";
-    }
-
-    return String(value)
+    return String(text || "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -1477,178 +1190,753 @@ function escapeXml(value) {
 }
 
 
-/* ============================================================
-   NORMALIZE TEXT
-============================================================ */
+// ============================================================
+// GET DOCUMENT TEXT
+// ============================================================
 
-function normalizeXmlText(text) {
+function getDocumentText() {
 
-    if (!text) {
-        return "";
-    }
+    const page =
+        document.getElementById("documentPage");
 
-    return text
-        .replace(/\r\n/g, "\n")
-        .replace(/\r/g, "\n")
-        .trim();
+    return page.innerText || "";
 }
 
 
-/* ============================================================
-   GENERATE XML
-============================================================ */
+// ============================================================
+// TREE WALKER
+// ============================================================
 
-function generateXml() {
+function getTextNodes(root) {
 
-    sortTaggedData();
+    const walker =
+        document.createTreeWalker(
+            root,
+            NodeFilter.SHOW_TEXT,
+            {
+                acceptNode(node) {
+
+                    if (
+                        !node.nodeValue ||
+                        !node.nodeValue.length
+                    ) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            }
+        );
+
+    const nodes = [];
+
+    let node;
+
+    while (
+        (node = walker.nextNode())
+    ) {
+        nodes.push(node);
+    }
+
+    return nodes;
+}
+
+
+// ============================================================
+// SELECTION OFFSETS
+// ============================================================
+
+function getSelectionOffsets() {
+
+    const selection =
+        window.getSelection();
+
+    if (
+        !selection ||
+        selection.rangeCount === 0
+    ) {
+        return null;
+    }
+
+    if (
+        selection.isCollapsed ||
+        !selection.toString().trim()
+    ) {
+        return null;
+    }
+
+    const range =
+        selection.getRangeAt(0);
+
+    const page =
+        document.getElementById(
+            "documentPage"
+        );
+
+    if (
+        !page.contains(range.commonAncestorContainer)
+    ) {
+        return null;
+    }
+
+    const nodes =
+        getTextNodes(page);
+
+    let start = null;
+    let end = null;
+
+    let position = 0;
+
+    for (const node of nodes) {
+
+        const length =
+            node.nodeValue.length;
+
+        if (
+            node === range.startContainer
+        ) {
+            start =
+                position +
+                range.startOffset;
+        }
+
+        if (
+            node === range.endContainer
+        ) {
+            end =
+                position +
+                range.endOffset;
+        }
+
+        position += length;
+    }
+
+    if (
+        start === null ||
+        end === null
+    ) {
+        return null;
+    }
+
+    if (start > end) {
+
+        const tmp = start;
+
+        start = end;
+
+        end = tmp;
+    }
+
+    const text =
+        selection.toString();
+
+    return {
+        text: text,
+        start: start,
+        end: end
+    };
+}
+
+
+// ============================================================
+// CAPTURE SELECTION
+// ============================================================
+
+function captureSelection() {
+
+    const data =
+        getSelectionOffsets();
+
+    if (!data) {
+        return;
+    }
+
+    selectionData = data;
+
+    const box =
+        document.getElementById(
+            "selectionBox"
+        );
+
+    box.textContent =
+        data.text;
+
+    document.getElementById(
+        "documentInfo"
+    ).textContent =
+        `${data.text.length} caractere selectate`;
+}
+
+
+// ============================================================
+// UPLOAD WORD
+// ============================================================
+
+async function uploadWord() {
+
+    const input =
+        document.getElementById(
+            "wordFile"
+        );
+
+    if (
+        !input.files ||
+        !input.files.length
+    ) {
+
+        showStatus(
+            "Selectează mai întâi un fișier Word."
+        );
+
+        return;
+    }
+
+    const file =
+        input.files[0];
+
+    if (
+        !file.name
+            .toLowerCase()
+            .endsWith(".docx")
+    ) {
+
+        showStatus(
+            "Fișierul trebuie să fie .docx."
+        );
+
+        return;
+    }
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "file",
+        file
+    );
+
+    showStatus(
+        "Se procesează documentul Word...",
+        10000
+    );
+
+    try {
+
+        const response =
+            await fetch(
+                "/upload-word",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+        const result =
+            await response.json();
+
+        if (
+            !response.ok ||
+            result.status !== "success"
+        ) {
+
+            throw new Error(
+                result.message ||
+                "Eroare necunoscută."
+            );
+        }
+
+
+        // ----------------------------------------------------
+        // NUME DOCUMENT
+        // ----------------------------------------------------
+
+        currentWordFilename =
+            result.filename || file.name;
+
+        document.getElementById(
+            "documentName"
+        ).textContent =
+            currentWordFilename;
+
+
+        // ----------------------------------------------------
+        // HTML
+        // ----------------------------------------------------
+
+        const page =
+            document.getElementById(
+                "documentPage"
+            );
+
+        page.innerHTML =
+            result.html || "";
+
+
+        // ----------------------------------------------------
+        // DIMENSIUNEA REALA A PAGINII
+        // ----------------------------------------------------
+
+        if (result.page) {
+
+            if (result.page.width) {
+
+                page.style.width =
+                    `${result.page.width}px`;
+            }
+
+            if (result.page.height) {
+
+                page.style.minHeight =
+                    `${result.page.height}px`;
+            }
+
+            if (result.page.margin_top !== undefined) {
+
+                page.style.paddingTop =
+                    `${result.page.margin_top}px`;
+            }
+
+            if (result.page.margin_bottom !== undefined) {
+
+                page.style.paddingBottom =
+                    `${result.page.margin_bottom}px`;
+            }
+
+            if (result.page.margin_left !== undefined) {
+
+                page.style.paddingLeft =
+                    `${result.page.margin_left}px`;
+            }
+
+            if (result.page.margin_right !== undefined) {
+
+                page.style.paddingRight =
+                    `${result.page.margin_right}px`;
+            }
+        }
+
+
+        // ----------------------------------------------------
+        // DOCUMENT TEXT
+        // ----------------------------------------------------
+
+        documentText =
+            getDocumentText();
+
+
+        // ----------------------------------------------------
+        // RESET TAGURI
+        // ----------------------------------------------------
+
+        taggedData = [];
+
+        selectionData = null;
+
+        document.getElementById(
+            "selectionBox"
+        ).innerHTML =
+            '<span class="selection-empty">' +
+            'Selectează text în documentul din stânga.' +
+            '</span>';
+
+        document.getElementById(
+            "documentInfo"
+        ).textContent =
+            "Document încărcat";
+
+
+        renderTaggedItems();
+
+        document.getElementById(
+            "xmlPreview"
+        ).value = "";
+
+
+        showStatus(
+            "Document Word încărcat."
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        showStatus(
+            "Eroare: " + error.message,
+            6000
+        );
+    }
+}
+
+
+// ============================================================
+// ADD TAG
+// ============================================================
+
+function addTag(tagName) {
+
+    if (!selectionData) {
+
+        showStatus(
+            "Selectează mai întâi textul din document."
+        );
+
+        return;
+    }
+
+    const text =
+        selectionData.text.trim();
+
+    if (!text) {
+
+        showStatus(
+            "Selecția este goală."
+        );
+
+        return;
+    }
+
+
+    const item = {
+
+        id:
+            Date.now() +
+            Math.random(),
+
+        tag:
+            tagName,
+
+        text:
+            text,
+
+        start:
+            selectionData.start,
+
+        end:
+            selectionData.end
+    };
+
+
+    taggedData.push(item);
+
+
+    // --------------------------------------------------------
+    // SORTARE DUPA POZITIA IN DOCUMENT
+    // --------------------------------------------------------
+
+    taggedData.sort(
+        (a, b) =>
+            a.start - b.start
+    );
+
+
+    renderTaggedItems();
+
+
+    showStatus(
+        `<${tagName}> adăugat.`
+    );
+}
+
+
+// ============================================================
+// RENDER TAGGED ITEMS
+// ============================================================
+
+function renderTaggedItems() {
+
+    const container =
+        document.getElementById(
+            "taggedList"
+        );
 
     if (!taggedData.length) {
 
-        alert(
+        container.innerHTML =
+            `
+            <div
+                style="
+                    color:#888;
+                    font-size:11px;
+                "
+            >
+                Nu există elemente etichetate.
+            </div>
+            `;
+
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    taggedData.forEach(
+        (item, index) => {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.className =
+                "tagged-item";
+
+
+            div.innerHTML =
+                `
+                <div class="tagged-item-header">
+
+                    <span class="tag-name">
+                        &lt;${escapeHtml(item.tag)}&gt;
+                    </span>
+
+                    <span class="tag-position">
+                        #${index + 1}
+                    </span>
+
+                </div>
+
+                <div class="tagged-text">
+                    ${escapeHtml(item.text)}
+                </div>
+
+                <button
+                    class="remove-tag"
+                    onclick="removeTag('${item.id}')"
+                >
+                    Șterge
+                </button>
+                `;
+
+
+            container.appendChild(div);
+        }
+    );
+}
+
+
+// ============================================================
+// ESCAPE HTML
+// ============================================================
+
+function escapeHtml(text) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+}
+
+
+// ============================================================
+// REMOVE TAG
+// ============================================================
+
+function removeTag(id) {
+
+    taggedData =
+        taggedData.filter(
+            item =>
+                String(item.id) !==
+                String(id)
+        );
+
+    renderTaggedItems();
+
+    showStatus(
+        "Element eliminat."
+    );
+}
+
+
+// ============================================================
+// BIBLIOGRAPHY
+// ============================================================
+
+function generateBibliographyXml(
+    items,
+    startIndex
+) {
+
+    let xml = "";
+
+    xml +=
+        "<Story>\n";
+
+    xml +=
+        "  <_No_paragraph_style_>" +
+        escapeXml(
+            items[startIndex].text
+        ) +
+        "</_No_paragraph_style_>\n";
+
+    xml +=
+        "</Story>\n";
+
+
+    let index =
+        startIndex + 1;
+
+
+    while (
+        index < items.length &&
+        items[index].tag === "LBody"
+    ) {
+
+        xml +=
+            "<Story>\n";
+
+        xml +=
+            "  <LBody>" +
+            escapeXml(
+                items[index].text
+            ) +
+            "</LBody>\n";
+
+        xml +=
+            "</Story>\n";
+
+        index++;
+    }
+
+
+    xml +=
+        "<Story>\n";
+
+    xml +=
+        "  <Sect></Sect>\n";
+
+    xml +=
+        "</Story>\n";
+
+
+    return {
+        xml: xml,
+        nextIndex: index
+    };
+}
+
+
+// ============================================================
+// GENERATE XML
+// ============================================================
+
+function generateXml() {
+
+    if (!taggedData.length) {
+
+        showStatus(
             "Nu există elemente etichetate."
         );
 
         return;
     }
 
-    let xml = "";
 
-    xml += '<?xml version="1.0" encoding="UTF-8"?>\n';
+    const items =
+        [...taggedData].sort(
+            (a, b) =>
+                a.start - b.start
+        );
 
-    /*
-     * Pentru compatibilitate cu parserul existent,
-     * fiecare element este introdus în Story.
-     */
 
-    let bibliographyStarted = false;
+    let xml =
+        '<?xml version="1.0" encoding="UTF-8"?>\n';
 
-    let bibliographyItems = [];
+    xml +=
+        "<Document>\n";
 
-    for (const item of taggedData) {
 
-        /*
-         * =====================================================
-         * BIBLIOGRAFIE
-         * =====================================================
-         */
+    let i = 0;
 
-        if (item.tag === "Bibliografie") {
 
-            bibliographyStarted = true;
+    while (i < items.length) {
 
-            xml += "<Story>\n";
+        const item =
+            items[i];
 
-            xml +=
-                "  <_No_paragraph_style_>" +
-                escapeXml(
-                    normalizeXmlText(item.text)
-                ) +
-                "</_No_paragraph_style_>\n";
 
-            xml += "</Story>\n";
-
-            continue;
-        }
-
-        /*
-         * Dacă am trecut de markerul Bibliografie,
-         * LBody-urile următoare devin referințe.
-         */
+        // ----------------------------------------------------
+        // BIBLIOGRAFIE
+        // ----------------------------------------------------
 
         if (
-            bibliographyStarted &&
-            item.tag === "LBody"
+            item.tag === "Bibliografie"
         ) {
 
-            bibliographyItems.push(item);
+            const result =
+                generateBibliographyXml(
+                    items,
+                    i
+                );
+
+            xml +=
+                result.xml;
+
+            i =
+                result.nextIndex;
 
             continue;
         }
 
-        /*
-         * =====================================================
-         * ELEMENT NORMAL
-         * =====================================================
-         */
 
-        xml += "<Story>\n";
+        // ----------------------------------------------------
+        // TAG NORMAL
+        // ----------------------------------------------------
 
         xml +=
-            "  <" +
-            item.tag +
-            ">" +
-            escapeXml(
-                normalizeXmlText(item.text)
-            ) +
-            "</" +
-            item.tag +
-            ">\n";
+            "<Story>\n";
 
-        xml += "</Story>\n";
+        xml +=
+            `  <${item.tag}>`;
+
+        xml +=
+            escapeXml(
+                item.text
+            );
+
+        xml +=
+            `</${item.tag}>\n`;
+
+        xml +=
+            "</Story>\n";
+
+
+        i++;
     }
 
 
-    /*
-     * =========================================================
-     * BIBLIOGRAFIE - LBody
-     * =========================================================
-     *
-     * Parserul științific caută:
-     *
-     * <Story>
-     *   <LBody>...</LBody>
-     * </Story>
-     *
-     * după markerul Bibliografie.
-     */
-
-    bibliographyItems.forEach(item => {
-
-        xml += "<Story>\n";
-
-        xml +=
-            "  <LBody>" +
-            escapeXml(
-                normalizeXmlText(item.text)
-            ) +
-            "</LBody>\n";
-
-        xml += "</Story>\n";
-    });
-
-
-    /*
-     * =========================================================
-     * FINAL BIBLIOGRAFIE
-     * =========================================================
-     *
-     * parser.py se oprește când găsește <Sect>.
-     */
-
-    if (bibliographyStarted) {
-
-        xml += "<Story>\n";
-        xml += "  <Sect></Sect>\n";
-        xml += "</Story>\n";
-    }
+    xml +=
+        "</Document>";
 
 
     document.getElementById(
         "xmlPreview"
-    ).value = xml;
+    ).value =
+        xml;
 
-    return xml;
+
+    showStatus(
+        "XML generat."
+    );
 }
 
 
-/* ============================================================
-   COPY XML
-============================================================ */
+// ============================================================
+// COPY XML
+// ============================================================
 
 async function copyXml() {
 
     const textarea =
-        document.getElementById("xmlPreview");
+        document.getElementById(
+            "xmlPreview"
+        );
 
     if (!textarea.value.trim()) {
 
@@ -1665,50 +1953,50 @@ async function copyXml() {
             textarea.value
         );
 
-        alert(
-            "XML copiat în clipboard."
+        showStatus(
+            "XML copiat."
         );
 
     } catch (error) {
 
         textarea.select();
 
-        document.execCommand("copy");
+        document.execCommand(
+            "copy"
+        );
 
-        alert(
-            "XML copiat în clipboard."
+        showStatus(
+            "XML copiat."
         );
     }
 }
 
 
-/* ============================================================
-   DOWNLOAD XML
-============================================================ */
+// ============================================================
+// DOWNLOAD XML
+// ============================================================
 
 function downloadXml() {
 
-    let xml =
+    const textarea =
+        document.getElementById(
+            "xmlPreview"
+        );
+
+    if (!textarea.value.trim()) {
+
+        generateXml();
+    }
+
+    const xml =
         document.getElementById(
             "xmlPreview"
         ).value;
 
     if (!xml.trim()) {
-
-        xml = generateXml();
-    }
-
-    if (!xml || !xml.trim()) {
         return;
     }
 
-    let filename =
-        currentWordFilename
-            ? currentWordFilename
-                .replace(/\.docx$/i, "")
-            : "document";
-
-    filename += ".xml";
 
     const blob =
         new Blob(
@@ -1719,181 +2007,142 @@ function downloadXml() {
             }
         );
 
+
     const url =
-        URL.createObjectURL(blob);
+        URL.createObjectURL(
+            blob
+        );
 
-    const link =
-        document.createElement("a");
 
-    link.href = url;
+    const a =
+        document.createElement(
+            "a"
+        );
 
-    link.download = filename;
+    a.href = url;
 
-    document.body.appendChild(link);
+    a.download =
+        currentWordFilename
+            ? currentWordFilename
+                .replace(
+                    /\.docx$/i,
+                    ""
+                ) + ".xml"
+            : "document.xml";
 
-    link.click();
 
-    document.body.removeChild(link);
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
 
     URL.revokeObjectURL(url);
+
+
+    showStatus(
+        "XML descărcat."
+    );
 }
 
 
-/* ============================================================
-   CLEAR ALL
-============================================================ */
+// ============================================================
+// CLEAR
+// ============================================================
 
 function clearAll() {
 
-    const confirmed =
-        confirm(
-            "Ștergi documentul, toate tag-urile și XML-ul?"
-        );
-
-    if (!confirmed) {
-        return;
-    }
-
     taggedData = [];
 
-    selectionData = {
-        text: "",
-        startOffset: 0,
-        endOffset: 0
-    };
-
-    documentText = "";
-
-    currentWordFilename = "";
+    selectionData = null;
 
     document.getElementById(
-        "wordFile"
-    ).value = "";
-
-    document.getElementById(
-        "documentContainer"
-    ).innerHTML = `
-        <div class="empty-document">
-            <div>
-                <h2>Încarcă un document Word</h2>
-                <p>
-                    După încărcare, documentul va fi afișat aici
-                    și textul va putea fi selectat pentru etichetare.
-                </p>
-            </div>
-        </div>
-    `;
-
-    document.getElementById(
-        "documentInfo"
-    ).textContent =
-        "Niciun document încărcat";
-
-    document.getElementById(
-        "uploadStatus"
-    ).textContent =
-        "Selectează un fișier .docx.";
+        "selectionBox"
+    ).innerHTML =
+        '<span class="selection-empty">' +
+        'Selectează text în documentul din stânga.' +
+        '</span>';
 
     document.getElementById(
         "xmlPreview"
     ).value = "";
 
-    renderTaggedList();
+    renderTaggedItems();
 
-    clearSelectionVisual();
+    showStatus(
+        "Etichetele au fost șterse."
+    );
 }
 
 
-/* ============================================================
-   INITIALIZE
-============================================================ */
+// ============================================================
+// SELECTION LISTENER
+// ============================================================
 
 document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+    "selectionchange",
+    () => {
 
-        renderTaggedList();
+        const selection =
+            window.getSelection();
 
-        /*
-         * Permite selectarea textului în document.
-         */
+        if (
+            !selection ||
+            selection.rangeCount === 0
+        ) {
+            return;
+        }
 
-        document.addEventListener(
-            "selectionchange",
-            function () {
+        const text =
+            selection.toString();
 
-                const page =
-                    document.getElementById(
-                        "documentPage"
-                    );
+        if (!text.trim()) {
+            return;
+        }
 
-                if (!page) {
-                    return;
-                }
+        const page =
+            document.getElementById(
+                "documentPage"
+            );
 
-                const selection =
-                    window.getSelection();
+        if (
+            !page.contains(
+                selection.anchorNode
+            )
+        ) {
+            return;
+        }
 
-                if (
-                    !selection ||
-                    selection.rangeCount === 0
-                ) {
-                    return;
-                }
-
-                const range =
-                    selection.getRangeAt(0);
-
-                if (
-                    !page.contains(
-                        range.commonAncestorContainer
-                    )
-                ) {
-                    return;
-                }
-
-                const text =
-                    selection.toString();
-
-                if (!text.trim()) {
-                    return;
-                }
-
-                const start =
-                    getCharacterOffset(
-                        page,
-                        range.startContainer,
-                        range.startOffset
-                    );
-
-                const end =
-                    getCharacterOffset(
-                        page,
-                        range.endContainer,
-                        range.endOffset
-                    );
-
-                selectionData = {
-
-                    text: text,
-
-                    startOffset:
-                        Math.min(start, end),
-
-                    endOffset:
-                        Math.max(start, end)
-                };
-
-                document.getElementById(
-                    "selectionBox"
-                ).textContent = text;
-            }
-        );
+        captureSelection();
     }
 );
+
+
+// ============================================================
+// KEYBOARD SHORTCUT
+// ============================================================
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        // Ctrl + Enter = genereaza XML
+
+        if (
+            event.ctrlKey &&
+            event.key === "Enter"
+        ) {
+
+            event.preventDefault();
+
+            generateXml();
+        }
+    }
+);
+
 
 </script>
 
 </body>
-</html>
 
+</html>
