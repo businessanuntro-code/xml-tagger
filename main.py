@@ -1,24 +1,38 @@
 from pathlib import Path
+from io import BytesIO
+import base64
+import html
 import shutil
 
-from fastapi import FastAPI, Request, UploadFile, File, HTTPException
+from fastapi import (
+    FastAPI,
+    Request,
+    UploadFile,
+    File,
+    HTTPException,
+)
+
 from fastapi.responses import HTMLResponse
+
 from fastapi.staticfiles import StaticFiles
+
 from fastapi.templating import Jinja2Templates
+
+from docx import Document
 
 
 # ============================================================
-# XML TAGGER
+# APPLICATION
 # ============================================================
 
 app = FastAPI(
     title="XML Tagger",
-    version="1.0.0"
+    version="2.0.0"
 )
 
 
 # ============================================================
-# DIRECTOARE
+# DIRECTORIES
 # ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -26,27 +40,23 @@ BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 
 UPLOADS_DIR = BASE_DIR / "uploads"
-HTML_UPLOADS_DIR = UPLOADS_DIR / "html"
-PDF_UPLOADS_DIR = UPLOADS_DIR / "pdf"
+
+WORD_UPLOADS_DIR = UPLOADS_DIR / "word"
+
 
 UPLOADS_DIR.mkdir(
     parents=True,
     exist_ok=True
 )
 
-HTML_UPLOADS_DIR.mkdir(
-    parents=True,
-    exist_ok=True
-)
-
-PDF_UPLOADS_DIR.mkdir(
+WORD_UPLOADS_DIR.mkdir(
     parents=True,
     exist_ok=True
 )
 
 
 # ============================================================
-# TEMPLATE-URI
+# TEMPLATES
 # ============================================================
 
 templates = Jinja2Templates(
@@ -55,28 +65,20 @@ templates = Jinja2Templates(
 
 
 # ============================================================
-# FISIERE STATICE
+# STATIC WORD FILES
 # ============================================================
 
 app.mount(
-    "/files/html",
+    "/files/word",
     StaticFiles(
-        directory=str(HTML_UPLOADS_DIR)
+        directory=str(WORD_UPLOADS_DIR)
     ),
-    name="html_files"
-)
-
-app.mount(
-    "/files/pdf",
-    StaticFiles(
-        directory=str(PDF_UPLOADS_DIR)
-    ),
-    name="pdf_files"
+    name="word_files"
 )
 
 
 # ============================================================
-# PAGINA PRINCIPALA
+# HOME
 # ============================================================
 
 @app.get(
@@ -95,87 +97,424 @@ async def index(request: Request):
 
 
 # ============================================================
-# UPLOAD HTML5
+# SAFE FILENAME
 # ============================================================
 
-@app.post("/upload-html")
-async def upload_html(
-    file: UploadFile = File(...)
-):
+def safe_filename(filename: str) -> str:
 
-    if not file.filename:
+    return Path(filename).name
 
-        raise HTTPException(
-            status_code=400,
-            detail="Nu a fost selectat niciun fișier."
-        )
 
-    # --------------------------------------------------------
-    # Eliminăm eventualele directoare din numele fișierului
-    # --------------------------------------------------------
+# ============================================================
+# ESCAPE HTML
+# ============================================================
 
-    original_name = Path(
-        file.filename
-    ).name
+def escape_html(text: str) -> str:
 
-    # --------------------------------------------------------
-    # Acceptăm HTML / HTM
-    # --------------------------------------------------------
+    return html.escape(
+        text or "",
+        quote=False
+    )
 
-    extension = Path(
-        original_name
-    ).suffix.lower()
 
-    if extension not in (
-        ".html",
-        ".htm"
-    ):
+# ============================================================
+# IMAGE -> DATA URL
+# ============================================================
 
-        raise HTTPException(
-            status_code=400,
-            detail="Este permis doar formatul HTML sau HTM."
-        )
-
-    destination = HTML_UPLOADS_DIR / original_name
+def image_part_to_data_url(part):
 
     try:
 
-        with destination.open("wb") as buffer:
+        content_type = part.content_type
 
-            shutil.copyfileobj(
-                file.file,
-                buffer
-            )
+        blob = part.blob
 
-    except Exception as e:
+        encoded = base64.b64encode(
+            blob
+        ).decode("ascii")
 
-        raise HTTPException(
-            status_code=500,
-            detail=f"Eroare la salvarea fișierului HTML: {str(e)}"
+        return (
+            f"data:{content_type};base64,{encoded}"
         )
 
-    finally:
+    except Exception:
 
-        await file.close()
-
-    return {
-        "status": "success",
-        "filename": original_name,
-        "url": f"/files/html/{original_name}"
-    }
+        return ""
 
 
 # ============================================================
-# UPLOAD PDF
+# RUN HTML
+# ============================================================
+
+def run_to_html(run):
+
+    text = run.text or ""
+
+    if not text:
+        return ""
+
+
+    value = escape_html(text)
+
+
+    if run.bold:
+        value = f"<strong>{value}</strong>"
+
+
+    if run.italic:
+        value = f"<em>{value}</em>"
+
+
+    if run.underline:
+        value = f"<u>{value}</u>"
+
+
+    if run.font.superscript:
+        value = f"<sup>{value}</sup>"
+
+
+    if run.font.subscript:
+        value = f"<sub>{value}</sub>"
+
+
+    return value
+
+
+# ============================================================
+# PARAGRAPH STYLE -> HTML
 #
-# Păstrăm endpoint-ul existent pentru moment.
-# Nu îl eliminăm deoarece încă folosim PDF-ul actual.
+# IMPORTANT:
+# Aceste stiluri sunt folosite DOAR pentru afișarea
+# documentului Word.
+#
+# Nu sunt folosite pentru generarea XML.
 # ============================================================
 
-@app.post("/upload")
-async def upload_pdf(
+def paragraph_to_html(paragraph):
+
+    text = paragraph.text or ""
+
+    style_name = ""
+
+    try:
+        style_name = (
+            paragraph.style.name or ""
+        )
+    except Exception:
+        style_name = ""
+
+
+    content = ""
+
+
+    # --------------------------------------------------------
+    # RUNS
+    # --------------------------------------------------------
+
+    for run in paragraph.runs:
+
+        content += run_to_html(run)
+
+
+    # --------------------------------------------------------
+    # Dacă nu există runs utile
+    # --------------------------------------------------------
+
+    if not content and text:
+
+        content = escape_html(text)
+
+
+    # --------------------------------------------------------
+    # Paragraf gol
+    # --------------------------------------------------------
+
+    if not content:
+
+        return "<p><br></p>"
+
+
+    # --------------------------------------------------------
+    # Word headings
+    #
+    # Doar pentru afișare.
+    # --------------------------------------------------------
+
+    style_lower = style_name.lower()
+
+
+    if style_lower == "title":
+
+        return (
+            f'<h1 data-word-style="Title">'
+            f'{content}'
+            f'</h1>'
+        )
+
+
+    if style_lower == "subtitle":
+
+        return (
+            f'<h2 data-word-style="Subtitle">'
+            f'{content}'
+            f'</h2>'
+        )
+
+
+    if style_lower == "heading 1":
+
+        return (
+            f'<h2 data-word-style="Heading 1">'
+            f'{content}'
+            f'</h2>'
+        )
+
+
+    if style_lower == "heading 2":
+
+        return (
+            f'<h3 data-word-style="Heading 2">'
+            f'{content}'
+            f'</h3>'
+        )
+
+
+    if style_lower == "heading 3":
+
+        return (
+            f'<h3 data-word-style="Heading 3">'
+            f'{content}'
+            f'</h3>'
+        )
+
+
+    if style_lower == "heading 4":
+
+        return (
+            f'<h4 data-word-style="Heading 4">'
+            f'{content}'
+            f'</h4>'
+        )
+
+
+    if style_lower == "heading 5":
+
+        return (
+            f'<h5 data-word-style="Heading 5">'
+            f'{content}'
+            f'</h5>'
+        )
+
+
+    if style_lower == "heading 6":
+
+        return (
+            f'<h6 data-word-style="Heading 6">'
+            f'{content}'
+            f'</h6>'
+        )
+
+
+    # --------------------------------------------------------
+    # LIST PARAGRAPH
+    #
+    # Pentru moment este afișat ca paragraf.
+    # XML tagging-ul este făcut manual.
+    # --------------------------------------------------------
+
+    if "list paragraph" in style_lower:
+
+        return (
+            f'<p data-word-style="List Paragraph">'
+            f'{content}'
+            f'</p>'
+        )
+
+
+    # --------------------------------------------------------
+    # NORMAL / BODY TEXT / REST
+    # --------------------------------------------------------
+
+    return (
+        f'<p data-word-style="{escape_html(style_name)}">'
+        f'{content}'
+        f'</p>'
+    )
+
+
+# ============================================================
+# TABLE -> HTML
+# ============================================================
+
+def table_to_html(table):
+
+    output = []
+
+    output.append("<table>")
+
+
+    for row_index, row in enumerate(table.rows):
+
+        output.append("<tr>")
+
+
+        for cell in row.cells:
+
+            cell_parts = []
+
+
+            for paragraph in cell.paragraphs:
+
+                paragraph_html = paragraph_to_html(
+                    paragraph
+                )
+
+                cell_parts.append(
+                    paragraph_html
+                )
+
+
+            cell_html = "".join(
+                cell_parts
+            )
+
+
+            if row_index == 0:
+
+                output.append(
+                    f"<th>{cell_html}</th>"
+                )
+
+            else:
+
+                output.append(
+                    f"<td>{cell_html}</td>"
+                )
+
+
+        output.append("</tr>")
+
+
+    output.append("</table>")
+
+
+    return "".join(output)
+
+
+# ============================================================
+# INLINE IMAGES
+#
+# Word document can contain images.
+#
+# They are displayed only.
+# They are NOT turned into XML tags.
+# ============================================================
+
+def document_images_html(document):
+
+    images = []
+
+
+    try:
+
+        for rel in document.part.rels.values():
+
+            target = rel.target_part
+
+            if not hasattr(target, "blob"):
+                continue
+
+
+            content_type = getattr(
+                target,
+                "content_type",
+                ""
+            )
+
+
+            if not content_type.startswith("image/"):
+                continue
+
+
+            encoded = base64.b64encode(
+                target.blob
+            ).decode("ascii")
+
+
+            images.append(
+                f'<img src="data:{content_type};base64,{encoded}" '
+                f'alt="Imagine din document">'
+            )
+
+    except Exception:
+
+        pass
+
+
+    return images
+
+
+# ============================================================
+# DOCX -> HTML
+# ============================================================
+
+def docx_to_html(document):
+
+    output = []
+
+
+    # --------------------------------------------------------
+    # PARAGRAPHS
+    #
+    # python-docx păstrează ordinea logică a paragrafelor.
+    # Aceasta este ceea ce ne interesează pentru selecție.
+    # --------------------------------------------------------
+
+    for paragraph in document.paragraphs:
+
+        output.append(
+            paragraph_to_html(
+                paragraph
+            )
+        )
+
+
+    # --------------------------------------------------------
+    # TABLES
+    #
+    # Le afișăm în document, dar nu există zonă de tag
+    # specială pentru tabele.
+    # --------------------------------------------------------
+
+    for table in document.tables:
+
+        output.append(
+            table_to_html(table)
+        )
+
+
+    if not output:
+
+        output.append(
+            '<p>Documentul nu conține text.</p>'
+        )
+
+
+    return "\n".join(output)
+
+
+# ============================================================
+# UPLOAD WORD
+# ============================================================
+
+@app.post("/upload-word")
+async def upload_word(
     file: UploadFile = File(...)
 ):
+
+    # --------------------------------------------------------
+    # CHECK FILE
+    # --------------------------------------------------------
 
     if not file.filename:
 
@@ -184,26 +523,33 @@ async def upload_pdf(
             detail="Nu a fost selectat niciun fișier."
         )
 
-    # --------------------------------------------------------
-    # Eliminăm eventualele directoare din numele fișierului
-    # --------------------------------------------------------
 
-    original_name = Path(
+    original_name = safe_filename(
         file.filename
-    ).name
+    )
+
 
     # --------------------------------------------------------
-    # Acceptăm numai PDF
+    # ONLY DOCX
     # --------------------------------------------------------
 
-    if not original_name.lower().endswith(".pdf"):
+    if not original_name.lower().endswith(".docx"):
 
         raise HTTPException(
             status_code=400,
-            detail="Este permis doar formatul PDF."
+            detail="Este permis doar formatul Word .docx."
         )
 
-    destination = PDF_UPLOADS_DIR / original_name
+
+    destination = (
+        WORD_UPLOADS_DIR /
+        original_name
+    )
+
+
+    # --------------------------------------------------------
+    # SAVE
+    # --------------------------------------------------------
 
     try:
 
@@ -218,22 +564,80 @@ async def upload_pdf(
 
         raise HTTPException(
             status_code=500,
-            detail=f"Eroare la salvarea PDF-ului: {str(e)}"
+            detail=(
+                "Eroare la salvarea documentului Word: "
+                f"{str(e)}"
+            )
         )
 
     finally:
 
         await file.close()
 
+
+    # --------------------------------------------------------
+    # READ DOCX
+    # --------------------------------------------------------
+
+    try:
+
+        document = Document(
+            str(destination)
+        )
+
+    except Exception as e:
+
+        try:
+            destination.unlink()
+        except Exception:
+            pass
+
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Fișierul nu poate fi citit ca document "
+                f"Word .docx: {str(e)}"
+            )
+        )
+
+
+    # --------------------------------------------------------
+    # CONVERT TO CONTROLLED HTML
+    # --------------------------------------------------------
+
+    try:
+
+        rendered_html = docx_to_html(
+            document
+        )
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "Eroare la transformarea documentului "
+                f"Word în format de lucru: {str(e)}"
+            )
+        )
+
+
+    # --------------------------------------------------------
+    # RESPONSE
+    # --------------------------------------------------------
+
     return {
         "status": "success",
         "filename": original_name,
-        "url": f"/files/pdf/{original_name}"
+        "url": (
+            f"/files/word/{original_name}"
+        ),
+        "html": rendered_html
     }
 
 
 # ============================================================
-# HEALTH CHECK
+# HEALTH
 # ============================================================
 
 @app.get("/health")
@@ -241,5 +645,6 @@ async def health():
 
     return {
         "status": "ok",
-        "application": "xml_tagger"
+        "application": "xml_tagger",
+        "version": "2.0.0"
     }
