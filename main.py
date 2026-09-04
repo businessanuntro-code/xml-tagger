@@ -1,5 +1,4 @@
 from pathlib import Path
-from io import BytesIO
 import base64
 import html
 import shutil
@@ -13,12 +12,15 @@ from fastapi import (
 )
 
 from fastapi.responses import HTMLResponse
-
 from fastapi.staticfiles import StaticFiles
-
 from fastapi.templating import Jinja2Templates
 
 from docx import Document
+from docx.document import Document as _Document
+from docx.table import Table, _Cell
+from docx.text.paragraph import Paragraph
+from docx.oxml.text.paragraph import CT_P
+from docx.oxml.table import CT_Tbl
 
 
 # ============================================================
@@ -27,7 +29,7 @@ from docx import Document
 
 app = FastAPI(
     title="XML Tagger",
-    version="2.0.0"
+    version="2.1.0"
 )
 
 
@@ -118,32 +120,7 @@ def escape_html(text: str) -> str:
 
 
 # ============================================================
-# IMAGE -> DATA URL
-# ============================================================
-
-def image_part_to_data_url(part):
-
-    try:
-
-        content_type = part.content_type
-
-        blob = part.blob
-
-        encoded = base64.b64encode(
-            blob
-        ).decode("ascii")
-
-        return (
-            f"data:{content_type};base64,{encoded}"
-        )
-
-    except Exception:
-
-        return ""
-
-
-# ============================================================
-# RUN HTML
+# RUN -> HTML
 # ============================================================
 
 def run_to_html(run):
@@ -157,50 +134,70 @@ def run_to_html(run):
     value = escape_html(text)
 
 
-    if run.bold:
-        value = f"<strong>{value}</strong>"
-
-
-    if run.italic:
-        value = f"<em>{value}</em>"
-
-
-    if run.underline:
-        value = f"<u>{value}</u>"
-
+    # --------------------------------------------------------
+    # SUPERSCRIPT
+    # --------------------------------------------------------
 
     if run.font.superscript:
+
         value = f"<sup>{value}</sup>"
 
 
-    if run.font.subscript:
+    # --------------------------------------------------------
+    # SUBSCRIPT
+    # --------------------------------------------------------
+
+    elif run.font.subscript:
+
         value = f"<sub>{value}</sub>"
+
+
+    # --------------------------------------------------------
+    # BOLD
+    # --------------------------------------------------------
+
+    if run.bold:
+
+        value = f"<strong>{value}</strong>"
+
+
+    # --------------------------------------------------------
+    # ITALIC
+    # --------------------------------------------------------
+
+    if run.italic:
+
+        value = f"<em>{value}</em>"
+
+
+    # --------------------------------------------------------
+    # UNDERLINE
+    # --------------------------------------------------------
+
+    if run.underline:
+
+        value = f"<u>{value}</u>"
 
 
     return value
 
 
 # ============================================================
-# PARAGRAPH STYLE -> HTML
-#
-# IMPORTANT:
-# Aceste stiluri sunt folosite DOAR pentru afișarea
-# documentului Word.
-#
-# Nu sunt folosite pentru generarea XML.
+# PARAGRAPH -> HTML
 # ============================================================
 
-def paragraph_to_html(paragraph):
+def paragraph_to_html(paragraph: Paragraph):
 
     text = paragraph.text or ""
 
-    style_name = ""
-
     try:
+
         style_name = (
             paragraph.style.name or ""
         )
+
     except Exception:
+
         style_name = ""
 
 
@@ -217,7 +214,7 @@ def paragraph_to_html(paragraph):
 
 
     # --------------------------------------------------------
-    # Dacă nu există runs utile
+    # FALLBACK
     # --------------------------------------------------------
 
     if not content and text:
@@ -226,119 +223,166 @@ def paragraph_to_html(paragraph):
 
 
     # --------------------------------------------------------
-    # Paragraf gol
+    # EMPTY PARAGRAPH
     # --------------------------------------------------------
 
     if not content:
 
-        return "<p><br></p>"
+        return (
+            '<p class="word-empty-paragraph">'
+            '<br>'
+            '</p>'
+        )
 
-
-    # --------------------------------------------------------
-    # Word headings
-    #
-    # Doar pentru afișare.
-    # --------------------------------------------------------
 
     style_lower = style_name.lower()
 
 
+    # ========================================================
+    # TITLE
+    # ========================================================
+
     if style_lower == "title":
 
         return (
-            f'<h1 data-word-style="Title">'
+            '<h1 '
+            'class="word-title" '
+            'data-word-style="Title">'
             f'{content}'
-            f'</h1>'
+            '</h1>'
         )
 
+
+    # ========================================================
+    # SUBTITLE
+    # ========================================================
 
     if style_lower == "subtitle":
 
         return (
-            f'<h2 data-word-style="Subtitle">'
+            '<h2 '
+            'class="word-subtitle" '
+            'data-word-style="Subtitle">'
             f'{content}'
-            f'</h2>'
+            '</h2>'
         )
 
+
+    # ========================================================
+    # HEADING 1
+    # ========================================================
 
     if style_lower == "heading 1":
 
         return (
-            f'<h2 data-word-style="Heading 1">'
+            '<h2 '
+            'class="word-heading word-heading-1" '
+            'data-word-style="Heading 1">'
             f'{content}'
-            f'</h2>'
+            '</h2>'
         )
 
+
+    # ========================================================
+    # HEADING 2
+    # ========================================================
 
     if style_lower == "heading 2":
 
         return (
-            f'<h3 data-word-style="Heading 2">'
+            '<h3 '
+            'class="word-heading word-heading-2" '
+            'data-word-style="Heading 2">'
             f'{content}'
-            f'</h3>'
+            '</h3>'
         )
 
+
+    # ========================================================
+    # HEADING 3
+    # ========================================================
 
     if style_lower == "heading 3":
 
         return (
-            f'<h3 data-word-style="Heading 3">'
+            '<h3 '
+            'class="word-heading word-heading-3" '
+            'data-word-style="Heading 3">'
             f'{content}'
-            f'</h3>'
+            '</h3>'
         )
 
+
+    # ========================================================
+    # HEADING 4
+    # ========================================================
 
     if style_lower == "heading 4":
 
         return (
-            f'<h4 data-word-style="Heading 4">'
+            '<h4 '
+            'class="word-heading word-heading-4" '
+            'data-word-style="Heading 4">'
             f'{content}'
-            f'</h4>'
+            '</h4>'
         )
 
+
+    # ========================================================
+    # HEADING 5
+    # ========================================================
 
     if style_lower == "heading 5":
 
         return (
-            f'<h5 data-word-style="Heading 5">'
+            '<h5 '
+            'class="word-heading word-heading-5" '
+            'data-word-style="Heading 5">'
             f'{content}'
-            f'</h5>'
+            '</h5>'
         )
 
+
+    # ========================================================
+    # HEADING 6
+    # ========================================================
 
     if style_lower == "heading 6":
 
         return (
-            f'<h6 data-word-style="Heading 6">'
+            '<h6 '
+            'class="word-heading word-heading-6" '
+            'data-word-style="Heading 6">'
             f'{content}'
-            f'</h6>'
+            '</h6>'
         )
 
 
-    # --------------------------------------------------------
+    # ========================================================
     # LIST PARAGRAPH
-    #
-    # Pentru moment este afișat ca paragraf.
-    # XML tagging-ul este făcut manual.
-    # --------------------------------------------------------
+    # ========================================================
 
     if "list paragraph" in style_lower:
 
         return (
-            f'<p data-word-style="List Paragraph">'
+            '<p '
+            'class="word-list-paragraph" '
+            'data-word-style="List Paragraph">'
             f'{content}'
-            f'</p>'
+            '</p>'
         )
 
 
-    # --------------------------------------------------------
-    # NORMAL / BODY TEXT / REST
-    # --------------------------------------------------------
+    # ========================================================
+    # NORMAL / BODY TEXT / OTHER
+    # ========================================================
 
     return (
-        f'<p data-word-style="{escape_html(style_name)}">'
+        '<p '
+        'class="word-paragraph" '
+        f'data-word-style="{escape_html(style_name)}">'
         f'{content}'
-        f'</p>'
+        '</p>'
     )
 
 
@@ -346,9 +390,13 @@ def paragraph_to_html(paragraph):
 # TABLE -> HTML
 # ============================================================
 
-def table_to_html(table):
+def table_to_html(table: Table):
 
     output = []
+
+    output.append(
+        '<div class="word-table-wrapper">'
+    )
 
     output.append("<table>")
 
@@ -360,35 +408,33 @@ def table_to_html(table):
 
         for cell in row.cells:
 
-            cell_parts = []
+            cell_content = []
 
 
             for paragraph in cell.paragraphs:
 
-                paragraph_html = paragraph_to_html(
-                    paragraph
+                cell_content.append(
+                    paragraph_to_html(
+                        paragraph
+                    )
                 )
 
-                cell_parts.append(
-                    paragraph_html
-                )
 
-
-            cell_html = "".join(
-                cell_parts
+            content = "".join(
+                cell_content
             )
 
 
             if row_index == 0:
 
                 output.append(
-                    f"<th>{cell_html}</th>"
+                    f"<th>{content}</th>"
                 )
 
             else:
 
                 output.append(
-                    f"<td>{cell_html}</td>"
+                    f"<td>{content}</td>"
                 )
 
 
@@ -397,106 +443,108 @@ def table_to_html(table):
 
     output.append("</table>")
 
+    output.append(
+        "</div>"
+    )
+
 
     return "".join(output)
 
 
 # ============================================================
-# INLINE IMAGES
+# DOCUMENT BLOCKS
 #
-# Word document can contain images.
+# FOARTE IMPORTANT:
 #
-# They are displayed only.
-# They are NOT turned into XML tags.
+# document.paragraphs + document.tables NU păstrează ordinea.
+#
+# Funcția de mai jos parcurge XML-ul intern Word și păstrează
+# ordinea reală:
+#
+# paragraph
+# paragraph
+# table
+# paragraph
+# paragraph
+# etc.
 # ============================================================
 
-def document_images_html(document):
+def iter_block_items(parent):
 
-    images = []
+    if isinstance(parent, _Document):
+
+        parent_elm = parent.element.body
+
+    elif isinstance(parent, _Cell):
+
+        parent_elm = parent._tc
+
+    else:
+
+        raise ValueError(
+            "Parent necunoscut pentru iter_block_items."
+        )
 
 
-    try:
+    for child in parent_elm.iterchildren():
 
-        for rel in document.part.rels.values():
+        if isinstance(child, CT_P):
 
-            target = rel.target_part
-
-            if not hasattr(target, "blob"):
-                continue
-
-
-            content_type = getattr(
-                target,
-                "content_type",
-                ""
+            yield Paragraph(
+                child,
+                parent
             )
 
+        elif isinstance(child, CT_Tbl):
 
-            if not content_type.startswith("image/"):
-                continue
-
-
-            encoded = base64.b64encode(
-                target.blob
-            ).decode("ascii")
-
-
-            images.append(
-                f'<img src="data:{content_type};base64,{encoded}" '
-                f'alt="Imagine din document">'
+            yield Table(
+                child,
+                parent
             )
-
-    except Exception:
-
-        pass
-
-
-    return images
 
 
 # ============================================================
 # DOCX -> HTML
 # ============================================================
 
-def docx_to_html(document):
+def docx_to_html(document: Document):
 
     output = []
 
 
     # --------------------------------------------------------
-    # PARAGRAPHS
-    #
-    # python-docx păstrează ordinea logică a paragrafelor.
-    # Aceasta este ceea ce ne interesează pentru selecție.
+    # PARCURGEM DOCUMENTUL ÎN ORDINEA REALĂ
     # --------------------------------------------------------
 
-    for paragraph in document.paragraphs:
+    for block in iter_block_items(document):
 
-        output.append(
-            paragraph_to_html(
-                paragraph
+        if isinstance(block, Paragraph):
+
+            output.append(
+                paragraph_to_html(
+                    block
+                )
             )
-        )
+
+        elif isinstance(block, Table):
+
+            output.append(
+                table_to_html(
+                    block
+                )
+            )
 
 
     # --------------------------------------------------------
-    # TABLES
-    #
-    # Le afișăm în document, dar nu există zonă de tag
-    # specială pentru tabele.
+    # EMPTY DOCUMENT
     # --------------------------------------------------------
-
-    for table in document.tables:
-
-        output.append(
-            table_to_html(table)
-        )
-
 
     if not output:
 
         output.append(
-            '<p>Documentul nu conține text.</p>'
+            '<p class="word-paragraph">'
+            'Documentul nu conține text.'
+            '</p>'
         )
 
 
@@ -530,14 +578,17 @@ async def upload_word(
 
 
     # --------------------------------------------------------
-    # ONLY DOCX
+    # EXTENSION
     # --------------------------------------------------------
 
     if not original_name.lower().endswith(".docx"):
 
         raise HTTPException(
             status_code=400,
-            detail="Este permis doar formatul Word .docx."
+            detail=(
+                "Este permis doar formatul "
+                "Microsoft Word .docx."
+            )
         )
 
 
@@ -548,7 +599,7 @@ async def upload_word(
 
 
     # --------------------------------------------------------
-    # SAVE
+    # SAVE FILE
     # --------------------------------------------------------
 
     try:
@@ -565,7 +616,7 @@ async def upload_word(
         raise HTTPException(
             status_code=500,
             detail=(
-                "Eroare la salvarea documentului Word: "
+                "Eroare la salvarea fișierului Word: "
                 f"{str(e)}"
             )
         )
@@ -576,7 +627,7 @@ async def upload_word(
 
 
     # --------------------------------------------------------
-    # READ DOCX
+    # OPEN DOCX
     # --------------------------------------------------------
 
     try:
@@ -588,21 +639,25 @@ async def upload_word(
     except Exception as e:
 
         try:
+
             destination.unlink()
+
         except Exception:
+
             pass
+
 
         raise HTTPException(
             status_code=400,
             detail=(
-                "Fișierul nu poate fi citit ca document "
+                "Fișierul nu poate fi deschis ca document "
                 f"Word .docx: {str(e)}"
             )
         )
 
 
     # --------------------------------------------------------
-    # CONVERT TO CONTROLLED HTML
+    # CONVERT
     # --------------------------------------------------------
 
     try:
@@ -616,8 +671,9 @@ async def upload_word(
         raise HTTPException(
             status_code=500,
             detail=(
-                "Eroare la transformarea documentului "
-                f"Word în format de lucru: {str(e)}"
+                "Documentul Word a fost încărcat, dar "
+                "nu a putut fi afișat: "
+                f"{str(e)}"
             )
         )
 
@@ -646,5 +702,5 @@ async def health():
     return {
         "status": "ok",
         "application": "xml_tagger",
-        "version": "2.0.0"
+        "version": "2.1.0"
     }
