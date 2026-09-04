@@ -1,30 +1,52 @@
+# ============================================================
+# XML TAGGER - POWERPOINT
+# ============================================================
+# Versiune: 5.0.0
+#
+# Flux:
+# PPTX
+#   ↓
+# python-pptx
+#   ↓
+# extragere slide-uri / textbox-uri / texte / imagini
+#   ↓
+# index.html
+#   ↓
+# selecție text
+#   ↓
+# XML
+#
+# PDF NU mai este folosit ca fișier de upload.
+# ============================================================
+
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from pathlib import Path
-from html import escape
-import fitz
-import shutil
 import uuid
 import re
+import shutil
+import base64
+
+from pptx import Presentation
 
 
 # ============================================================
-# CONFIGURARE
+# DIRECTOARE
 # ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent
 
 TEMPLATES_DIR = BASE_DIR / "templates"
+
 UPLOADS_DIR = BASE_DIR / "uploads"
+PPT_UPLOADS_DIR = UPLOADS_DIR / "ppt"
+PPT_IMAGES_DIR = UPLOADS_DIR / "ppt_images"
 
-PDF_UPLOADS_DIR = UPLOADS_DIR / "pdf"
-PDF_PAGES_DIR = UPLOADS_DIR / "pdf_pages"
-
-PDF_UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
-PDF_PAGES_DIR.mkdir(parents=True, exist_ok=True)
+PPT_UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+PPT_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ============================================================
@@ -32,8 +54,8 @@ PDF_PAGES_DIR.mkdir(parents=True, exist_ok=True)
 # ============================================================
 
 app = FastAPI(
-    title="XML Tagger",
-    version="4.0.0"
+    title="XML Tagger - PowerPoint",
+    version="5.0.0"
 )
 
 templates = Jinja2Templates(
@@ -46,237 +68,361 @@ templates = Jinja2Templates(
 # ============================================================
 
 app.mount(
-    "/files/pdf",
-    StaticFiles(directory=str(PDF_UPLOADS_DIR)),
-    name="pdf_files"
+    "/files/ppt",
+    StaticFiles(directory=str(PPT_UPLOADS_DIR)),
+    name="ppt_files"
 )
 
 app.mount(
-    "/files/pages",
-    StaticFiles(directory=str(PDF_PAGES_DIR)),
-    name="pdf_pages"
+    "/files/ppt_images",
+    StaticFiles(directory=str(PPT_IMAGES_DIR)),
+    name="ppt_images"
 )
 
 
 # ============================================================
-# UTILITARE
+# UTILS
 # ============================================================
 
 def safe_filename(filename: str) -> str:
     """
-    Curata numele fisierului.
+    Curăță numele fișierului.
     """
 
-    if not filename:
-        return "document.pdf"
+    filename = filename or "document.pptx"
 
     filename = Path(filename).name
 
     filename = re.sub(
-        r"[^a-zA-Z0-9_\-.ăâîșțĂÂÎȘȚ ]+",
+        r"[^A-Za-z0-9._-]+",
         "_",
         filename
     )
 
-    filename = filename.replace(" ", "_")
-
-    if not filename.lower().endswith(".pdf"):
-        filename += ".pdf"
+    if not filename:
+        filename = "document.pptx"
 
     return filename
 
 
-# ============================================================
-# RANDARE PDF
-# ============================================================
-
-def render_pdf_page(
-    page,
-    output_path: Path,
-    dpi: int = 144
-):
+def rgb_to_hex(color):
     """
-    Randeaza pagina PDF ca PNG.
-
-    PDF-ul ramane sursa vizuala.
-    Nu reconstruim documentul in HTML.
+    Încearcă să extragă culoarea RGB dintr-un run.
     """
 
-    zoom = dpi / 72.0
+    try:
+        if color is None:
+            return None
 
-    matrix = fitz.Matrix(
-        zoom,
-        zoom
-    )
+        rgb = color.rgb
 
-    pix = page.get_pixmap(
-        matrix=matrix,
-        alpha=False
-    )
+        if rgb is None:
+            return None
 
-    pix.save(
-        str(output_path)
-    )
+        return "#" + str(rgb)
+    except Exception:
+        return None
+
+
+def get_font_size(run):
+    """
+    Font size în pixeli aproximativi.
+
+    PPTX folosește puncte.
+    1 pt ≈ 1.333 px
+    """
+
+    try:
+        if run.font.size is None:
+            return None
+
+        points = run.font.size.pt
+
+        return round(points * 1.3333, 2)
+
+    except Exception:
+        return None
+
+
+def get_run_style(run):
+    """
+    Extrage stilul unui run.
+    """
 
     return {
-        "width": pix.width,
-        "height": pix.height
+        "bold": bool(run.font.bold),
+        "italic": bool(run.font.italic),
+        "underline": bool(run.font.underline),
+        "font_size": get_font_size(run),
+        "font_name": run.font.name,
+        "color": rgb_to_hex(
+            run.font.color
+        )
     }
 
 
-# ============================================================
-# EXTRAGERE TEXT CU COORDONATE
-# ============================================================
-
-def extract_words(page):
+def extract_paragraph(paragraph):
     """
-    Extrage fiecare cuvant impreuna cu pozitia sa exacta
-    pe pagina PDF.
+    Extrage un paragraf PowerPoint.
 
-    Format fitz:
-    x0, y0, x1, y1, text, block_no, line_no, word_no
+    Păstrăm runs separat pentru a păstra
+    cât mai mult din formatarea originală.
     """
 
-    words = page.get_text(
-        "words",
-        sort=True
-    )
+    runs = []
 
-    result = []
+    for run in paragraph.runs:
 
-    for index, item in enumerate(words):
+        text = run.text or ""
 
-        if len(item) < 8:
+        if not text:
             continue
 
-        x0 = float(item[0])
-        y0 = float(item[1])
-        x1 = float(item[2])
-        y1 = float(item[3])
-
-        text = str(item[4])
-
-        if not text.strip():
-            continue
-
-        result.append({
-            "id": index,
+        runs.append({
             "text": text,
-
-            "x0": x0,
-            "y0": y0,
-            "x1": x1,
-            "y1": y1,
-
-            "block": int(item[5]),
-            "line": int(item[6]),
-            "word": int(item[7])
+            "style": get_run_style(run)
         })
 
-    return result
+    # Dacă nu există runs, încercăm textul
+    if not runs:
 
+        text = paragraph.text or ""
 
-# ============================================================
-# EXTRAGERE TEXT COMPLET
-# ============================================================
-
-def extract_page_text(page):
-    """
-    Textul complet al paginii.
-    """
-
-    text = page.get_text(
-        "text",
-        sort=True
-    )
-
-    return text
-
-
-# ============================================================
-# PROCESARE PDF
-# ============================================================
-
-def process_pdf(pdf_path: Path, file_id: str):
-    """
-    Proceseaza PDF-ul:
-
-        PDF original
-             |
-             +---- PNG fiecare pagina
-             |
-             +---- text
-             |
-             +---- coordonate cuvinte
-    """
-
-    document = fitz.open(
-        str(pdf_path)
-    )
-
-    pages = []
-
-    try:
-
-        for page_number in range(document.page_count):
-
-            page = document.load_page(
-                page_number
-            )
-
-            page_id = (
-                f"{file_id}_page_"
-                f"{page_number + 1}"
-            )
-
-            image_filename = (
-                f"{page_id}.png"
-            )
-
-            image_path = (
-                PDF_PAGES_DIR /
-                image_filename
-            )
-
-            dimensions = render_pdf_page(
-                page,
-                image_path,
-                dpi=144
-            )
-
-            rect = page.rect
-
-            words = extract_words(
-                page
-            )
-
-            page_text = extract_page_text(
-                page
-            )
-
-            pages.append({
-                "page": page_number + 1,
-
-                "width": dimensions["width"],
-                "height": dimensions["height"],
-
-                "pdf_width": float(rect.width),
-                "pdf_height": float(rect.height),
-
-                "image": (
-                    f"/files/pages/"
-                    f"{image_filename}"
-                ),
-
-                "text": page_text,
-
-                "words": words
+        if text:
+            runs.append({
+                "text": text,
+                "style": {
+                    "bold": False,
+                    "italic": False,
+                    "underline": False,
+                    "font_size": None,
+                    "font_name": None,
+                    "color": None
+                }
             })
 
-    finally:
-        document.close()
+    return {
+        "text": paragraph.text or "",
+        "runs": runs
+    }
 
-    return pages
+
+def extract_text_frame(shape):
+    """
+    Extrage structura unui TextBox / shape cu text.
+    """
+
+    paragraphs = []
+
+    try:
+        for paragraph in shape.text_frame.paragraphs:
+            paragraphs.append(
+                extract_paragraph(paragraph)
+            )
+    except Exception:
+        pass
+
+    return paragraphs
+
+
+def save_image(blob: bytes, extension: str, file_id: str, index: int):
+    """
+    Salvează imaginea extrasă din PPTX.
+    """
+
+    extension = extension or "png"
+
+    extension = extension.lower()
+
+    if extension == "jpeg":
+        extension = "jpg"
+
+    filename = (
+        f"{file_id}_image_{index}.{extension}"
+    )
+
+    output = PPT_IMAGES_DIR / filename
+
+    with open(output, "wb") as f:
+        f.write(blob)
+
+    return f"/files/ppt_images/{filename}"
+
+
+# ============================================================
+# EXTRAGERE PPTX
+# ============================================================
+
+def process_pptx(pptx_path: Path, file_id: str):
+
+    prs = Presentation(
+        str(pptx_path)
+    )
+
+    # Dimensiunea slide-ului în EMU
+    slide_width_emu = prs.slide_width
+    slide_height_emu = prs.slide_height
+
+    # Conversie EMU -> px
+    # folosim 120 px/inch ca bază de afișare
+    EMU_PER_INCH = 914400
+    DISPLAY_PX_PER_INCH = 120
+
+    slide_width_px = (
+        slide_width_emu / EMU_PER_INCH
+    ) * DISPLAY_PX_PER_INCH
+
+    slide_height_px = (
+        slide_height_emu / EMU_PER_INCH
+    ) * DISPLAY_PX_PER_INCH
+
+    slides = []
+
+    image_index = 0
+
+    for slide_number, slide in enumerate(
+        prs.slides,
+        start=1
+    ):
+
+        shapes = []
+
+        # ----------------------------------------------------
+        # SHAPES
+        # ----------------------------------------------------
+
+        for shape_index, shape in enumerate(
+            slide.shapes
+        ):
+
+            try:
+                left = (
+                    shape.left / EMU_PER_INCH
+                ) * DISPLAY_PX_PER_INCH
+
+                top = (
+                    shape.top / EMU_PER_INCH
+                ) * DISPLAY_PX_PER_INCH
+
+                width = (
+                    shape.width / EMU_PER_INCH
+                ) * DISPLAY_PX_PER_INCH
+
+                height = (
+                    shape.height / EMU_PER_INCH
+                ) * DISPLAY_PX_PER_INCH
+
+            except Exception:
+                continue
+
+            shape_data = {
+                "index": shape_index,
+                "type": str(shape.shape_type),
+                "left": round(left, 3),
+                "top": round(top, 3),
+                "width": round(width, 3),
+                "height": round(height, 3),
+            }
+
+            # ------------------------------------------------
+            # TEXT
+            # ------------------------------------------------
+
+            if getattr(
+                shape,
+                "has_text_frame",
+                False
+            ):
+
+                paragraphs = extract_text_frame(
+                    shape
+                )
+
+                shape_data["kind"] = "text"
+                shape_data["paragraphs"] = paragraphs
+
+                # text complet
+                try:
+                    shape_data["text"] = (
+                        shape.text or ""
+                    )
+                except Exception:
+                    shape_data["text"] = ""
+
+                shapes.append(shape_data)
+
+                continue
+
+            # ------------------------------------------------
+            # IMAGE
+            # ------------------------------------------------
+
+            if getattr(
+                shape,
+                "shape_type",
+                None
+            ) == 13:
+
+                try:
+
+                    image = shape.image
+
+                    blob = image.blob
+
+                    extension = (
+                        image.ext
+                        or "png"
+                    )
+
+                    image_url = save_image(
+                        blob,
+                        extension,
+                        file_id,
+                        image_index
+                    )
+
+                    image_index += 1
+
+                    shape_data["kind"] = "image"
+                    shape_data["url"] = image_url
+
+                    shapes.append(
+                        shape_data
+                    )
+
+                    continue
+
+                except Exception:
+                    pass
+
+            # ------------------------------------------------
+            # ALTE SHAPE-URI
+            # ------------------------------------------------
+
+            shape_data["kind"] = "shape"
+
+            shapes.append(
+                shape_data
+            )
+
+        # ----------------------------------------------------
+        # SLIDE
+        # ----------------------------------------------------
+
+        slides.append({
+            "slide": slide_number,
+            "width": round(slide_width_px, 3),
+            "height": round(slide_height_px, 3),
+            "shapes": shapes
+        })
+
+    return {
+        "width": round(slide_width_px, 3),
+        "height": round(slide_height_px, 3),
+        "width_emu": slide_width_emu,
+        "height_emu": slide_height_emu,
+        "slides": slides
+    }
 
 
 # ============================================================
@@ -299,86 +445,124 @@ async def home(request: Request):
 
 
 # ============================================================
-# UPLOAD PDF
+# UPLOAD PPTX
 # ============================================================
 
-@app.post("/upload-pdf")
-async def upload_pdf(
+@app.post("/upload-ppt/")
+async def upload_ppt(
     file: UploadFile = File(...)
 ):
 
-    if not file.filename:
+    original_name = file.filename or ""
+
+    extension = Path(
+        original_name
+    ).suffix.lower()
+
+    if extension not in (
+        ".ppt",
+        ".pptx"
+    ):
+
         return JSONResponse(
             status_code=400,
             content={
                 "status": "error",
-                "message": "Nu a fost selectat niciun fisier."
+                "message": (
+                    "Fișier invalid. "
+                    "Încarcă un fișier PPT sau PPTX."
+                )
             }
         )
 
-    original_filename = file.filename
-
-    if not original_filename.lower().endswith(".pdf"):
-        return JSONResponse(
-            status_code=400,
-            content={
-                "status": "error",
-                "message": "Fisierul trebuie sa fie PDF."
-            }
-        )
-
-    clean_filename = safe_filename(
-        original_filename
-    )
+    # --------------------------------------------------------
+    # ID
+    # --------------------------------------------------------
 
     file_id = uuid.uuid4().hex
 
-    stored_filename = (
-        f"{file_id}_{clean_filename}"
+    clean_name = safe_filename(
+        original_name
     )
 
-    pdf_path = (
-        PDF_UPLOADS_DIR /
+    stored_filename = (
+        f"{file_id}_{clean_name}"
+    )
+
+    output_path = (
+        PPT_UPLOADS_DIR /
         stored_filename
     )
 
+    # --------------------------------------------------------
+    # SAVE
+    # --------------------------------------------------------
+
     try:
 
-        with pdf_path.open("wb") as buffer:
+        with open(
+            output_path,
+            "wb"
+        ) as buffer:
+
             shutil.copyfileobj(
                 file.file,
                 buffer
             )
 
-        pages = process_pdf(
-            pdf_path,
-            file_id
-        )
+    except Exception as e:
 
         return JSONResponse(
+            status_code=500,
             content={
-                "status": "success",
-
-                "filename": original_filename,
-
-                "stored_filename": stored_filename,
-
-                "url": (
-                    f"/files/pdf/"
-                    f"{stored_filename}"
+                "status": "error",
+                "message": (
+                    "Nu am putut salva "
+                    "fișierul.",
                 ),
-
-                "page_count": len(pages),
-
-                "pages": pages
+                "detail": str(e)
             }
+        )
+
+    # --------------------------------------------------------
+    # PPT
+    # --------------------------------------------------------
+
+    # python-pptx lucrează nativ cu PPTX.
+    # Pentru .ppt vechi, utilizatorul trebuie să-l
+    # salveze ca .pptx.
+    if extension == ".ppt":
+
+        return JSONResponse(
+            status_code=400,
+            content={
+                "status": "error",
+                "message": (
+                    "Formatul PPT vechi nu este "
+                    "procesat direct. "
+                    "Salvează documentul ca PPTX "
+                    "și încarcă din nou."
+                )
+            }
+        )
+
+    # --------------------------------------------------------
+    # PROCESS
+    # --------------------------------------------------------
+
+    try:
+
+        presentation = process_pptx(
+            output_path,
+            file_id
         )
 
     except Exception as e:
 
         try:
-            if pdf_path.exists():
-                pdf_path.unlink()
+            output_path.unlink(
+                missing_ok=True
+            )
         except Exception:
             pass
 
@@ -387,11 +571,32 @@ async def upload_pdf(
             content={
                 "status": "error",
                 "message": (
-                    "Eroare la procesarea PDF-ului: "
-                    f"{str(e)}"
-                )
+                    "Nu am putut procesa "
+                    "fișierul PPTX."
+                ),
+                "detail": str(e)
             }
         )
+
+    # --------------------------------------------------------
+    # RESPONSE
+    # --------------------------------------------------------
+
+    return JSONResponse(
+        content={
+            "status": "success",
+            "filename": original_name,
+            "stored_filename": stored_filename,
+            "url": (
+                f"/files/ppt/"
+                f"{stored_filename}"
+            ),
+            "slide_count": len(
+                presentation["slides"]
+            ),
+            "presentation": presentation
+        }
+    )
 
 
 # ============================================================
@@ -404,5 +609,6 @@ async def health():
     return {
         "status": "ok",
         "app": "XML Tagger",
-        "version": "4.0.0"
+        "version": "5.0.0",
+        "format": "PPTX"
     }
